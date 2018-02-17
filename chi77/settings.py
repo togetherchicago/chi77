@@ -20,7 +20,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = '06m&s59*db8q7%c_lp@33#4a%ap6c@vy0tn_u^l)m#5#8pvrf4'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -77,9 +78,9 @@ WSGI_APPLICATION = 'chi77.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': ''
+        'NAME': 'chi77',
+        'USER': 'chi77user',
+        'PASSWORD': 'gispass'
     }
 }
 
