@@ -1,6 +1,5 @@
 from django.contrib.gis import admin
 from .models import Ward, Precinct, Zip, Tract, Neighborhood
-from .models import NeighborhoodToPrecinct, NeighborhoodToTract, NeighborhoodToWard, NeighborhoodToZip
 
 admin.site.register(Ward, admin.OSMGeoAdmin)
 admin.site.register(Precinct, admin.OSMGeoAdmin)
