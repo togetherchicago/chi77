@@ -21,9 +21,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if len(TractToPrecinct.objects.all()) is not 0 and not options['force']:
-            print("No equivalency generation necessary.")
-            return
+        if len(TractToPrecinct.objects.all()) > 0:
+            if not options['force']:
+                print("No equivalency generation necessary.")
+                return
         clear()
         # to avoid duplicate equivalencies if we run the command twice.
         for neighborhood in Neighborhood.objects.all():

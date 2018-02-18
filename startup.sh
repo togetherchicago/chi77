@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 15
 echo -e "Migrating..."
 python manage.py migrate
 echo -e "Done migrating!"

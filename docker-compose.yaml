@@ -4,6 +4,8 @@ services:
   geodb:
     image: mdillon/postgis
     restart: always
+    volumes:
+      - "geodb-volume:/var/lib/postgresql/data"
     environment:
       POSTGRES_USER: chi77
       POSTGRES_PASSWORD: gispass
@@ -18,3 +20,6 @@ services:
       - "8000:8000"
     depends_on:
       - geodb
+
+volumes:
+  geodb-volume:
