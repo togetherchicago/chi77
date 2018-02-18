@@ -1,6 +1,6 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from .models import Tract, Neighborhood, Zip, Precinct, Ward
+from chicagomap.models import Tract, Neighborhood, Zip, Precinct, Ward
 
 neighborhood_geojson = os.path.abspath(
     os.path.join(os.path.dirname(__file__), 'data', 'neighborhoods.geojson'),
@@ -71,6 +71,11 @@ tract_mapping = {
 
 
 def run(verbose=True):
+    Tract.objects.all().delete()
+    Neighborhood.objects.all().delete()
+    Zip.objects.all().delete()
+    Precinct.objects.all().delete()
+    Ward.objects.all().delete()
     lm_neighborhood = LayerMapping(Neighborhood, neighborhood_geojson, neighborhood_mapping, transform=False)
     lm_ward = LayerMapping(Ward, ward_geojson, ward_mapping, transform=False)
     lm_zip = LayerMapping(Zip, zip_geojson, zip_mapping, transform=False)

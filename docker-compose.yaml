@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  geodb:
+    image: mdillon/postgis
+    restart: always
+    environment:
+      POSTGRES_USER: chi77
+      POSTGRES_PASSWORD: gispass
+    expose:
+      - "5432"
+  django:
+    build: .
+    command: bash ./startup.sh
+    volumes:
+      - .:/django
+    ports:
+      - "8000:8000"
+    depends_on:
+      - geodb

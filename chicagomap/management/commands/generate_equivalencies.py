@@ -11,7 +11,19 @@ class Command(BaseCommand):
     help = 'Generates equivalencies between neighborhoods, precincts, wards, zipcodes, and tracts.' \
            ' Note that the ward-precinct equivalency is not generated, as precincts already belong to wards.'
 
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            '-f',
+            action='store_true',
+            dest='force',
+            help='Force equivalency generation even if equivalencies are available.',
+        )
+
     def handle(self, *args, **options):
+        if len(TractToPrecinct.objects.all()) is not 0 and not options['force']:
+            print("No equivalency generation necessary.")
+            return
         clear()
         # to avoid duplicate equivalencies if we run the command twice.
         for neighborhood in Neighborhood.objects.all():

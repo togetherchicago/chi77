@@ -102,3 +102,4 @@ ENV/
 
 #jetbrains stuff
 .idea/
+\.#Dockerfile
