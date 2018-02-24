@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib.gis import admin
 from django.urls import path, include
+from .routers import router
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls))
 ]
