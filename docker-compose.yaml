@@ -13,7 +13,7 @@ services:
       - "5432"
 
   django:
-    build: ./web/
+    build: ./
     volumes:
       - .:/django
     ports:
