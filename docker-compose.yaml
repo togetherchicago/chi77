@@ -14,7 +14,6 @@ services:
 
   django:
     build: ./web/
-    command: bash ./startup.sh
     volumes:
       - .:/django
     ports:

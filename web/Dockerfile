@@ -7,3 +7,4 @@ ENV CPLUS_INCLUDE_PATH=/usr/include/gdal \
 RUN pip install GDAL==$(gdal-config --version | awk -F'[.]' '{print $1"."$2}')
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 ENV NAME Chi77-Django
+CMD bash ./startup.sh
