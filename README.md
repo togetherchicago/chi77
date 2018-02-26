@@ -1,49 +1,20 @@
-# Heroku Django Starter Template
-
-An utterly fantastic project starter template for Django 2.0.
-
-## Features
-
-- Production-ready configuration for Static Files, Database Settings, Gunicorn, etc.
-- Enhancements to Django's static file serving functionality via WhiteNoise.
-- Latest Python 3.6 runtime environment.
-
-## How to Use
-
-To use this project, follow these steps:
-
-1. Create your working environment.
-2. Install Django (`$ pipenv install django`)
-3. Create a new project using this template
-
-## Creating Your Project
-
-Using this template to create a new Django app is easy::
-
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
-
-(If this doesn't work on windows, replace `django-admin.py` with `django-admin`)
-
-You can replace ``helloworld`` with your desired project name.
-
-## Deployment to Heroku
-
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
-
-    $ heroku create
-    $ git push heroku master
-
-    $ heroku run python manage.py migrate
-
-See also, a [ready-made application](https://github.com/heroku/python-getting-started), ready to deploy.
-
-
-## License: MIT
-
-## Further Reading
-
-- [Gunicorn](https://warehouse.python.org/project/gunicorn/)
-- [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
-- [dj-database-url](https://warehouse.python.org/project/dj-database-url/)
+# chi77
+Together Chicago's data analytics platform
+## Instructions for setting up development environment
+1. Ensure Docker >=17 is installed on your system. See https://docs.docker.com/install/ for more detailed instructions.
+2. Clone the repository to your local machine: 
+    git clone https://github.com/mozebdi/chi77.git ./chi77
+3. Run the docker-compose command in the chi77 directory: ```docker-compose up```
+4. Access the server at localhost:8000.
+5. To use the Django admin console, access localhost:8000/admin/.
+6. To kill the server, just press CTRL-C in the docker-compose terminal window.
+7. To connect the Docker Python interpreter to PyCharm Professional Edition, follow the instructions under "Configuring Pycharm" on this page: https://blog.jetbrains.com/pycharm/2017/03/docker-compose-getting-flask-up-and-running/
+8. To run bash commands in a container, just use docker ps to see container names, then run the following command to connect to the container:
+```
+    docker exec -it container_name bash
+``` 
+9. To clean up the containers and all their corresponding volumes, run this command in the chi77 directory:
+```
+    docker-compose down -v
+```
+*NOTE*: This is not a production-safe config as-is! Change the SECRET\_KEY in settings.py as well as the POSTGRES\_USER and POSTGRES\_PASSWORD values in the docker-compose.yaml and settings.py files for a prod environment.
