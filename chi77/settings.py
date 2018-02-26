@@ -25,7 +25,7 @@ SECRET_KEY = '06m&s59*db8q7%c_lp@33#4a%ap6c@vy0tn_u^l)m#5#8pvrf4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "www.chi77.org", "chi77.org"]
 
 
 # Application definition
