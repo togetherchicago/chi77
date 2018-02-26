@@ -2,7 +2,7 @@ version: '3'
 
 services:
   geodb:
-    image: mdillon/postgis
+    build: ./geodb/
     restart: always
     volumes:
       - "geodb-volume:/var/lib/postgresql/data"
@@ -11,8 +11,9 @@ services:
       POSTGRES_PASSWORD: gispass
     expose:
       - "5432"
+
   django:
-    build: .
+    build: ./web/
     command: bash ./startup.sh
     volumes:
       - .:/django

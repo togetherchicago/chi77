@@ -1,4 +1,4 @@
 build:
   docker:
-    web: Dockerfile
-    worker: worker/Dockerfile
+    web: web/Dockerfile
+    geodb: geodb/Dockerfile
