@@ -2,24 +2,18 @@ version: '3'
 
 services:
   geodb:
-    build: ./geodb/
+    image: mdillon/postgis
     restart: always
     volumes:
       - "geodb-volume:/var/lib/postgresql/data"
     environment:
-      POSTGRES_USER: chi77
-      POSTGRES_PASSWORD: gispass
+      POSTGRES_USER: localdev
+      POSTGRES_PASSWORD: localpass
+      POSTGRES_DB: chi77
     expose:
       - "5432"
-
-  django:
-    build: ./
-    volumes:
-      - .:/django
     ports:
-      - "8000:8000"
-    depends_on:
-      - geodb
+      - "5432:5432"
 
 volumes:
   geodb-volume:
