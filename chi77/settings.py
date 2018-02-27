@@ -89,7 +89,6 @@ import dj_database_url
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config(default='postgres://localdev:localpass@127.0.01:5432/chi77')
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis' 
-DATABASES['default']['NAME'] = 'chi77'
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
