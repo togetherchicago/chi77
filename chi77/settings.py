@@ -80,12 +80,14 @@ WSGI_APPLICATION = 'chi77.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'chi77',
-        'USER': 'chi77',
-        'PASSWORD': 'gispass',
-        'HOST': 'geodb',
+        'NAME': 'chi77'
     }
 }
+
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+DATABASES['default'] =  dj_database_url.config()
+
 
 
 # Password validation
@@ -125,3 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
