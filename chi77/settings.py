@@ -84,25 +84,6 @@ WSGI_APPLICATION = 'chi77.wsgi.application'
 #    }
 #}
 
-# Parse database configuration from $DATABASE_URL
-import dj_database_url
-env = os.environ.copy()
-
-db_url = env.get('DATABASE_URL', False)
-if db_url != False:
-    DATABASES = {
-        'default': dj_database_url.config()
-    }
-else:
-    DATABASES = {
-        'default': dj_database_url.config(default='postgres://localdev:localpass@127.0.01:5432/chi77')
-    }
-
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis' 
-
-GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
-GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -144,3 +125,22 @@ STATIC_URL = '/static/'
 # Configure Django App for Heroku.
 import django_heroku
 django_heroku.settings(locals())
+
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
+env = os.environ.copy()
+
+db_url = env.get('DATABASE_URL', False)
+if db_url != False:
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(default='postgres://localdev:localpass@127.0.01:5432/chi77')
+    }
+
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis' 
+
+GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
