@@ -15,5 +15,15 @@ services:
     ports:
       - "5432:5432"
 
+  django:
+    build: .
+    command: bash -c "./init_db.sh && python manage.py runserver 0.0.0.0:5000"
+    volumes:
+      - .:/django
+    ports:
+      - "5000:5000"
+    depends_on:
+      - geodb
+
 volumes:
   geodb-volume:

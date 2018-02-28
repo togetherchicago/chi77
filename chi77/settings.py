@@ -73,20 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'chi77.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-#        'NAME': 'chi77'
-#    }
-#}
-
-# Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -126,6 +112,9 @@ STATIC_URL = '/static/'
 import django_heroku
 django_heroku.settings(locals())
 
+# Database - Needs to be done *after* Heroku setup due to unusual configuration
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
 env = os.environ.copy()
@@ -137,7 +126,7 @@ if db_url != False:
     }
 else:
     DATABASES = {
-        'default': dj_database_url.config(default='postgres://localdev:localpass@127.0.01:5432/chi77')
+        'default': dj_database_url.config(default='postgres://localdev:localpass@geodb:5432/chi77')
     }
 
 DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis' 
