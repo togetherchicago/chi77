@@ -4,7 +4,7 @@ from django.contrib.gis.db import models
 
 class Tract(models.Model):
     statefp10 = models.CharField(max_length=64)
-    name10 = models.CharField(max_length=64)
+    name10 = models.CharField(max_length=64, primary_key=True)
     commarea_n = models.CharField(max_length=64)
     namelsad10 = models.CharField(max_length=64)
     commarea = models.CharField(max_length=64)
