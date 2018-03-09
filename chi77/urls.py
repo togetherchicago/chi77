@@ -15,9 +15,19 @@ Including another URLconf
 """
 from django.contrib.gis import admin
 from django.urls import path, include
-from .routers import router
+from getdata import views as api
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='API Documentation')
 
 urlpatterns = [
+    path('docs/', schema_view),
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/population/', api.population_list),
+    path('api/domain/', api.domain_list),
+    path('api/domain/tracts/', api.tract_list),
+    path('api/domain/zips/', api.zip_list),
+    path('api/domain/neighborhoods/', api.neighborhood_list),
+    path('api/domain/precincts/', api.precinct_list),
+    path('api/domain/wards/', api.ward_list)
 ]
