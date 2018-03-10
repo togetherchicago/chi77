@@ -1,0 +1,55 @@
+{% load  static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHI77</title>
+    <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="{% static '/materialize.min.css' %}">
+
+  <!-- Compiled and minified JavaScript -->
+    <script type="text/javascript" src="{% static '/jquery-2.1.1.min.js'%}"></script>
+  <script src="{% static '/materialize.min.js' %}"></script>
+
+    <script src="{% static '/vue.js' %}"></script>
+    <script src="{% static '/vue-resource.min.js' %}"></script>
+</head>
+<body>
+<div id="app">
+
+  <div class="container">
+    <ul class="collapsible" data-collapsible="accordion">
+        <li v-for="pop in populations">
+            <div class="collapsible-header">${ pop.census_tract }: ${ pop.pop_100 }</div>
+        </li>
+    </ul>
+  </div>
+
+</div>
+<script>
+    var app = new Vue({
+        delimiters: ['${', '}'],
+        el: '#app',
+        data: {
+            populations: [],
+            loading: true
+        },
+        http: {
+            root: 'http://localhost:5000/api',
+        },
+        methods: {
+            getList: function () {
+                this.$http.get('population/').then(function (data) {
+                    console.log(data.body);
+                    this.populations = data.body;
+                    this.loading = false;
+                })
+            },
+        },
+        mounted: function () {
+            this.getList();
+        }
+    })
+</script>
+</body>
+</html>
