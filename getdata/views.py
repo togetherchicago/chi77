@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood, NeighborhoodToTract
 import ast
 
 from .models import Population
@@ -45,6 +45,20 @@ def population_list(request):
                 serializer = PopulationSerializer(Population.objects.filter(census_tract__name10__in=tracts), many=True)
                 return Response(serializer.data)
 
+            if neighborhoods and not (tracts or wards or precincts or zips):
+                tractsArray = []
+                tractsArray = NeighborhoodToTract.objects.filter(neighborhood__pri_neigh="River North").values_list('tract', flat=True)
+                print(tractsArray)
+                counter = NeighborhoodToTract.objects.filter(neighborhood__pri_neigh="River North").values_list('tract', flat=True).count()
+                print(counter)
+                #for x in range(0, counter):
+                    #tractArea = NeighborhoodToTract.objects.filter(tract__name10=tractsArray[x]).values('geom')
+                    #print (tractArea)
+                queryset = NeighborhoodToTract.objects.filter(neighborhood__pri_neigh="River North")
+                print(queryset.values('geom')[0])
+                serializer = NeighborToTractSerializer(queryset, many=True) 
+                
+                return Response(serializer.data)
             # figure out how to get equivalencies
 
         serializer = PopulationSerializer(Population.objects.all(), many=True)

@@ -163,7 +163,6 @@ class NeighborhoodToTract(models.Model):
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
 
-
 class NeighborhoodToPrecinct(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
