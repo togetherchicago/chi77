@@ -1,1 +1,1 @@
-web: gunicorn chi77-dev.wsgi
+web: gunicorn chi77.wsgi
