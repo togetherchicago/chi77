@@ -162,60 +162,60 @@ class NeighborhoodToTract(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class NeighborhoodToPrecinct(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class NeighborhoodToWard(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class NeighborhoodToZip(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class ZipToTract(models.Model):
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class ZipToWard(models.Model):
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class ZipToPrecinct(models.Model):
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class WardToTract(models.Model):
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
 
 
 class TractToPrecinct(models.Model):
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=6, decimal_places=4, null=True)
+    pct = models.DecimalField(max_digits=6, decimal_places=5, null=True)
