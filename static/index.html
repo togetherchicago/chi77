@@ -63,6 +63,11 @@
   $("#census-variable").change(function(){
       if ($(this).children(":selected").attr("id") == "crime_btn") {
         alert("Triggered crime data!");
+        // jQuery api
+        $.get("/api/population", function(data) {
+            alert( "Data Loaded: " + data[0]["pop_100"] );
+
+        });
 
 
       } else if ($(this).children(":selected").attr("id") == "school_btn") {
@@ -77,9 +82,6 @@
 
   });
   </script>
-
-
-  <!-- Trying to toggle data end -->
 
   <script>
 // map stuff
