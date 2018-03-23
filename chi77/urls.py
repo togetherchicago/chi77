@@ -17,6 +17,8 @@ from django.contrib.gis import admin
 from django.urls import path, include
 from getdata import views as api
 from rest_framework_swagger.views import get_swagger_view
+from django.views.generic import TemplateView
+
 
 schema_view = get_swagger_view(title='API Documentation')
 
@@ -29,5 +31,8 @@ urlpatterns = [
     path('api/domain/zips/', api.zip_list),
     path('api/domain/neighborhoods/', api.neighborhood_list),
     path('api/domain/precincts/', api.precinct_list),
-    path('api/domain/wards/', api.ward_list)
+    path('api/domain/wards/', api.ward_list),
+
+    path('', TemplateView.as_view(template_name='index.html')),
+
 ]
