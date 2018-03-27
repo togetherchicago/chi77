@@ -85,57 +85,86 @@
 
   <script>
 // map stuff
-    var map = L.map('map').setView([41.81, -87.6298], 11);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="http://osm.org/copyright">Together Chicago</a> contributors'
-    }).addTo(map);
-// get the data on the map
-    var censusMin = Number.MAX_VALUE, censusMax = -Number.MAX_VALUE;
+
+    var loadCensusTracts = new L.GeoJSON.AJAX("data/censustracts.geojson", {onEachFeature:onEachFeature, style:style});
+      // loadCensusTracts.addTo(map);
+
+    var neighborhoods = new L.GeoJSON.AJAX("data/neighborhoods.geojson", {onEachFeature:onEachFeature, style:style});
+
+
+    var map = L.map('map', {
+        center: [41.81, -87.6298],
+        zoom: 11,
+        layers: [loadCensusTracts]
+    });
+
+    // from there, similar to the example: 
+    // specify the basemap and overlays to put in the layers control
+    var baseMaps = {
+        "Census Tracts": loadCensusTracts,
+        "Neighborhoods": neighborhoods,
+    };
+    var overlayMaps = {
+        
+    };
+
+// initialize up the L.control.layers
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+
+
+// // get the data on the map
+//     var censusMin = Number.MAX_VALUE, censusMax = -Number.MAX_VALUE;
 //neighborhoods
       // var loadCensusTracts = new L.GeoJSON.AJAX("staticfiles/data/Neighborhoods_2012b.geojson", {onEachFeature:onEachFeature, style:style});
       // loadCensusTracts.addTo(map);
 //census-tracts
-      var loadCensusTracts = new L.GeoJSON.AJAX("data/censustracts.geojson", {onEachFeature:onEachFeature, style:style});
-      loadCensusTracts.addTo(map);
+
+
+
+
 // get data
     // var crimeData = new L.GeoJSON.AJAX("staticfiles/data/Neighborhoods_2012b.geojson",
     //api/population/
-    var loadPopulation = new L.GeoJSON.AJAX("api/population", {onEachFeature:onEachFeature, style:style});
-    loadPopulation.addTo(map);
-          function loadCensusData(variable) {
-            // load the requested variable from the census API (using local copies)
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', variable + '.json');
-            xhr.onload = function() {
-              var censusData = JSON.parse(xhr.responseText);
-              censusData.shift(); // the first row contains column names
-              censusData.forEach(function(row) {
-                var censusVariable = parseFloat(row[0]);
-                var population = row[1];
+    // var loadPopulation = new L.GeoJSON.AJAX("api/population", {onEachFeature:onEachFeature, style:style});
+    // loadPopulation.addTo(map);
 
-                // keep track of min and max values
-                if (censusVariable < censusMin) {
-                  censusMin = censusVariable;
-                }
-                if (censusVariable > censusMax) {
-                  censusMax = censusVariable;
-                }
 
-                // update the existing row with the new data
-                map.data
-                  .getFeatureById(population)
-                  .setProperty('census_variable', censusVariable);
-              });
+          // function loadCensusData(variable) {
+          //   // load the requested variable from the census API (using local copies)
+          //   console.log("Hit")
+          //   var xhr = new XMLHttpRequest();
+          //   xhr.open('GET', variable + '.json');
+          //   xhr.onload = function() {
+          //     var censusData = JSON.parse(xhr.responseText);
+          //     censusData.shift(); // the first row contains column names
+          //     censusData.forEach(function(row) {
+          //       var censusVariable = parseFloat(row[0]);
+          //       var population = row[1];
 
-              // update and display the legend
-              document.getElementById('census-min').textContent =
-                  censusMin.toLocaleString();
-              document.getElementById('census-max').textContent =
-                  censusMax.toLocaleString();
-            };
-            xhr.send();
-            loadCensusData.addTo(map);
-          }
+          //       // keep track of min and max values
+          //       if (censusVariable < censusMin) {
+          //         censusMin = censusVariable;
+          //       }
+          //       if (censusVariable > censusMax) {
+          //         censusMax = censusVariable;
+          //       }
+
+          //       // update the existing row with the new data
+          //       map.data
+          //         .getFeatureById(population)
+          //         .setProperty('census_variable', censusVariable);
+          //     });
+
+          //     // update and display the legend
+          //     document.getElementById('census-min').textContent =
+          //         censusMin.toLocaleString();
+          //     document.getElementById('census-max').textContent =
+          //         censusMax.toLocaleString();
+          //   };
+          //   xhr.send();
+          //   loadCensusData.addTo(map);
+          // }
   /** Removes census data from each shape on the map and resets the UI. */
       function clearCensusData() {
         censusMin = Number.MAX_VALUE;
