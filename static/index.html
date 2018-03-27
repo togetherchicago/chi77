@@ -91,6 +91,13 @@
 
     var neighborhoods = new L.GeoJSON.AJAX("data/neighborhoods.geojson", {onEachFeature:onEachFeature, style:style});
 
+    var precincts = new L.GeoJSON.AJAX("data/precincts.geojson", {onEachFeature:onEachFeature, style:style});
+
+    var wards = new L.GeoJSON.AJAX("data/wards.geojson", {onEachFeature:onEachFeature, style:style});
+
+     var zipcodes = new L.GeoJSON.AJAX("data/zipcodes.geojson", {onEachFeature:onEachFeature, style:style});
+
+
 
     var map = L.map('map', {
         center: [41.81, -87.6298],
@@ -103,6 +110,9 @@
     var baseMaps = {
         "Census Tracts": loadCensusTracts,
         "Neighborhoods": neighborhoods,
+        "Precincts": precincts,
+        "Wards": wards,
+        "Zip Codes" : zipcodes,
     };
     var overlayMaps = {
         
@@ -180,7 +190,16 @@
       else if (feature.properties.pri_neigh) {
         layer.bindPopup('Neighborhood: '+ feature.properties.pri_neigh)
       }
-      
+      else if (feature.properties.zip) {
+        layer.bindPopup("Zip Code: " + feature.properties.zip) 
+      }
+      else if (feature.properties.precinct) {
+        layer.bindPopup('Precinct: '+ feature.properties.precinct)
+      }
+      else if (feature.properties.ward) {
+        layer.bindPopup('Ward: '+ feature.properties.ward)
+      }
+
     }
 
     function onEachFeature(feature, layer) {
