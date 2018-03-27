@@ -124,51 +124,6 @@
       // loadCensusTracts.addTo(map);
 //census-tracts
 
-
-
-
-// get data
-    // var crimeData = new L.GeoJSON.AJAX("staticfiles/data/Neighborhoods_2012b.geojson",
-    //api/population/
-    // var loadPopulation = new L.GeoJSON.AJAX("api/population", {onEachFeature:onEachFeature, style:style});
-    // loadPopulation.addTo(map);
-
-
-          function loadCensusData(variable) {
-            // load the requested variable from the census API (using local copies)
-            console.log("Hit")
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', variable + '.json');
-            xhr.onload = function() {
-              var censusData = JSON.parse(xhr.responseText);
-              censusData.shift(); // the first row contains column names
-              censusData.forEach(function(row) {
-                var censusVariable = parseFloat(row[0]);
-                var population = row[1];
-
-                // keep track of min and max values
-                if (censusVariable < censusMin) {
-                  censusMin = censusVariable;
-                }
-                if (censusVariable > censusMax) {
-                  censusMax = censusVariable;
-                }
-
-                // update the existing row with the new data
-                map.data
-                  .getFeatureById(population)
-                  .setProperty('census_variable', censusVariable);
-              });
-
-              // update and display the legend
-              document.getElementById('census-min').textContent =
-                  censusMin.toLocaleString();
-              document.getElementById('census-max').textContent =
-                  censusMax.toLocaleString();
-            };
-            xhr.send();
-            loadCensusData.addTo(map);
-          }
   /** Removes census data from each shape on the map and resets the UI. */
       function clearCensusData() {
         censusMin = Number.MAX_VALUE;
@@ -215,11 +170,24 @@
     function resetHighlight(e) {
         loadCensusTracts.resetStyle(e.target);
     }
+
+    function Click(feature, layer) {
+      // console.log("Feature:")
+      // console.log(feature)
+      if (feature.properties.namelsad10) {
+        layer.bindPopup('Area: '+ feature.properties.namelsad10)
+      }
+      else if (feature.properties.pri_neigh) {
+        layer.bindPopup('Neighborhood: '+ feature.properties.pri_neigh)
+      }
+      
+    }
+
     function onEachFeature(feature, layer) {
-        layer.on({
+         layer.on({
             mouseover: highlightFeature,
             mouseout: resetHighlight,
-            click: layer.bindPopup('Area: '+ feature.properties.namelsad10),
+            click: Click(feature, layer),
         });
     }
   </script>
