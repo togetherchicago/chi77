@@ -86,6 +86,25 @@
   <script>
 // map stuff
 
+    dict = {}
+
+    fetch("api/population", { credentials: 'same-origin' })
+      .then((response) => {
+        if (!response.ok) throw Error(response.statusText);
+        return response.json();
+      })
+      .then((data) => {
+      for (key in data) {
+        tract = data[key].census_tract;
+        population = data[key].pop_100;
+        dict[tract] = population
+      }
+      })
+      .catch(error => console.log(error));// eslint-disable-line no-console
+
+      console.log("DICT:")
+      console.log(dict)
+
     var loadCensusTracts = new L.GeoJSON.AJAX("data/censustracts.geojson", {onEachFeature:onEachFeature, style:style});
       // loadCensusTracts.addTo(map);
 
@@ -125,6 +144,7 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="http://osm.org/copyright">Together Chicago</a> contributors'
     }).addTo(map);
+
 
 
 // // get the data on the map
@@ -185,7 +205,19 @@
       // console.log("Feature:")
       // console.log(feature)
       if (feature.properties.namelsad10) {
-        layer.bindPopup('Area: '+ feature.properties.namelsad10)
+        
+        population = dict[feature.properties.name10];
+        // console.log(dict)
+        // console.log(feature.properties.namelsad10)
+        // console.log("Population from Dict:", dict[feature.properties.name10])
+
+        output = "<dl>" + feature.properties.namelsad10
+           + "<dt>Population: " + population + "</dl>"
+
+
+       
+        layer.bindPopup(output)
+        // layer.bindPopup('Population: '+ population)
       }
       else if (feature.properties.pri_neigh) {
         layer.bindPopup('Neighborhood: '+ feature.properties.pri_neigh)
