@@ -103,3 +103,6 @@ ENV/
 #jetbrains stuff
 .idea/
 \.#Dockerfile
+
+# Mac stuff
+.DS_Store
