@@ -108,6 +108,8 @@
     var loadCensusTracts = new L.GeoJSON.AJAX("data/censustracts.geojson", {onEachFeature:onEachFeature, style:style});
       // loadCensusTracts.addTo(map);
 
+      console.log("GEOJOSN", loadCensusTracts)
+
     var neighborhoods = new L.GeoJSON.AJAX("data/neighborhoods.geojson", {onEachFeature:onEachFeature, style:style});
 
     var precincts = new L.GeoJSON.AJAX("data/precincts.geojson", {onEachFeature:onEachFeature, style:style});
@@ -207,14 +209,12 @@
       if (feature.properties.namelsad10) {
         
         population = dict[feature.properties.name10];
-        // console.log(dict)
-        // console.log(feature.properties.namelsad10)
-        // console.log("Population from Dict:", dict[feature.properties.name10])
+        console.log(dict)
+        console.log(feature.properties.namelsad10)
+        console.log("Population from Dict:", dict[feature.properties.name10])
 
         output = "<dl>" + feature.properties.namelsad10
            + "<dt>Population: " + population + "</dl>"
-
-
        
         layer.bindPopup(output)
         // layer.bindPopup('Population: '+ population)
