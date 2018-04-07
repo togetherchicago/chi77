@@ -1,6 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+from chicagomap.models import WardToTract
+
+
 import ast
 
 from .models import Population
@@ -10,6 +13,8 @@ from .serializers import *
 from rest_framework import viewsets
 from django.http import JsonResponse
 from django.core.serializers import serialize
+
+
 # /api/population
 # GET returns entire table (domain: tract)
 # POST is glorified GET but can send body for specific domains e.g. "{neighborhoods": ["Chicago Loop", "Wicker Park"]}
@@ -23,32 +28,54 @@ def population_list(request):
         serializer = PopulationSerializer(Population.objects.all(), many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    # elif request.method == 'POST':
+    #
+    #     if request.data:
+    #
+    #         body = request.data
+    #         tracts = wards = precincts = neighborhoods = zips = []
+    #
+    #         if 'tracts' in body.keys():
+    #             tracts = ast.literal_eval(body['tracts'])
+    #         if 'wards' in body.keys():
+    #             wards = ast.literal_eval(body['wards'])
+    #         if 'precincts' in body.keys():
+    #             precincts = ast.literal_eval(body['precincts'])
+    #         if 'neighborhoods' in body.keys():
+    #             neighborhoods = ast.literal_eval(body['neighborhoods'])
+    #         if 'zips' in body.keys():
+    #             zips = ast.literal_eval(body['zips'])
+    #
+    #         if tracts and not (wards or precincts or neighborhoods or zips):
+    #             serializer = PopulationSerializer(Population.objects.filter(census_tract__name10__in=tracts), many=True)
+    #             return Response(serializer.data)
+    #
+    #         # figure out how to get equivalencies
+    #
+    #     serializer = PopulationSerializer(Population.objects.all(), many=True)
+    #     return Response(serializer.data)
 
-        if request.data:
 
-            body = request.data
-            tracts = wards = precincts = neighborhoods = zips = []
+@api_view(['GET'])
+def population_list_wards(request):
+    if request.method == 'GET':
+        ward_to_tracts = WardToTract.objects.all().order_by('ward_id')
+        populations = Population.objects.all()
 
-            if 'tracts' in body.keys():
-                tracts = ast.literal_eval(body['tracts'])
-            if 'wards' in body.keys():
-                wards = ast.literal_eval(body['wards'])
-            if 'precincts' in body.keys():
-                precincts = ast.literal_eval(body['precincts'])
-            if 'neighborhoods' in body.keys():
-                neighborhoods = ast.literal_eval(body['neighborhoods'])
-            if 'zips' in body.keys():
-                zips = ast.literal_eval(body['zips'])
+        wards = {}
 
-            if tracts and not (wards or precincts or neighborhoods or zips):
-                serializer = PopulationSerializer(Population.objects.filter(census_tract__name10__in=tracts), many=True)
-                return Response(serializer.data)
+        for object in ward_to_tracts:
 
-            # figure out how to get equivalencies
+            pop_at_tract = Population.objects.filter(census_tract_id=object.tract_id)[0].pop_100
 
-        serializer = PopulationSerializer(Population.objects.all(), many=True)
-        return Response(serializer.data)
+            if object.ward_id in wards.keys():
+                wards[object.ward_id] += pop_at_tract * object.pct
+                total += pop_at_tract * object.pct
+            else:
+                wards[object.ward_id] = pop_at_tract * object.pct
+                total += pop_at_tract * object.pct
+
+        return Response(wards)
 
 #/api/domains
 # GET request returns a list of available domains

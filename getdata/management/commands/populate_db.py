@@ -9,25 +9,52 @@ import pandas as pd
 class Command(BaseCommand):
     # python manage.py populate_db
 
+    # this is a method that creates a dataframe from a url and creates Django objects from that
     def _put_population(self):
 
-        # delete everything in the table
+        # delete existing population table
         Population.objects.all().delete()
-        print("Reading Population data...")
+        # get all Tract objects
+        tracts = Tract.objects.all()
+
+        # create dataframe
         url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
-        c = pd.read_csv(url, usecols=[8,9])
-        for entry in c.iterrows():
-            # cleaning census tract number column
-            census_tract = ''.join(filter(lambda x: x.isdigit() or x == '.', entry[1]['NAME']))
-            find_tract = Tract.objects.filter(name10=census_tract)
-            # if tract is in chicago
-            if find_tract:
-                # pull corresponding pop100
-                pop_100 = entry[1]['POP100']
-                # create object with foreign key to tract table
-                tract = Population(census_tract=find_tract[0], pop_100=pop_100)
-                tract.save()
-                print("Population @ tract ", find_tract[0], " saved.")
+        df = pd.read_csv(url, usecols=['GEOID', 'NAME', 'POP100'])
+
+
+        # find relevant census tracts in population csv
+        for tract in tracts:
+
+            row = df.loc[df['GEOID'] == float(tract.geoid10)]
+            census_tract = row.iloc[0]['NAME']
+            census_tract = ''.join(filter(lambda x: x.isdigit() or x == '.', census_tract))
+
+            if(census_tract == tract.name10):
+                pop_100 = row.iloc[0]['POP100']
+
+                new_pop = Population(census_tract=tract, pop_100=pop_100)
+                new_pop.save()
+
+
+        # print(df.head)
+
+        # # delete everything in the table
+        # Population.objects.all().delete()
+        # print("Reading Population data...")
+        # url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
+        # c = pd.read_csv(url, usecols=[8,9])
+        # for entry in c.iterrows():
+        #     # cleaning census tract number column
+        #     census_tract = ''.join(filter(lambda x: x.isdigit() or x == '.', entry[1]['NAME']))
+        #     find_tract = Tract.objects.filter(name10=census_tract)
+        #     # if tract is in chicago
+        #     if find_tract:
+        #         # pull corresponding pop100
+        #         pop_100 = entry[1]['POP100']
+        #         # create object with foreign key to tract table
+        #         tract = Population(census_tract=find_tract[0], pop_100=pop_100)
+        #         tract.save()
+        #         print("Population @ tract ", find_tract[0], " saved.")
 
         print("Done reading population data!")
 

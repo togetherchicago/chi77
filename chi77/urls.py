@@ -26,6 +26,7 @@ urlpatterns = [
     path('docs/', schema_view),
     path('admin/', admin.site.urls),
     path('api/population/', api.population_list),
+    path('api/population/wards/', api.population_list_wards),
     path('api/domain/', api.domain_list),
     path('api/domain/tracts/', api.tract_list),
     path('api/domain/zips/', api.zip_list),
