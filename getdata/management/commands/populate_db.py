@@ -4,6 +4,7 @@ from getdata.models import Population
 from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
 
 import pandas as pd
+from datetime import date
 
 
 class Command(BaseCommand):
@@ -21,7 +22,6 @@ class Command(BaseCommand):
         url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
         df = pd.read_csv(url, usecols=['GEOID', 'NAME', 'POP100'])
 
-
         # find relevant census tracts in population csv
         for tract in tracts:
 
@@ -32,7 +32,11 @@ class Command(BaseCommand):
             if(census_tract == tract.name10):
                 pop_100 = row.iloc[0]['POP100']
 
-                new_pop = Population(census_tract=tract, pop_100=pop_100)
+                #currently hard coding start and end dates
+                start_date = date(2010, 1, 1)
+                end_date = date(2010, 12, 31)
+
+                new_pop = Population(census_tract=tract, pop_100=pop_100, start_date=start_date, end_date=end_date)
                 new_pop.save()
 
 
