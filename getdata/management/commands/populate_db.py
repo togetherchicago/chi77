@@ -15,6 +15,7 @@ class Command(BaseCommand):
 
         # delete existing population table
         Population.objects.all().delete()
+
         # get all Tract objects
         tracts = Tract.objects.all()
 
@@ -25,20 +26,26 @@ class Command(BaseCommand):
         # find relevant census tracts in population csv
         for tract in tracts:
 
+            # pull row with corresponding geoid
             row = df.loc[df['GEOID'] == float(tract.geoid10)]
+
+            # clean census tract number column
             census_tract = row.iloc[0]['NAME']
             census_tract = ''.join(filter(lambda x: x.isdigit() or x == '.', census_tract))
 
-            if(census_tract == tract.name10):
+            # sanity check
+            if census_tract == tract.name10:
+
+                # pull statistic
                 pop_100 = row.iloc[0]['POP100']
 
-                #currently hard coding start and end dates
+                # currently hard coding start and end dates
                 start_date = date(2010, 1, 1)
                 end_date = date(2010, 12, 31)
 
+                # create object and save
                 new_pop = Population(census_tract=tract, pop_100=pop_100, start_date=start_date, end_date=end_date)
                 new_pop.save()
-
 
         # print(df.head)
 

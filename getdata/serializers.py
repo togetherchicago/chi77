@@ -6,7 +6,7 @@ from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
 class PopulationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Population
-        fields = ("id", "census_tract", "pop_100")
+        fields = '__all__'
 
 class WardToTractGeoSerializer(GeoFeatureModelSerializer):
     class Meta:
