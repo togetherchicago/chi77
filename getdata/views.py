@@ -165,7 +165,7 @@ def dataset_list_date_domain(request, dataset, date, domain):
                 res = convert_domain(dataset, domain, serializer)
                 return Response(res)
             else:
-                return Response(serializer.data)
+                return Response(serializer)
 
 
 

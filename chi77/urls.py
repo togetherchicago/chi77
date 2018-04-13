@@ -23,7 +23,7 @@ from django.views.generic import TemplateView
 schema_view = get_swagger_view(title='API Documentation')
 
 urlpatterns = [
-    path('docs/', schema_view),
+    path('api/docs/', schema_view),
     path('admin/', admin.site.urls),
 
     path('api/<str:dataset>/', api.dataset_list),
