@@ -12,10 +12,10 @@ ind.column = 'pop_100'
 
 
 env = Environment(
-    loader=FileSystemLoader('./templated_models.py'),
+    loader=FileSystemLoader('./models.py.jinja2'),
     autoescape=select_autoescape(['html', 'xml'])
 )
 
-modelTemplate = env.get_template('templated_models.py')
+modelTemplate = env.get_template('models.py.jinja2')
 
 print(modelTemplate.render(dataset_name='Population', indicator=ind))
