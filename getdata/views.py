@@ -60,7 +60,8 @@ def filter_date(dataset, date):
         serializer = PopulationSerializer(filtered_list, many=True)
     return serializer.data
 
-def convert_domain(dataset, domain, filtered={}):
+
+def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
 
     if dataset == "population":
 
@@ -70,39 +71,44 @@ def convert_domain(dataset, domain, filtered={}):
 
         if domain == "neighborhoods":
             equivalency_table = NeighborhoodToTract.objects.all()
-            domain_table = Neighborhood.objects.values('id', 'pri_neigh')
+            domain_table = list(Neighborhood.objects.values('id', 'pri_neigh'))
             index = "neighborhood_id"
         elif domain == "zips":
             equivalency_table = ZipToTract.objects.all()
-            domain_table = Zip.objects.values('zip')
+            domain_table = list(Zip.objects.values('zip'))
             index = "zip_id"
         elif domain == "wards":
             equivalency_table = WardToTract.objects.all()
-            domain_table = Ward.objects.values('ward')
+            domain_table = list(Ward.objects.values('ward'))
             index = "ward_id"
         elif domain == "precincts":
             # doesnt work for precincts because A -> B vs B -> A
             equivalency_table = TractToPrecinct.objects.all()
-            domain_table = Precinct.objects.values('id', 'full_text')
+            domain_table = list(Precinct.objects.values('id', 'full_text'))
             index = "precinct_id"
-
-        domain_table = list(domain_table)
-        total = 0
 
         for row in equivalency_table:
             pop_at_tract = Population.objects.filter(census_tract_id=row.tract_id)[0].pop_100
 
             if getattr(row, index) in result.keys():
                 result[getattr(row, index)] += pop_at_tract * row.pct
-                total += pop_at_tract * row.pct
             else:
-                domain_table[0]['field'] = 10
                 result[getattr(row, index)] = pop_at_tract * row.pct
-                total += pop_at_tract * row.pct
 
+        if domain == "neighborhoods":
+            for neighborhood in domain_table:
+                neighborhood['pop_100'] = result[neighborhood['id']]
+        elif domain == "wards":
+            for ward in domain_table:
+                ward['pop_100'] = result[ward['ward']]
+        elif domain == "zips":
+            for zip in domain_table:
+                zip['pop_100'] = result[zip['zip']]
+        elif domain == "precincts":
+            for precinct in domain_table:
+                precinct['pop_100'] = result[precinct['id']]
 
-        print(total)
-        return result
+        return domain_table
 
 
 @api_view(['GET'])
@@ -160,13 +166,11 @@ def dataset_list_date_domain(request, dataset, date, domain):
         if dataset == "population":
 
             serializer = filter_date(dataset, date)
-
             if not domain == "tracts":
-                res = convert_domain(dataset, domain, serializer)
+                res = convert_domain(dataset, domain, serializer, True)
                 return Response(res)
             else:
                 return Response(serializer)
-
 
 
         # elif dataset == "domains":
