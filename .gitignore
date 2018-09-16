@@ -106,3 +106,5 @@ ENV/
 
 # Mac stuff
 .DS_Store
+
+.vscode/
