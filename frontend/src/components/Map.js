@@ -27,7 +27,9 @@ class LMap extends Component {
     
     constructor(props){
         super(props); 
-        this.state = {}
+        this.state = {
+            population: []
+        }
         this.getStyle = this.getStyle.bind(this); 
         this.onEachFeature = this.onEachFeature.bind(this); 
     }
