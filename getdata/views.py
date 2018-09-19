@@ -1,5 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+import ast
+
+from .models import Population
+from .serializers import *
 from rest_framework import viewsets
 
 from django.http import Http404
@@ -9,12 +13,8 @@ from django.core.serializers import serialize
 from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
 from chicagomap.models import WardToTract, NeighborhoodToTract, TractToPrecinct, ZipToTract
 
-from .models import Population
-from .serializers import *
-
 import json
 import datetime
-
 
 
 

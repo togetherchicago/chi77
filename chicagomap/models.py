@@ -164,7 +164,6 @@ class NeighborhoodToTract(models.Model):
     geom = models.MultiPolygonField()
     pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
-
 class NeighborhoodToPrecinct(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)

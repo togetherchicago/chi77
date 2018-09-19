@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Population
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood, NeighborhoodToTract
 
 class PopulationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,7 +24,7 @@ class TractGeoSerializer(GeoFeatureModelSerializer):
     class Meta:
         model = Tract
         geo_field = "geom"
-        exclude = ('precincts', 'neighborhoods', 'zips', 'notes')
+        fields = '__all__'
 
 class WardGeoSerializer(GeoFeatureModelSerializer):
     class Meta:
@@ -43,3 +43,9 @@ class ZipGeoSerializer(GeoFeatureModelSerializer):
         model = Zip
         geo_field = "geom"
         exclude = ('precincts', 'wards', 'neighborhoods', 'tracts')
+
+class NeighborToTractSerializer(GeoFeatureModelSerializer):
+    class Meta:
+        model = NeighborhoodToTract
+        geo_field = "geom"
+        fields = '__all__'

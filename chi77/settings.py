@@ -124,17 +124,8 @@ WHITENOISE_INDEX_FILE = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
 
-WHITENOISE_ROOT = (
-    os.path.join(BASE_DIR, 'static')
-)
-
-WHITENOISE_INDEX_FILE = True
-
-# Configure Django App for Heroku.
+# # Configure Django App for Heroku.
 import django_heroku
 django_heroku.settings(locals())
 
