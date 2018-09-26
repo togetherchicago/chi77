@@ -34,48 +34,66 @@ class Command(BaseCommand):
             wards = Ward.objects.filter(geom__intersects=neighborhood.geom)
             for elt in zips:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                n2z = NeighborhoodToZip(geom=overlap, zip=elt, neighborhood=neighborhood)
-                n2z.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    n2z = NeighborhoodToZip(geom=overlap, zip=elt, neighborhood=neighborhood, pct=ratio)
+                    n2z.save()
             for elt in tracts:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                n2t = NeighborhoodToTract(geom=overlap, tract=elt, neighborhood=neighborhood)
-                n2t.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    n2t = NeighborhoodToTract(geom=overlap, tract=elt, neighborhood=neighborhood, pct=ratio)
+                    n2t.save()
             for elt in precincts:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                n2p = NeighborhoodToPrecinct(geom=overlap, precinct=elt, neighborhood=neighborhood)
-                n2p.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    n2p = NeighborhoodToPrecinct(geom=overlap, precinct=elt, neighborhood=neighborhood, pct=ratio)
+                    n2p.save()
             for elt in wards:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                n2w = NeighborhoodToWard(geom=overlap, ward=elt, neighborhood=neighborhood)
-                n2w.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    n2w = NeighborhoodToWard(geom=overlap, ward=elt, neighborhood=neighborhood, pct=ratio)
+                    n2w.save()
         for zipcode in Zip.objects.all():
             tracts = Tract.objects.filter(geom__intersects=zipcode.geom)
             precincts = Precinct.objects.filter(geom__intersects=zipcode.geom)
             wards = Ward.objects.filter(geom__intersects=zipcode.geom)
             for elt in tracts:
                 overlap = filtershapes(elt.geom.intersection(zipcode.geom))
-                z2t = ZipToTract(geom=overlap, tract=elt, zip=zipcode)
-                z2t.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    z2t = ZipToTract(geom=overlap, tract=elt, zip=zipcode, pct=ratio)
+                    z2t.save()
             for elt in precincts:
                 overlap = filtershapes(elt.geom.intersection(zipcode.geom))
-                z2p = ZipToPrecinct(geom=overlap, precinct=elt, zip=zipcode)
-                z2p.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    z2p = ZipToPrecinct(geom=overlap, precinct=elt, zip=zipcode, pct=ratio)
+                    z2p.save()
             for elt in wards:
                 overlap = filtershapes(elt.geom.intersection(zipcode.geom))
-                z2w = ZipToWard(geom=overlap, ward=elt, zip=zipcode)
-                z2w.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    z2w = ZipToWard(geom=overlap, ward=elt, zip=zipcode, pct=ratio)
+                    z2w.save()
         for ward in Ward.objects.all():
             tracts = Tract.objects.filter(geom__intersects=ward.geom)
             for elt in tracts:
                 overlap = filtershapes(elt.geom.intersection(ward.geom))
-                w2t = WardToTract(geom=overlap, tract=elt, ward=ward)
-                w2t.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    w2t = WardToTract(geom=overlap, tract=elt, ward=ward, pct=ratio)
+                    w2t.save()
         for tract in Tract.objects.all():
             precincts = Precinct.objects.filter(geom__intersects=tract.geom)
             for elt in precincts:
                 overlap = filtershapes(elt.geom.intersection(tract.geom))
-                t2p = TractToPrecinct(geom=overlap, precinct=elt, tract=tract)
-                t2p.save()
+                ratio = overlap.area / elt.geom.area
+                if ratio > 0.000001:
+                    t2p = TractToPrecinct(geom=overlap, precinct=elt, tract=tract, pct=ratio)
+                    t2p.save()
 
 
 def clear():

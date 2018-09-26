@@ -25,5 +25,15 @@ services:
     depends_on:
       - geodb
 
+  frontend:
+    build: ./frontend
+    command: ["npm", "start"]
+    volumes:
+      - ./frontend:/app/frontend
+      - node-modules:/app/frontend/node_modules
+    ports:
+      - "3000:3000"
+
 volumes:
   geodb-volume:
+  node-modules:

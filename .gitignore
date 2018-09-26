@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+gitupdate
 # C extensions
 *.so
 
@@ -103,3 +103,8 @@ ENV/
 #jetbrains stuff
 .idea/
 \.#Dockerfile
+
+# Mac stuff
+.DS_Store
+
+.vscode/

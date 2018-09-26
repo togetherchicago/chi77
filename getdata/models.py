@@ -3,9 +3,12 @@ from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
 
 # Create your models here.
 
+
 class Population(models.Model):
     census_tract = models.ForeignKey(Tract, on_delete=models.CASCADE)
     pop_100 = models.IntegerField(default=0)
+    start_date = models.DateTimeField(null=True)
+    end_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.census_tract.name10
