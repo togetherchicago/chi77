@@ -1,0 +1,12 @@
+.navbar{
+  margin:0;
+  padding:0;
+  top:0;
+  position:absolute;
+  z-index: 1;
+  min-width: 100%;
+  overflow: hidden;
+}
+.nav-link, .navbar-brand{
+  color: #fff;
+}
