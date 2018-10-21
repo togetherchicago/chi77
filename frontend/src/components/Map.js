@@ -10,43 +10,42 @@ import {
     Rectangle,
     TileLayer,
     GeoJSON
-} from 'react-leaflet';     
-import axios from 'axios'; 
+} from 'react-leaflet';
+import axios from 'axios';
+import tractFile from '../data/censustracts.geojson';
+import neighborhoodFile from '../data/neighborhoods.geojson';
+import precinctFile from '../data/precincts.geojson';
+import wardFile from '../data/wards.geojson';
+import zipFile from '../data/zipcodes.geojson';
 
-import tractFile from '../data/censustracts.geojson'; 
-import neighborhoodFile from '../data/neighborhoods.geojson'; 
-import precinctFile from '../data/precincts.geojson'; 
-import wardFile from '../data/wards.geojson'; 
-import zipFile from '../data/zipcodes.geojson'; 
-
-import Population from './Population'; 
+import Population from './Population';
 
 const { BaseLayer, Overlay } = LayersControl
-  
+
 class LMap extends Component {
-    
+
     constructor(props){
-        super(props); 
+        super(props);
         this.state = {
             population: []
         }
-        this.getStyle = this.getStyle.bind(this); 
-        this.onEachFeature = this.onEachFeature.bind(this); 
+        this.getStyle = this.getStyle.bind(this);
+        this.onEachFeature = this.onEachFeature.bind(this);
     }
 
     onEachFeature(feature, layer){
-        var self = this; 
+        var self = this;
         for (var i = 0; i < this.state.population.length; i++){
             if (self.state.population[i]['census_tract'] == feature.properties.name10){
-                layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' + 
+                layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
                     'Population: ' + self.state.population[i]['pop_100'])
             }
         }
-        
+
     }
 
     getStyle(feature, layer){
-        var self = this; 
+        var self = this;
         for (var i = 0; i < self.state.population.length; i++){
             if (self.state.population[i]['census_tract'] == feature.properties.name10){
                 var pop = self.state.population[i]['pop_100']
@@ -117,9 +116,10 @@ class LMap extends Component {
 
                 <TileLayer
                 attribution=""
-                url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png"
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <LayersControl position="topright">
+
+                <LayersControl className="geoareas" position="topright">
 
                     {/* Base Layers */}
                     <BaseLayer checked name="Tracts">
@@ -155,9 +155,9 @@ class LMap extends Component {
                     <BaseLayer name="Population">
                         {/* <Population /> */}
                         <FeatureGroup>
-                            <GeoJSON 
-                                key={Math.random()} 
-                                data={this.state.tracts} 
+                            <GeoJSON
+                                key={Math.random()}
+                                data={this.state.tracts}
                                 style={this.getStyle}
                                 onEachFeature = {this.onEachFeature}/>
                         </FeatureGroup>
@@ -173,8 +173,8 @@ class LMap extends Component {
                 </LayersControl>
 
             </Map>
-        )    
+        )
     }
 }
 
-export default LMap; 
+export default LMap;
