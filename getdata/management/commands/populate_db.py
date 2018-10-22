@@ -70,4 +70,4 @@ class Command(BaseCommand):
         print("Done reading population data!")
 
     def handle(self, *args, **options):
-        self._put_population()
+            self._put_population()
