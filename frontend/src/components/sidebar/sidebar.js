@@ -26,63 +26,31 @@ class SideBar extends Component{
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
-  });
+    });
+  }
+
+  render() {
+    return (
+      <div className="sidebar">
+        <div className="item-container">
+            <UncontrolledDropdown className="items">
+              <DropdownToggle caret>
+                Dropdown
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem header>Domains</DropdownItem>
+                <DropdownItem onClick={() => this.props.domainSelect("CensusTract")}>Census Tract</DropdownItem>
+                <DropdownItem>Neighborhood</DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem>Another Action</DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </div>
+      </div>
+    );
+  };
 }
-render() {
-  return (
-    <div className="sidebar">
-      <div className="item-container">
-          <UncontrolledDropdown className="items">
-            <DropdownToggle caret>
-              Dropdown
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem header>Header</DropdownItem>
-              <DropdownItem disabled>Action</DropdownItem>
-              <DropdownItem>Another Action</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>Another Action</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown className="items">
-            <DropdownToggle caret>
-              Dropdown
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem header>Header</DropdownItem>
-              <DropdownItem disabled>Action</DropdownItem>
-              <DropdownItem>Another Action</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>Another Action</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown className="items">
-            <DropdownToggle caret>
-              Dropdown
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem header>Header</DropdownItem>
-              <DropdownItem disabled>Action</DropdownItem>
-              <DropdownItem>Another Action</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>Another Action</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-          <UncontrolledDropdown className="items">
-            <DropdownToggle caret>
-              Dropdown
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem header>Header</DropdownItem>
-              <DropdownItem disabled>Action</DropdownItem>
-              <DropdownItem>Another Action</DropdownItem>
-              <DropdownItem divider />
-              <DropdownItem>Another Action</DropdownItem>
-            </DropdownMenu>
-          </UncontrolledDropdown>
-        </div>
-    </div>
-  );
-};
+SideBar.propTypes = {
+  domainSelect: PropTypes.func.isRequired,
 }
 export default SideBar;

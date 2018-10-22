@@ -6,12 +6,15 @@ import LMap from './components/Map';
 import SideBar from './components/sidebar/sidebar';
 import NavBar from './components/navbar/navbar';
 
+
 class App extends Component {
   render() {
     return (
       <div className="App">
         <NavBar />
-        <SideBar />
+        <SideBar 
+        domainSelect={(domain) => store.dispatch({ type: domain })}
+        />
         <div id="mapwrap"><LMap /></div>
       </div>
     );

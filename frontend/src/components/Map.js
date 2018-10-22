@@ -104,7 +104,7 @@ class LMap extends Component {
         })
 
         axios.get('http://localhost:5000/api/population').then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.setState({population: res.data})
         })
     }
