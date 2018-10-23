@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import './sidebar.css';
 import{Provider, Subscribe, Container} from 'unstated'; 
-import Counter from './CounterContainer'
+import Layer from '../LayerContainer'
 
 
 class SideBar extends Component{
@@ -46,12 +46,10 @@ class SideBar extends Component{
                 <DropdownItem divider />
                 <DropdownItem>Another Action</DropdownItem>
               </DropdownMenu>
-              <Subscribe to={[Counter]}>
-                {counter => (
+              <Subscribe to={[Layer]}>
+                {layer => (
                   <div>
-                    <button onClick={() => counter.decrement()}>-</button>
-                    <span>{counter.state.count}</span>
-                    <button onClick={() => counter.increment()}>+</button>
+                    <span>{layer.state.layer}</span>
                   </div>
                 )}
               </Subscribe>

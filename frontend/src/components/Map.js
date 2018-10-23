@@ -19,8 +19,11 @@ import wardFile from '../data/wards.geojson';
 import zipFile from '../data/zipcodes.geojson';
 
 import Population from './Population';
+import { Subscribe } from 'unstated';
+import Layer from './LayerContainer';
 
 const { BaseLayer, Overlay } = LayersControl
+
 
 class LMap extends Component {
 
@@ -32,6 +35,7 @@ class LMap extends Component {
         this.getStyle = this.getStyle.bind(this);
         this.onEachFeature = this.onEachFeature.bind(this);
     }
+
 
     onEachFeature(feature, layer){
         var self = this;
@@ -109,70 +113,75 @@ class LMap extends Component {
         })
     }
 
-    render(){
+    render(){ 
         const center = [41.8781, -87.69];
         return (
-            <Map center={center} zoom={11} minZoom={9}>
+            <Subscribe to={[Layer]}>
+            {layer => (
+                
+                <Map onbaselayerchange={(e) => layer.setLayer(e)} center={center} zoom={11} minZoom={9}>
 
-                <TileLayer
-                attribution=""
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                    <TileLayer
+                    attribution=""
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
 
-                <LayersControl className="geoareas" position="topright">
+                    <LayersControl className="geoareas" position="topright">
 
-                    {/* Base Layers */}
-                    <BaseLayer checked name="Tracts">
-                        <FeatureGroup>
-                            <GeoJSON ref='tracts' key={Math.random()} data={this.state.tracts} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        {/* Base Layers */}
+                        <BaseLayer  checked name="Tracts">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.tracts} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Neighborhoods">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.neighborhoods} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Neighborhoods">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.neighborhoods} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Precincts">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.precincts} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Precincts">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.precincts} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Wards">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.wards} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Wards">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.wards} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Zip Codes">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.zipcodes} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Zip Codes">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.zipcodes} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Population">
-                        {/* <Population /> */}
-                        <FeatureGroup>
-                            <GeoJSON
-                                key={Math.random()}
-                                data={this.state.tracts}
-                                style={this.getStyle}
-                                onEachFeature = {this.onEachFeature}/>
-                        </FeatureGroup>
-                    </BaseLayer>
-                    {/* End Base Layers */}
+                        <BaseLayer name="Population">
+                            {/* <Population /> */}
+                            <FeatureGroup>
+                                <GeoJSON
+                                    key={Math.random()}
+                                    data={this.state.tracts}
+                                    style={this.getStyle}
+                                    onEachFeature = {this.onEachFeature}/>
+                            </FeatureGroup>
+                        </BaseLayer>
+                        {/* End Base Layers */}
 
-                    {/* Overlays */}
-                    {/* <Overlay name="Population">
-                        <Population />
-                    </Overlay> */}
-                    {/* End Overlays */}
+                        {/* Overlays */}
+                        {/* <Overlay name="Population">
+                            <Population />
+                        </Overlay> */}
+                        {/* End Overlays */}
 
-                </LayersControl>
+                    </LayersControl>
 
-            </Map>
+                </Map>
+            )}
+            </Subscribe>
         )
     }
 }
