@@ -12,6 +12,8 @@ import {
   DropdownItem
 } from "reactstrap";
 import './sidebar.css';
+import{Provider, Subscribe, Container} from 'unstated'; 
+import Counter from './CounterContainer'
 
 
 class SideBar extends Component{
@@ -44,6 +46,15 @@ class SideBar extends Component{
                 <DropdownItem divider />
                 <DropdownItem>Another Action</DropdownItem>
               </DropdownMenu>
+              <Subscribe to={[Counter]}>
+                {counter => (
+                  <div>
+                    <button onClick={() => counter.decrement()}>-</button>
+                    <span>{counter.state.count}</span>
+                    <button onClick={() => counter.increment()}>+</button>
+                  </div>
+                )}
+              </Subscribe>
             </UncontrolledDropdown>
           </div>
       </div>
@@ -51,6 +62,6 @@ class SideBar extends Component{
   };
 }
 SideBar.propTypes = {
-  domainSelect: PropTypes.func.isRequired,
+  // domainSelect: PropTypes.func.isRequired,
 }
 export default SideBar;
