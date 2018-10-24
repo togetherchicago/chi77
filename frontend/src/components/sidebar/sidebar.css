@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+  font-size: 90%;
+}
+.sidebar{
+  background-color: #E6E6E6;
+  position: absolute;
+  top:8%;
+  left:2%;
+  min-width: 200px;
+  width: 300px;
+  height: 90vh;
+  border-radius: 2px;
+  z-index: 1;
+  transition: .5s left;
+  box-sizing: border-box;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.item-container{
+  padding: 20px;
+  width: 100%;
+}
+.items {
+  margin: 10px auto;
+  text-align: center;
+}

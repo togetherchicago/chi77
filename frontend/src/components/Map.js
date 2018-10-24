@@ -10,43 +10,46 @@ import {
     Rectangle,
     TileLayer,
     GeoJSON
-} from 'react-leaflet';     
-import axios from 'axios'; 
+} from 'react-leaflet';
+import axios from 'axios';
+import tractFile from '../data/censustracts.geojson';
+import neighborhoodFile from '../data/neighborhoods.geojson';
+import precinctFile from '../data/precincts.geojson';
+import wardFile from '../data/wards.geojson';
+import zipFile from '../data/zipcodes.geojson';
 
-import tractFile from '../data/censustracts.geojson'; 
-import neighborhoodFile from '../data/neighborhoods.geojson'; 
-import precinctFile from '../data/precincts.geojson'; 
-import wardFile from '../data/wards.geojson'; 
-import zipFile from '../data/zipcodes.geojson'; 
-
-import Population from './Population'; 
+import Population from './Population';
+import { Subscribe } from 'unstated';
+import Layer from './LayerContainer';
 
 const { BaseLayer, Overlay } = LayersControl
-  
+
+
 class LMap extends Component {
-    
+
     constructor(props){
-        super(props); 
+        super(props);
         this.state = {
             population: []
         }
-        this.getStyle = this.getStyle.bind(this); 
-        this.onEachFeature = this.onEachFeature.bind(this); 
+        this.getStyle = this.getStyle.bind(this);
+        this.onEachFeature = this.onEachFeature.bind(this);
     }
 
+
     onEachFeature(feature, layer){
-        var self = this; 
+        var self = this;
         for (var i = 0; i < this.state.population.length; i++){
             if (self.state.population[i]['census_tract'] == feature.properties.name10){
-                layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' + 
+                layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
                     'Population: ' + self.state.population[i]['pop_100'])
             }
         }
-        
+
     }
 
     getStyle(feature, layer){
-        var self = this; 
+        var self = this;
         for (var i = 0; i < self.state.population.length; i++){
             if (self.state.population[i]['census_tract'] == feature.properties.name10){
                 var pop = self.state.population[i]['pop_100']
@@ -105,76 +108,82 @@ class LMap extends Component {
         })
 
         axios.get('http://localhost:5000/api/population').then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             this.setState({population: res.data})
         })
     }
 
-    render(){
+    render(){ 
         const center = [41.8781, -87.69];
         return (
-            <Map center={center} zoom={11} minZoom={9}>
+            <Subscribe to={[Layer]}>
+            {layer => (
+                
+                <Map onbaselayerchange={(e) => layer.setLayer(e)} center={center} zoom={11} minZoom={9}>
 
-                <TileLayer
-                attribution=""
-                url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}{r}.png"
-                />
-                <LayersControl position="topright">
+                    <TileLayer
+                    attribution=""
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
 
-                    {/* Base Layers */}
-                    <BaseLayer checked name="Tracts">
-                        <FeatureGroup>
-                            <GeoJSON ref='tracts' key={Math.random()} data={this.state.tracts} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                    <LayersControl className="geoareas" position="topright">
 
-                    <BaseLayer name="Neighborhoods">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.neighborhoods} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        {/* Base Layers */}
+                        <BaseLayer  checked name="Tracts">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.tracts} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Precincts">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.precincts} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Neighborhoods">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.neighborhoods} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Wards">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.wards} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Precincts">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.precincts} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Zip Codes">
-                        <FeatureGroup>
-                            <GeoJSON key={Math.random()} data={this.state.zipcodes} />
-                        </FeatureGroup>
-                    </BaseLayer>
+                        <BaseLayer name="Wards">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.wards} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    <BaseLayer name="Population">
-                        {/* <Population /> */}
-                        <FeatureGroup>
-                            <GeoJSON 
-                                key={Math.random()} 
-                                data={this.state.tracts} 
-                                style={this.getStyle}
-                                onEachFeature = {this.onEachFeature}/>
-                        </FeatureGroup>
-                    </BaseLayer>
-                    {/* End Base Layers */}
+                        <BaseLayer name="Zip Codes">
+                            <FeatureGroup>
+                                <GeoJSON key={Math.random()} data={this.state.zipcodes} />
+                            </FeatureGroup>
+                        </BaseLayer>
 
-                    {/* Overlays */}
-                    {/* <Overlay name="Population">
-                        <Population />
-                    </Overlay> */}
-                    {/* End Overlays */}
+                        <BaseLayer name="Population">
+                            {/* <Population /> */}
+                            <FeatureGroup>
+                                <GeoJSON
+                                    key={Math.random()}
+                                    data={this.state.tracts}
+                                    style={this.getStyle}
+                                    onEachFeature = {this.onEachFeature}/>
+                            </FeatureGroup>
+                        </BaseLayer>
+                        {/* End Base Layers */}
 
-                </LayersControl>
+                        {/* Overlays */}
+                        {/* <Overlay name="Population">
+                            <Population />
+                        </Overlay> */}
+                        {/* End Overlays */}
 
-            </Map>
-        )    
+                    </LayersControl>
+
+                </Map>
+            )}
+            </Subscribe>
+        )
     }
 }
 
-export default LMap; 
+export default LMap;
