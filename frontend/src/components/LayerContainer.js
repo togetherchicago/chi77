@@ -1,16 +1,28 @@
 import { Container } from 'unstated'
+import axios from 'axios';
+import tractFile from '../data/censustracts.geojson';
 
 class Layer extends Container {
   constructor () {
     super()
     this.state = {
-      layer: ''
+      layer: 'tract' //[tracts, neighborhood, precint, ward, zip]
     }
-    this.setLayer = this.setLayer.bind(this)
+    this.setLayer = this.setLayer.bind(this);
+    
   }
+
   setLayer (newLayer) {
-    this.setState({ layer: newLayer.name  })
-    console.log(this.state);
+    let domain = newLayer
+    this.setState({ layer: domain  })
+    .then(() => {
+      console.log("domain", domain)
+      console.log("this.state:", this.state);
+    })
+    
+  }
+  getLayer() {
+    return this.state;
   }
 }
 

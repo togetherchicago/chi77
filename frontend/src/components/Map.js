@@ -11,7 +11,9 @@ import {
     TileLayer,
     GeoJSON
 } from 'react-leaflet';
+
 import axios from 'axios';
+
 import tractFile from '../data/censustracts.geojson';
 import neighborhoodFile from '../data/neighborhoods.geojson';
 import precinctFile from '../data/precincts.geojson';
@@ -19,10 +21,9 @@ import wardFile from '../data/wards.geojson';
 import zipFile from '../data/zipcodes.geojson';
 
 import Population from './Population';
+
 import { Subscribe } from 'unstated';
 import Layer from './LayerContainer';
-
-const { BaseLayer, Overlay } = LayersControl
 
 
 class LMap extends Component {
@@ -91,93 +92,66 @@ class LMap extends Component {
     }
 
     componentDidMount(){
-        axios.get(tractFile).then(res => {
-            this.setState({tracts: res.data})
-        })
-        axios.get(neighborhoodFile).then(res => {
-            this.setState({neighborhoods: res.data})
-        })
-        axios.get(precinctFile).then(res => {
-            this.setState({precincts: res.data})
-        })
-        axios.get(wardFile).then(res => {
-            this.setState({wards: res.data})
-        })
-        axios.get(zipFile).then(res => {
-            this.setState({zipcodes: res.data})
-        })
 
-        axios.get('http://localhost:5000/api/population').then(res => {
-            // console.log(res.data)
-            this.setState({population: res.data})
-        })
+        const temp = new Layer();
+
+        console.log("layer", temp.state.layer)
+
+        if (temp.state.layer === "tract") {
+            axios.get(tractFile).then(res => {
+                this.setState({domain: res.data})
+            })
+        }
+        
+        else if (temp.state.layer === "neighborhood") {
+            axios.get(neighborhoodFile).then(res => {
+                this.setState({domain: res.data})
+            })
+        }
+        else if (temp.state.layer === "precinct") {
+            axios.get(precinctFile).then(res => {
+                this.setState({domain: res.data})
+            })
+        }
+        else if (temp.state.layer === "ward") {
+            axios.get(wardFile).then(res => {
+                this.setState({domain: res.data})
+            })
+        }
+        else if (temp.state.layer === "zip") {
+            axios.get(zipFile).then(res => {
+                this.setState({domain: res.data})
+            })
+        }
+        else {
+            console.log("Heck")
+        }
+
+        
+        
+
+        // axios.get('http://localhost:5000/api/population').then(res => {
+        //     // console.log(res.data)
+        //     this.setState({population: res.data})
+        // })
     }
 
     render(){ 
         const center = [41.8781, -87.69];
+
         return (
             <Subscribe to={[Layer]}>
             {layer => (
+
                 
                 <Map onbaselayerchange={(e) => layer.setLayer(e)} center={center} zoom={11} minZoom={9}>
-
                     <TileLayer
                     attribution=""
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
-
-                    <LayersControl className="geoareas" position="topright">
-
-                        {/* Base Layers */}
-                        <BaseLayer  checked name="Tracts">
-                            <FeatureGroup>
-                                <GeoJSON key={Math.random()} data={this.state.tracts} />
-                            </FeatureGroup>
-                        </BaseLayer>
-
-                        <BaseLayer name="Neighborhoods">
-                            <FeatureGroup>
-                                <GeoJSON key={Math.random()} data={this.state.neighborhoods} />
-                            </FeatureGroup>
-                        </BaseLayer>
-
-                        <BaseLayer name="Precincts">
-                            <FeatureGroup>
-                                <GeoJSON key={Math.random()} data={this.state.precincts} />
-                            </FeatureGroup>
-                        </BaseLayer>
-
-                        <BaseLayer name="Wards">
-                            <FeatureGroup>
-                                <GeoJSON key={Math.random()} data={this.state.wards} />
-                            </FeatureGroup>
-                        </BaseLayer>
-
-                        <BaseLayer name="Zip Codes">
-                            <FeatureGroup>
-                                <GeoJSON key={Math.random()} data={this.state.zipcodes} />
-                            </FeatureGroup>
-                        </BaseLayer>
-
-                        <BaseLayer name="Population">
-                            {/* <Population /> */}
-                            <FeatureGroup>
-                                <GeoJSON
-                                    key={Math.random()}
-                                    data={this.state.tracts}
-                                    style={this.getStyle}
-                                    onEachFeature = {this.onEachFeature}/>
-                            </FeatureGroup>
-                        </BaseLayer>
-                        {/* End Base Layers */}
-
-                        {/* Overlays */}
-                        {/* <Overlay name="Population">
-                            <Population />
-                        </Overlay> */}
-                        {/* End Overlays */}
-
-                    </LayersControl>
+                    <FeatureGroup>
+                        <GeoJSON key={Math.random()} data={this.state.domain} />
+                    </FeatureGroup>
 
                 </Map>
             )}

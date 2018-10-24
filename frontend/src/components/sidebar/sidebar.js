@@ -31,28 +31,37 @@ class SideBar extends Component{
     });
   }
 
+  onClick(e) {
+    console.log(e)
+
+    let layer = new Layer();
+
+    layer.setLayer(e);
+
+  }
+
   render() {
+
+
+    let layer = new Layer();
+
+    let cur_layer = layer.state.layer
+
     return (
       <div className="sidebar">
         <div className="item-container">
             <UncontrolledDropdown className="items">
               <DropdownToggle caret>
-                Dropdown
+                {cur_layer}
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>Domains</DropdownItem>
-                <DropdownItem onClick={() => this.props.domainSelect("CensusTract")}>Census Tract</DropdownItem>
-                <DropdownItem>Neighborhood</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Another Action</DropdownItem>
+                <DropdownItem name="tract" onClick={e => this.onClick(e.target.name)}>Census Tract</DropdownItem>
+                <DropdownItem name="neighborhood"onClick={e => this.onClick(e.target.name)}>Neighborhood</DropdownItem>
+                <DropdownItem name="precinct"onClick={e => this.onClick(e.target.name)}>Precinct</DropdownItem>
+                <DropdownItem name="ward"onClick={e => this.onClick(e.target.name)}>Ward</DropdownItem>
+                <DropdownItem name="zip"onClick={e => this.onClick(e.target.name)}>Zip</DropdownItem>
               </DropdownMenu>
-              <Subscribe to={[Layer]}>
-                {layer => (
-                  <div>
-                    <span>{layer.state.layer}</span>
-                  </div>
-                )}
-              </Subscribe>
             </UncontrolledDropdown>
           </div>
       </div>
