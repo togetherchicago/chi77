@@ -1,0 +1,30 @@
+from django.db import models
+from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+
+# Create your models here.
+
+class Dataset(models.Model):
+    name = models.CharField(max_length=64, primary_key=True)
+    friendlyName = models.CharField(max_length=64)
+    startDate = models.DateField(null=True)
+    endDate = models.DateField(null=True)
+    domain = models.ForeignKey({{ dataset.domain }}, on_delete=models.CASCADE)
+    transform = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.friendlyName
+{% for dataset in datasets %}
+{% for indicator in dataset.indicators %}
+class {{ indicator }}(models.Model):
+    name = models.CharField(max_lnegth=64, primary_key=True)
+    friendlyName = models.CharField(max_length=64)
+    units = models.CharField(max_length=64)
+    description = models.CharField(max_length=256)
+    statistic = models.IntegerField(default=-1)
+    startDate = models.DateField(null=True)
+    endDate = models.DateField(null=True)
+    domain = models.ForeignKey({{ dataset.domain }}, on_delete=models.CASCADE)
+    dataset = models.ForeignKey({{ dataset.name }}, on_delete=models.CASCADE)
+
+{% endfor %}
+{% endfor %}

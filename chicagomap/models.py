@@ -4,7 +4,7 @@ from django.contrib.gis.db import models
 
 class Tract(models.Model):
     statefp10 = models.CharField(max_length=64)
-    name10 = models.CharField(max_length=64)
+    name10 = models.CharField(max_length=64, primary_key=True)
     commarea_n = models.CharField(max_length=64)
     namelsad10 = models.CharField(max_length=64)
     commarea = models.CharField(max_length=64)
@@ -12,10 +12,12 @@ class Tract(models.Model):
     notes = models.CharField(max_length=64)
     tractce10 = models.CharField(max_length=64)
     countyfp10 = models.CharField(max_length=64)
-    precincts = models.ManyToManyField('Precinct', through='TractToPrecinct')
-    wards = models.ManyToManyField('Ward', through='WardToTract')
-    zips = models.ManyToManyField('Zip', through='ZipToTract')
-    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToTract')
+    precincts = models.ManyToManyField('Precinct', through='TractToPrecinct',
+                                       through_fields=('tract', 'precinct'))
+    wards = models.ManyToManyField('Ward', through='WardToTract', through_fields=('tract', 'ward'))
+    zips = models.ManyToManyField('Zip', through='ZipToTract', through_fields=('tract', 'zip'))
+    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToTract',
+                                           through_fields=('tract', 'neighborhood'))
     geom = models.MultiPolygonField()
 
     def __str__(self):
@@ -47,9 +49,10 @@ class Precinct(models.Model):
     ward = models.CharField(max_length=64)
     full_text = models.CharField(max_length=64)
     shape_len = models.CharField(max_length=64)
-    tracts = models.ManyToManyField('Tract', through='TractToPrecinct')
-    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToPrecinct')
-    zips = models.ManyToManyField('Zip', through='ZipToPrecinct')
+    tracts = models.ManyToManyField('Tract', through='TractToPrecinct', through_fields=('precinct', 'tract'))
+    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToPrecinct',
+                                           through_fields=('precinct', 'neighborhood'))
+    zips = models.ManyToManyField('Zip', through='ZipToPrecinct', through_fields=('precinct', 'zip'))
     geom = models.MultiPolygonField()
 
     def __str__(self):
@@ -73,12 +76,13 @@ precinct_mapping = {
 class Zip(models.Model):
     objectid = models.CharField(max_length=64)
     shape_len = models.CharField(max_length=64)
-    zip = models.CharField(max_length=64)
+    zip = models.CharField(max_length=64, primary_key=True)
     shape_area = models.CharField(max_length=64)
-    tracts = models.ManyToManyField(Tract, through='ZipToTract')
-    precincts = models.ManyToManyField(Precinct, through='ZipToPrecinct')
-    wards = models.ManyToManyField('Ward', through='ZipToWard')
-    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToZip')
+    tracts = models.ManyToManyField(Tract, through='ZipToTract', through_fields=('zip', 'tract'))
+    precincts = models.ManyToManyField(Precinct, through='ZipToPrecinct', through_fields=('zip', 'precinct'))
+    wards = models.ManyToManyField('Ward', through='ZipToWard', through_fields=('zip', 'ward'))
+    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToZip',
+                                           through_fields=('zip', 'neighborhood'))
     geom = models.MultiPolygonField()
 
     def __str__(self):
@@ -100,12 +104,13 @@ zip_mapping = {
 
 
 class Ward(models.Model):
-    ward = models.CharField(max_length=64)
+    ward = models.CharField(max_length=64, primary_key=True)
     shape_area = models.CharField(max_length=64)
     shape_leng = models.CharField(max_length=64)
-    tracts = models.ManyToManyField(Tract, through='WardToTract')
-    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToWard')
-    zips = models.ManyToManyField(Zip, through='ZipToWard')
+    tracts = models.ManyToManyField(Tract, through='WardToTract', through_fields=('ward', 'tract'))
+    neighborhoods = models.ManyToManyField('Neighborhood', through='NeighborhoodToWard',
+                                           through_fields=('ward', 'neighborhood'))
+    zips = models.ManyToManyField(Zip, through='ZipToWard', through_fields=('ward', 'zip'))
     geom = models.MultiPolygonField()
 
     def __str__(self):
@@ -129,10 +134,11 @@ class Neighborhood(models.Model):
     pri_neigh = models.CharField(max_length=64)
     sec_neigh = models.CharField(max_length=64)
     shape_len = models.CharField(max_length=64)
-    tracts = models.ManyToManyField(Tract, through='NeighborhoodToTract')
-    precincts = models.ManyToManyField(Precinct, through='NeighborhoodToPrecinct')
-    wards = models.ManyToManyField(Ward, through='NeighborhoodToWard')
-    zips = models.ManyToManyField(Zip, through='NeighborhoodToZip')
+    tracts = models.ManyToManyField(Tract, through='NeighborhoodToTract', through_fields=('neighborhood', 'tract'))
+    precincts = models.ManyToManyField(Precinct, through='NeighborhoodToPrecinct',
+                                       through_fields=('neighborhood', 'precinct'))
+    wards = models.ManyToManyField(Ward, through='NeighborhoodToWard', through_fields=('neighborhood', 'ward'))
+    zips = models.ManyToManyField(Zip, through='NeighborhoodToZip', through_fields=('neighborhood', 'zip'))
     geom = models.MultiPolygonField()
 
     def __str__(self):
@@ -156,51 +162,59 @@ class NeighborhoodToTract(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
-
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 class NeighborhoodToPrecinct(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class NeighborhoodToWard(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class NeighborhoodToZip(models.Model):
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.SET_NULL, null=True)
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class ZipToTract(models.Model):
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class ZipToWard(models.Model):
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class ZipToPrecinct(models.Model):
     zip = models.ForeignKey(Zip, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class WardToTract(models.Model):
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True)
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
 class TractToPrecinct(models.Model):
     tract = models.ForeignKey(Tract, on_delete=models.SET_NULL, null=True)
     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
     geom = models.MultiPolygonField()
+    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
