@@ -21,8 +21,10 @@ class SideBar extends Component{
     super(props);
 
     this.toggle = this.toggle.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      domain: 'tract'
     };
   }
   toggle() {
@@ -32,13 +34,16 @@ class SideBar extends Component{
   }
 
   onClick(e) {
-    console.log(e)
-
+    console.log("sidebar onClick", e)
     let layer = new Layer();
-
-    layer.setLayer(e);
-
+    layer.setLayer(e)
+    this.setState({domain: e})
+    
   }
+
+  // componentDidMount() {
+  //   console.log("componentDidMount()");
+  // }
 
   render() {
 
@@ -52,7 +57,7 @@ class SideBar extends Component{
         <div className="item-container">
             <UncontrolledDropdown className="items">
               <DropdownToggle caret>
-                {cur_layer}
+                {this.state.domain}
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>Domains</DropdownItem>

@@ -16,8 +16,8 @@ class Layer extends Container {
     let domain = newLayer
     this.setState({ layer: domain  })
     .then(() => {
-      console.log("domain", domain)
-      console.log("this.state:", this.state);
+      console.log("container domain", domain)
+      console.log("container this.state:", this.state);
     })
     
   }

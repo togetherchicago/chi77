@@ -92,7 +92,6 @@ class LMap extends Component {
     }
 
     componentDidMount(){
-
         const temp = new Layer();
 
         console.log("layer", temp.state.layer)
@@ -102,7 +101,6 @@ class LMap extends Component {
                 this.setState({domain: res.data})
             })
         }
-        
         else if (temp.state.layer === "neighborhood") {
             axios.get(neighborhoodFile).then(res => {
                 this.setState({domain: res.data})
