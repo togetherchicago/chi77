@@ -1,5 +1,5 @@
 from django.db import models
-from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+from chicagomap.models import Domain, DomainMeta
 
 # Create your models here.
 
@@ -14,11 +14,13 @@ from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
 #         return self.census_tract.name10
 
 
+# Revised models.py for new schema below
 
-###### Revised models.py for new schema below ####
+
 class Indicator(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
+
 
 class Dataset(models.Model):
     dateIngested = models.DateField(null=True)
@@ -26,10 +28,11 @@ class Dataset(models.Model):
     startDate = models.DateField(null=True)
     endDate = models.DateField(null=True)
 
+
 class Statistic(models.Model):
     value = models.IntegerField
     indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE)
     # TODO: not sure which domain to trace this back to
-    domain = models.ForeignKey('Tract', on_delete=models.CASCADE)
+    domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
     dataset = models.ForeignKey('Dataset', on_delete=models.CASCADE)
     dateIngested = models.DateField(null=True)

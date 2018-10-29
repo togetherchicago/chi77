@@ -220,11 +220,12 @@ from django.contrib.gis.db import models
 #     pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
 
 
-########## Revision completed below ##############
+# Revision completed below
 
 class DomainMeta(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=256)
+
 
 class Domain(models.Model):
     geom = models.MultiPolygonField()

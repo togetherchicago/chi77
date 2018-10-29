@@ -1,7 +1,7 @@
 
 from django.core.management.base import BaseCommand
-from getdata.models import Population
-from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+from getdata.models import Statistic, Indicator
+from chicagomap.models import Domain
 
 import pandas as pd
 from datetime import date
@@ -14,10 +14,11 @@ class Command(BaseCommand):
     def _put_population(self):
 
         # delete existing population table
-        Population.objects.all().delete()
+        Statistic.objects.all().delete()
+        Indicator.objects.all().delete()
 
         # get all Tract objects
-        tracts = Tract.objects.all()
+        tracts = Domain.objects.filter()
 
         # create dataframe
         url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
@@ -44,7 +45,7 @@ class Command(BaseCommand):
                 end_date = date(2010, 12, 31)
 
                 # create object and save
-                new_pop = Population(census_tract=tract, pop_100=pop_100, start_date=start_date, end_date=end_date)
+                new_pop = Statistic(census_tract=tract, pop_100=pop_100, start_date=start_date, end_date=end_date)
                 new_pop.save()
 
         # print(df.head)
