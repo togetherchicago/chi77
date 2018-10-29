@@ -34,42 +34,33 @@ class SideBar extends Component{
   }
 
   onClick(e) {
-    console.log("sidebar onClick", e)
-    let layer = new Layer();
-    layer.setLayer(e)
     this.setState({domain: e})
-    
   }
 
-  // componentDidMount() {
-  //   console.log("componentDidMount()");
-  // }
 
   render() {
-
-
-    let layer = new Layer();
-
-    let cur_layer = layer.state.layer
-
     return (
-      <div className="sidebar">
-        <div className="item-container">
+      <Subscribe to={[Layer]}>
+      {layer => (
+        <div className="sidebar">
+          <div className="item-container">
             <UncontrolledDropdown className="items">
               <DropdownToggle caret>
-                {this.state.domain}
+                {layer.state.layer}
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>Domains</DropdownItem>
-                <DropdownItem name="tract" onClick={e => this.onClick(e.target.name)}>Census Tract</DropdownItem>
-                <DropdownItem name="neighborhood"onClick={e => this.onClick(e.target.name)}>Neighborhood</DropdownItem>
-                <DropdownItem name="precinct"onClick={e => this.onClick(e.target.name)}>Precinct</DropdownItem>
-                <DropdownItem name="ward"onClick={e => this.onClick(e.target.name)}>Ward</DropdownItem>
-                <DropdownItem name="zip"onClick={e => this.onClick(e.target.name)}>Zip</DropdownItem>
+                <DropdownItem name="tract" onClick={e => layer.setLayer(e.target.name)}>Census Tract</DropdownItem>
+                <DropdownItem name="neighborhood"onClick={e => layer.setLayer(e.target.name)}>Neighborhood</DropdownItem>
+                <DropdownItem name="precinct"onClick={e => layer.setLayer(e.target.name)}>Precinct</DropdownItem>
+                <DropdownItem name="ward"onClick={e => layer.setLayer(e.target.name)}>Ward</DropdownItem>
+                <DropdownItem name="zip"onClick={e => layer.setLayer(e.target.name)}>Zip</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
           </div>
-      </div>
+        </div>
+      )}
+      </Subscribe>
     );
   };
 }

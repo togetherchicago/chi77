@@ -94,8 +94,6 @@ class LMap extends Component {
     componentDidMount(){
         const temp = new Layer();
 
-        console.log("layer", temp.state.layer)
-
         if (temp.state.layer === "tract") {
             axios.get(tractFile).then(res => {
                 this.setState({domain: res.data})
@@ -148,7 +146,7 @@ class LMap extends Component {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <FeatureGroup>
-                        <GeoJSON key={Math.random()} data={this.state.domain} />
+                        <GeoJSON key={Math.random()} data={layer.state.domain} />
                     </FeatureGroup>
 
                 </Map>
