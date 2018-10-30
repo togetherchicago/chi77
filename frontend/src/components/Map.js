@@ -33,63 +33,9 @@ class LMap extends Component {
         this.state = {
             population: []
         }
-        this.getStyle = this.getStyle.bind(this);
-        this.onEachFeature = this.onEachFeature.bind(this);
     }
 
 
-    onEachFeature(feature, layer){
-        var self = this;
-        for (var i = 0; i < this.state.population.length; i++){
-            if (self.state.population[i]['census_tract'] == feature.properties.name10){
-                layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
-                    'Population: ' + self.state.population[i]['pop_100'])
-            }
-        }
-
-    }
-
-    getStyle(feature, layer){
-        var self = this;
-        for (var i = 0; i < self.state.population.length; i++){
-            if (self.state.population[i]['census_tract'] == feature.properties.name10){
-                var pop = self.state.population[i]['pop_100']
-                if (pop > 11000){
-                    return {color: '#E50800'}
-                }
-                else if (pop > 10000){
-                    return {color: '#E72008'}
-                }
-                else if (pop > 9000){
-                    return {color: '#E93910'}
-                }
-                else if (pop > 8000){
-                    return {color: '#EB5218'}
-                }
-                else if (pop > 7000){
-                    return {color: '#EE6A20'}
-                }
-                else if (pop > 6000){
-                    return {color: '#F08329'}
-                }
-                else if (pop > 5000){
-                    return {color: '#F29C31'}
-                }
-                else if (pop > 4000){
-                    return {color: '#F5B439'}
-                }
-                else if (pop > 3000){
-                    return {color: '#F7CD41'}
-                }
-                else if (pop > 2000){
-                    return {color: '#F9E649'}
-                }
-                else {
-                    return {color: '#FDFF94'}
-                }
-            }
-        }
-    }
 
     componentDidMount(){
         const temp = new Layer();
@@ -134,6 +80,7 @@ class LMap extends Component {
 
     render(){ 
         const center = [41.8781, -87.69];
+        console.log("Hit")
 
         return (
             <Subscribe to={[Layer]}>
@@ -146,7 +93,11 @@ class LMap extends Component {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <FeatureGroup>
-                        <GeoJSON key={Math.random()} data={layer.state.domain} />
+                        <GeoJSON 
+                        key={Math.random()} 
+                        data={layer.state.domain}
+                        style={layer.getStyle} 
+                        onEachFeature = {layer.onEachFeature}/>
                     </FeatureGroup>
 
                 </Map>

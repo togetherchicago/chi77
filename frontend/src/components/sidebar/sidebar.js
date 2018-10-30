@@ -46,7 +46,7 @@ class SideBar extends Component{
           <div className="item-container">
             <UncontrolledDropdown className="items">
               <DropdownToggle caret>
-                {layer.state.layer}
+                Domain: {layer.state.layer}
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>Domains</DropdownItem>
@@ -57,6 +57,19 @@ class SideBar extends Component{
                 <DropdownItem name="zip"onClick={e => layer.setLayer(e.target.name)}>Zip</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+
+            <UncontrolledDropdown className="filters">
+              <DropdownToggle caret>
+                Filter by: {layer.state.filter}
+              </DropdownToggle>
+              <DropdownMenu>
+                <DropdownItem header>Filters</DropdownItem>
+                <DropdownItem name="nothing" onClick={e => layer.setFilter(e.target.name)}>Nothing</DropdownItem>
+                <DropdownItem name="population"onClick={e => layer.setFilter(e.target.name)}>Population</DropdownItem>
+                
+              </DropdownMenu>
+            </UncontrolledDropdown>
+
           </div>
         </div>
       )}
