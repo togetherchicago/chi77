@@ -15,6 +15,7 @@ import './sidebar.css';
 import{Provider, Subscribe, Container} from 'unstated'; 
 import Layer from '../LayerContainer'
 
+import CustomizedRange from '../slider/slider'
 
 class SideBar extends Component{
   constructor(props) {
@@ -24,7 +25,8 @@ class SideBar extends Component{
     this.onClick = this.onClick.bind(this);
     this.state = {
       isOpen: false,
-      domain: 'tract'
+      domain: 'tract',
+      sliderActive: false
     };
   }
   toggle() {
@@ -37,8 +39,17 @@ class SideBar extends Component{
     this.setState({domain: e})
   }
 
+  renderSlider() {
+    if (this.state.sliderActive) {
+      return <CustomizedRange></CustomizedRange>
+    }
+    else {
+      return <div></div>
+    }
+}
 
   render() {
+
     return (
       <Subscribe to={[Layer]}>
       {layer => (
@@ -64,13 +75,18 @@ class SideBar extends Component{
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>Filters</DropdownItem>
-                <DropdownItem name="nothing" onClick={e => layer.setFilter(e.target.name)}>Nothing</DropdownItem>
-                <DropdownItem name="population"onClick={e => layer.setFilter(e.target.name)}>Population</DropdownItem>
+                <DropdownItem name="nothing" onClick={e => {layer.setFilter(e.target.name); this.setState({sliderActive: false});}}>Nothing</DropdownItem>
+                <DropdownItem name="population"onClick={e => {layer.setFilter(e.target.name); this.setState({sliderActive: true});}}>Population</DropdownItem>
                 
               </DropdownMenu>
-            </UncontrolledDropdown>
+              {this.renderSlider()}
+            
+             </UncontrolledDropdown>
+             
+
 
           </div>
+          
         </div>
       )}
       </Subscribe>

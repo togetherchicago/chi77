@@ -15,7 +15,10 @@ class Layer extends Container {
     this.state = {
       layer: 'tracts', //[tracts, neighborhood, precint, ward, zip]
       filter: 'Nothing',
-      filterData: null
+      filterData: null,
+      upperBound: 17000,
+      lowerBound: 0,
+
     }
     this.setLayer = this.setLayer.bind(this);
     this.selectLayer = this.selectLayer.bind(this);
@@ -28,56 +31,55 @@ class Layer extends Container {
 
 
   getStyle(feature, layer){
+    //   console.log('hit')
+      const MAXPOP = 17000;
     if (this.state.filterData !== null) {
-        for (var i = 0; i < this.state.filterData.length; i++){
-            if (this.state.filterData[i]['census_tract'] == feature.properties.name10){
-                var pop = this.state.filterData[i]['pop_100']
-                if (pop > 11000){
-                    return {color: '#E50800'}
-                }
-                else if (pop > 10000){
-                    return {color: '#E72008'}
-                }
-                else if (pop > 9000){
-                    return {color: '#E93910'}
-                }
-                else if (pop > 8000){
-                    return {color: '#EB5218'}
-                }
-                else if (pop > 7000){
-                    return {color: '#EE6A20'}
-                }
-                else if (pop > 6000){
-                    return {color: '#F08329'}
-                }
-                else if (pop > 5000){
-                    return {color: '#F29C31'}
-                }
-                else if (pop > 4000){
-                    return {color: '#F5B439'}
-                }
-                else if (pop > 3000){
-                    return {color: '#F7CD41'}
-                }
-                else if (pop > 2000){
-                    return {color: '#F9E649'}
-                }
-                else {
-                    return {color: '#FDFF94'}
-                }
-            }
+        const pop = this.state.filterData[feature.properties.name10]
+        
+        if (pop < this.state.lowerBound|| pop > this.state.upperBound) {
+            return {color: '#ffffff'}
+        }
+
+        if (pop > 11000){
+            return {color: '#E50800'}
+        }
+        else if (pop > 10000){
+            return {color: '#E72008'}
+        }
+        else if (pop > 9000){
+            return {color: '#E93910'}
+        }
+        else if (pop > 8000){
+            return {color: '#EB5218'}
+        }
+        else if (pop > 7000){
+            return {color: '#EE6A20'}
+        }
+        else if (pop > 6000){
+            return {color: '#F08329'}
+        }
+        else if (pop > 5000){
+            return {color: '#F29C31'}
+        }
+        else if (pop > 4000){
+            return {color: '#F5B439'}
+        }
+        else if (pop > 3000){
+            return {color: '#F7CD41'}
+        }
+        else if (pop > 2000){
+            return {color: '#F9E649'}
+        }
+        else {
+            return {color: '#FDFF94'}
         }
     }
     
 }
   onEachFeature(feature, layer){
     if (this.state.filterData !== null) {
-        for (var i = 0; i < this.state.filterData.length; i++){
-            if (this.state.filterData[i]['census_tract'] == feature.properties.name10){
-                layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
-                    'Population: ' + this.state.filterData[i]['pop_100'])
-            }
-        }
+        layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
+            'Population: ' + this.state.filterData[feature.properties.name10])
     }
 }
 
@@ -114,7 +116,7 @@ class Layer extends Container {
         return;
     }
     let domain = newLayer
-    this.setState({ layer: domain, filter: "Nothing"  })
+    this.setState({ layer: domain, filter: "Nothing", filterData: null  })
     .then(() => {
       this.selectLayer(domain);
     })
@@ -124,19 +126,30 @@ class Layer extends Container {
       if (this.state.filter === "population") {
           axios.get('http://localhost:5000/api/population').then(res => {
             console.log("selectFilter Data:", res.data)
-            this.setState({filterData: res.data})
+            let tract_pop = {}
+            for (let idx in res.data) {
+                tract_pop[res.data[idx].census_tract] = res.data[idx].pop_100
+                if (res.data[idx].census_tract == "3301") {
+                    console.log("HIT", res.data[idx].pop_100)
+                }
+            }
+            this.setState({filterData: tract_pop})
         })
       }
   }
 
   setFilter(newFilter) {
-      console.log(newFilter)
-      this.setState({filter: newFilter})
+      console.log("newFilter", newFilter)
+      this.setState({filter: newFilter, filterData: null})
       .then(() => {
           this.selectFilter(newFilter)
       })
   }
 
+  rangeFilter(value) {
+    //   console.log(value[0], value[1])
+      this.setState({lowerBound: 17000 * value[0] / 100, upperBound: 17000 * value[1] / 100})
+  }
   getLayer() {
     return this.state;
   }
