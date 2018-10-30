@@ -1,5 +1,5 @@
 from django.db import models
-from chicagomap.models import Domain, DomainMeta
+from chicagomap.models import Domain
 
 # Create your models here.
 

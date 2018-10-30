@@ -1,5 +1,4 @@
 from django.contrib.gis import admin
-from .models import Domain, DomainMeta
+from .models import Domain
 
 admin.site.register(Domain, admin.OSMGeoAdmin)
-admin.site.register(DomainMeta, admin.OSMGeoAdmin)

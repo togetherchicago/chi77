@@ -1,6 +1,7 @@
 # This is an auto-generated Django model module created by ogrinspect.
 from django.contrib.gis.db import models
-
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # class Tract(models.Model):
 #     statefp10 = models.CharField(max_length=64)
@@ -218,16 +219,12 @@ from django.contrib.gis.db import models
 #     precinct = models.ForeignKey(Precinct, on_delete=models.SET_NULL, null=True)
 #     geom = models.MultiPolygonField()
 #     pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
-
-
 # Revision completed below
-
-class DomainMeta(models.Model):
-    name = models.CharField(max_length=64)
-    description = models.CharField(max_length=256)
 
 
 class Domain(models.Model):
     geom = models.MultiPolygonField()
-    meta = models.ForeignKey(DomainMeta, on_delete=models.SET_NULL)
+    domain_name = models.CharField(max_length=64, default='')
     name = models.CharField(max_length=64)
+
+

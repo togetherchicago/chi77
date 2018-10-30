@@ -1,6 +1,18 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from chicagomap.models import Domain, DomainMeta
+from chicagomap.models import Domain
+
+
+class CustomLayer(LayerMapping):
+    def __init__(self, *args, **kwargs):
+        self.custom = kwargs.pop('custom', {})
+        super(CustomLayer, self).__init__(*args, **kwargs)
+
+    def feature_kwargs(self, feature):
+        kwargs = super(CustomLayer, self).feature_kwargs(feature)
+        kwargs.update(self.custom)
+        return kwargs
+
 
 neighborhood_geojson = os.path.abspath(
     os.path.join(os.path.dirname(__file__), 'data', 'neighborhoods.geojson'),
@@ -49,8 +61,17 @@ tract_mapping = {
     'geom': 'MULTIPOLYGON',
 }
 
+domains = ['Census Tract',
+           'Precinct',
+           'ZIP Code',
+           'Ward',
+           'Neighborhood',
+           ]
+
 
 def run(verbose=True):
-    for mapping in [neighborhood_mapping, ward_mapping, zip_mapping, precinct_mapping, tract_mapping]:
-        layermapping = LayerMapping(Domain, mapping.geom, mapping.name, transform=False)
+    for pair in [[neighborhood_mapping, neighborhood_geojson, 'Neighborhood'], [ward_mapping, ward_geojson, 'Ward'],
+                 [zip_mapping, zip_geojson, 'ZIP Code'],
+                 [precinct_mapping, precinct_geojson, 'Precinct'], [tract_mapping, tract_geojson, 'Census Tract']]:
+        layermapping = CustomLayer(model=Domain, data=pair[1], mapping=pair[0], custom={'domain_name': pair[2]}, transform=False)
         layermapping.save(strict=True, verbose=verbose)
