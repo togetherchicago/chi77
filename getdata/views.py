@@ -3,11 +3,13 @@ from rest_framework.decorators import api_view
 import ast
 
 from .serializers import *
+from chicagomap.models import Equivalency, Domain
 from rest_framework import viewsets
 
 from django.http import Http404
 from django.http import JsonResponse
 from django.core.serializers import serialize
+from django.db.models import Q
 
 import json
 import datetime
@@ -51,7 +53,7 @@ def filter_date(dataset, date):
         year, month, day = date.split("-")
         filtered_date = datetime.datetime(int(year), int(month), int(day), 0, 0)
         filtered_list = Statistic.objects.filter(start_date__lte=filtered_date, end_date__gte=filtered_date)
-        serializer = PopulationSerializer(filtered_list, many=True)
+        serializer = StatisticSerializer(filtered_list, many=True)
     return serializer.data
 
 
@@ -63,25 +65,33 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
         index = None
 
         if domain == "neighborhoods":
-            equivalency_table = NeighborhoodToTract.objects.all()
-            domain_table = list(Neighborhood.objects.values('id', 'pri_neigh'))
+            equivalency_table = Equivalency.objects.filter(
+                Q(geom_a__domain_name="Neighborhood") | Q(geom_b__domain_name="Neighborhood"))
+            domain_table = list(Domain.objects.filter(domain_name="Neighborhood").values('name'))
             index = "neighborhood_id"
         elif domain == "zips":
-            equivalency_table = ZipToTract.objects.all()
-            domain_table = list(Zip.objects.values('zip'))
+            equivalency_table = Equivalency.objects.filter(
+                Q(geom_a__domain_name="ZIP Code") | Q(geom_b__domain_name="ZIP Code"))
+            domain_table = list(Domain.objects.filter(domain_name="ZIP Code").values('name'))
             index = "zip_id"
         elif domain == "wards":
-            equivalency_table = WardToTract.objects.all()
-            domain_table = list(Ward.objects.values('ward'))
+            equivalency_table = Equivalency.objects.filter(
+                Q(geom_a__domain_name="Ward") | Q(geom_b__domain_name="Ward"))
+            domain_table = list(Domain.objects.filter(domain_name="Ward").values('name'))
             index = "ward_id"
         elif domain == "precincts":
-            # doesnt work for precincts because A -> B vs B -> A
-            equivalency_table = TractToPrecinct.objects.all()
-            domain_table = list(Precinct.objects.values('id', 'full_text'))
+            equivalency_table = Equivalency.objects.filter(
+                (Q(geom_a__domain_name="Precinct") | Q(geom_b__domain_name="Precinct")))
+            domain_table = list(Domain.objects.filter(domain_name="Precinct").values('name'))
             index = "precinct_id"
+        elif domain == "tracts":
+            equivalency_table = Equivalency.objects.filter(
+                (Q(geom_a__domain_name="Tract") | Q(geom_b__domain_name="Tract")))
+            domain_table = list(Domain.objects.filter(domain_name="Tract").values('name'))
+            index = "tract_id"
 
         for row in equivalency_table:
-            pop_at_tract = Population.objects.filter(census_tract_id=row.tract_id)[0].pop_100
+            pop_at_tract = Statistic.objects.filter(domain_id=row.domain_id)[0].value
 
             if getattr(row, index) in result.keys():
                 result[getattr(row, index)] += pop_at_tract * row.pct
@@ -93,10 +103,10 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
                 neighborhood['pop_100'] = result[neighborhood['id']]
         elif domain == "wards":
             for ward in domain_table:
-                ward['pop_100'] = result[ward['ward']]
+                ward['pop_100'] = result[ward['id']]
         elif domain == "zips":
-            for zip in domain_table:
-                zip['pop_100'] = result[zip['zip']]
+            for zipcode in domain_table:
+                zipcode['pop_100'] = result[zipcode['id']]
         elif domain == "precincts":
             for precinct in domain_table:
                 precinct['pop_100'] = result[precinct['id']]
@@ -109,7 +119,7 @@ def dataset_list(request, dataset):
     if request.method == 'GET':
 
         if dataset == "population":
-            serializer = PopulationSerializer(Population.objects.all(), many=True)
+            serializer = StatisticSerializer(Statistic.objects.all(), many=True)
             return Response(serializer.data)
 
         elif dataset == "domains":
@@ -130,7 +140,7 @@ def dataset_list_domain(request, dataset, domain):
                 return Response(res)
 
             else:
-                serializer = PopulationSerializer(Population.objects.all(), many=True)
+                serializer = StatisticSerializer(Statistic.objects.all(), many=True)
                 return Response(serializer.data)
 
         else:
@@ -183,15 +193,15 @@ def population_list(request):
         post: send body for specific domains e.g. "{neighborhoods": ["Chicago Loop", "Wicker Park"]}
     """
     if request.method == 'GET':
-        serializer = PopulationSerializer(Population.objects.all(), many=True)
+        serializer = StatisticSerializer(Statistic.objects.all(), many=True)
         return Response(serializer.data)
 
 
 @api_view(['GET'])
 def population_list_wards(request):
     if request.method == 'GET':
-        ward_to_tracts = WardToTract.objects.all().order_by('ward_id')
-        populations = Population.objects.all()
+        ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name='Ward', geom_b__domain_name='Census Tract')
+        populations = Statistic.objects.all()
 
         wards = {}
 
@@ -199,13 +209,13 @@ def population_list_wards(request):
 
         for object in ward_to_tracts:
 
-            pop_at_tract = Population.objects.filter(census_tract_id=object.tract_id)[0].pop_100
+            pop_at_tract = Statistic.objects.filter(domain_id=object.tract_id)[0].value
 
-            if object.ward_id in wards.keys():
-                wards[object.ward_id] += pop_at_tract * object.pct
+            if object.geom_a.name in wards.keys():
+                wards[object.geom_a.name] += pop_at_tract * object.pct
                 total += pop_at_tract * object.pct
             else:
-                wards[object.ward_id] = pop_at_tract * object.pct
+                wards[object.geom_a.name] = pop_at_tract * object.pct
                 total += pop_at_tract * object.pct
 
         print(total)
@@ -218,41 +228,46 @@ def population_list_domain(request, domain):
     if request.method == 'GET':
         print("domain:")
         print(domain)
-        print("date:")
-        print(slug)
         return Response(domain)
 
 
 @api_view(['GET'])
 def tract_list(request):
-    queryset = Tract.objects.all()
-    serializer = TractGeoSerializer(queryset, many=True)
+    queryset = Domain.objects.filter(domain_name="Census Tract")
+    serializer = DomainGeoSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET'])
 def zip_list(request):
-    queryset = Zip.objects.all()
-    serializer = ZipGeoSerializer(queryset, many=True)
+    queryset = Domain.objects.filter(domain_name="ZIP Code")
+    serializer = DomainGeoSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET'])
 def neighborhood_list(request):
-    queryset = Neighborhood.objects.all()
-    serializer = NeighborGeoSerializer(queryset, many=True)
+    queryset = Domain.objects.filter(domain_name="Neighborhood")
+    serializer = DomainGeoSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET'])
 def precinct_list(request):
-    queryset = Precinct.objects.all()
-    serializer = PrecinctGeoSerializer(queryset, many=True)
+    queryset = Domain.objects.filter(domain_name="Precinct")
+    serializer = DomainGeoSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
 
 
 @api_view(['GET'])
 def ward_list(request):
-    queryset = Ward.objects.all()
-    serializer = WardGeoSerializer(queryset, many=True)
+    queryset = Domain.objects.filter(domain_name="Ward")
+    serializer = DomainGeoSerializer(queryset, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def domain_list(request):
+    queryset = Domain.objects.all()
+    serializer = DomainGeoSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)

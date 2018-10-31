@@ -34,7 +34,6 @@ urlpatterns = [
     path('api/population/', api.population_list),
     path('api/population/wards/', api.population_list_wards),
     path('api/population/wards/<str:domain>', api.population_list_domain),
-    path('api/population/<str:domain>/<slug:slug>/', api.population_list_date),
 
     path('api/domain/', api.domain_list),
     path('api/domain/tracts/', api.tract_list),
