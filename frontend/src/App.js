@@ -12,9 +12,7 @@ class App extends Component {
     return (
       <div className="App">
         <NavBar />
-        <SideBar 
-        // domainSelect={(domain) => store.dispatch({ type: domain })}
-        />
+        <SideBar />
         <div id="mapwrap"><LMap /></div>
       </div>
     );
