@@ -23,16 +23,16 @@ class Indicator(models.Model):
 
 
 class Dataset(models.Model):
-    dateIngested = models.DateField(null=True)
+    date_ingested = models.DateField(null=True)
     indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE)
-    startDate = models.DateField(null=True)
-    endDate = models.DateField(null=True)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
 
 
 class Statistic(models.Model):
-    value = models.IntegerField
-    indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE)
+    value = models.IntegerField()
+    indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE, null=True)
     # TODO: not sure which domain to trace this back to
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
-    dataset = models.ForeignKey('Dataset', on_delete=models.CASCADE)
-    dateIngested = models.DateField(null=True)
+    dataset = models.ForeignKey('Dataset', on_delete=models.CASCADE, null=True)
+    date_ingested = models.DateField(null=True)
