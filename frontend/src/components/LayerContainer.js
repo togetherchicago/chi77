@@ -13,7 +13,7 @@ class Layer extends Container {
       this.setState({domain: res.data})
     })
     this.state = {
-      layer: 'tracts', //[tracts, neighborhood, precint, ward, zip]
+      layer: 'Census Tract', //[tracts, neighborhood, precint, ward, zip]
       filter: 'Nothing',
       filterData: null,
       upperBound: 17000,
@@ -37,7 +37,7 @@ class Layer extends Container {
         const pop = this.state.filterData[feature.properties.name10]
         
         if (pop < this.state.lowerBound|| pop > this.state.upperBound) {
-            return {color: '#ffffff'}
+            return {color: 'none'}
         }
 
         if (pop > 11000){
@@ -84,27 +84,27 @@ class Layer extends Container {
 }
 
   selectLayer(domain) {
-      if (this.state.layer === "tract") {
+      if (this.state.layer === "Census Tract") {
         axios.get(tractFile).then(res => {
             this.setState({domain: res.data})
         })
       }
-      else if (this.state.layer === "neighborhood") {
+      else if (this.state.layer === "Neighborhood") {
           axios.get(neighborhoodFile).then(res => {
               this.setState({domain: res.data})
           })
       }
-      else if (this.state.layer === "precinct") {
+      else if (this.state.layer === "Precinct") {
           axios.get(precinctFile).then(res => {
               this.setState({domain: res.data})
           })
       }
-      else if (this.state.layer === "ward") {
+      else if (this.state.layer === "Ward") {
           axios.get(wardFile).then(res => {
               this.setState({domain: res.data})
           })
       }
-      else if (this.state.layer === "zip") {
+      else if (this.state.layer === "Zip") {
           axios.get(zipFile).then(res => {
               this.setState({domain: res.data})
           })

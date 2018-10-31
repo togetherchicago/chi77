@@ -61,15 +61,15 @@ class SideBar extends Component{
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem header>Domains</DropdownItem>
-                <DropdownItem name="tract" onClick={e => layer.setLayer(e.target.name)}>Census Tract</DropdownItem>
-                <DropdownItem name="neighborhood"onClick={e => layer.setLayer(e.target.name)}>Neighborhood</DropdownItem>
-                <DropdownItem name="precinct"onClick={e => layer.setLayer(e.target.name)}>Precinct</DropdownItem>
-                <DropdownItem name="ward"onClick={e => layer.setLayer(e.target.name)}>Ward</DropdownItem>
-                <DropdownItem name="zip"onClick={e => layer.setLayer(e.target.name)}>Zip</DropdownItem>
+                <DropdownItem name="Census Tract" onClick={e => layer.setLayer(e.target.name)}>Census Tract</DropdownItem>
+                <DropdownItem name="Neighborhood"onClick={e => layer.setLayer(e.target.name)}>Neighborhood</DropdownItem>
+                <DropdownItem name="Precinct"onClick={e => layer.setLayer(e.target.name)}>Precinct</DropdownItem>
+                <DropdownItem name="Ward"onClick={e => layer.setLayer(e.target.name)}>Ward</DropdownItem>
+                <DropdownItem name="Zip"onClick={e => layer.setLayer(e.target.name)}>Zip</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
 
-            <UncontrolledDropdown className="filters">
+            <UncontrolledDropdown className="items">
               <DropdownToggle caret>
                 Filter by: {layer.state.filter}
               </DropdownToggle>
