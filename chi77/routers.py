@@ -6,3 +6,4 @@ from getdata.views import PopulationViewSet
 
 router = routers.DefaultRouter()
 router.register('population', PopulationViewSet)
+

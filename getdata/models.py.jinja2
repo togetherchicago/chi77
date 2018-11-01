@@ -16,7 +16,11 @@ class Dataset(models.Model):
 {% for dataset in datasets %}
 {% for indicator in dataset.indicators %}
 class {{ indicator }}(models.Model):
+<<<<<<< ours
     name = models.CharField(max_lnegth=64, primary_key=True)
+=======
+    name = models.CharField(max_length=64, primary_key=True)
+>>>>>>> theirs
     friendlyName = models.CharField(max_length=64)
     units = models.CharField(max_length=64)
     description = models.CharField(max_length=256)

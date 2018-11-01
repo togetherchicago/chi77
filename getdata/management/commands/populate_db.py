@@ -1,7 +1,7 @@
 
 from django.core.management.base import BaseCommand
-from getdata.models import Population
-from chicagomap.models import Tract, Precinct, Zip, Ward, Neighborhood
+from getdata.models import Statistic, Indicator
+from chicagomap.models import Domain
 
 import pandas as pd
 from datetime import date
@@ -14,11 +14,13 @@ class Command(BaseCommand):
     def _put_population(self):
 
         # delete existing population table
-        Population.objects.all().delete()
+        Statistic.objects.all().delete()
+        Indicator.objects.all().delete()
 
         # get all Tract objects
-        tracts = Tract.objects.all()
-
+        tracts = Domain.objects.filter(domain_name="Census Tract")
+        pop_indicator = Indicator(name="Population", description="Population by Census Tract")
+        pop_indicator.save()
         # create dataframe
         url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
         df = pd.read_csv(url, usecols=['GEOID', 'NAME', 'POP100'])
@@ -27,24 +29,22 @@ class Command(BaseCommand):
         for tract in tracts:
 
             # pull row with corresponding geoid
-            row = df.loc[df['GEOID'] == float(tract.geoid10)]
+            row = df.loc[df['NAME'] == (tract.domain_name) + ' ' + (tract.name)]
 
             # clean census tract number column
             census_tract = row.iloc[0]['NAME']
             census_tract = ''.join(filter(lambda x: x.isdigit() or x == '.', census_tract))
 
             # sanity check
-            if census_tract == tract.name10:
+            if census_tract == tract.name:
 
                 # pull statistic
                 pop_100 = row.iloc[0]['POP100']
 
                 # currently hard coding start and end dates
-                start_date = date(2010, 1, 1)
-                end_date = date(2010, 12, 31)
-
+                date_ingested = date.today()
                 # create object and save
-                new_pop = Population(census_tract=tract, pop_100=pop_100, start_date=start_date, end_date=end_date)
+                new_pop = Statistic(domain=tract, value=int(pop_100), date_ingested=date_ingested, indicator=pop_indicator)
                 new_pop.save()
 
         # print(df.head)
@@ -70,4 +70,4 @@ class Command(BaseCommand):
         print("Done reading population data!")
 
     def handle(self, *args, **options):
-        self._put_population()
+            self._put_population()
