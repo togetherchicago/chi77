@@ -61,9 +61,7 @@ def filter_date(dataset, date):
 def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
     if dataset == "population":
 
-        result = {}
-        equivalency_table = None
-        index = None
+        statistic_id = Indicator.objects.get(name='Population')
 
         if domain == "neighborhoods":
             return "neighborhoods"
@@ -73,10 +71,7 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
 
         elif domain == "wards":
             wards = {}
-            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
-            
-            statistic_id = Indicator.objects.get(name='Population')
-            population_tracts = Statistic.objects.filter(indicator=statistic_id)
+            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")  
 
             for eq in ward_to_tracts: 
                 pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
@@ -86,14 +81,22 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
                 else: 
                     wards[eq.geom_b.name] = eq.pct * pop_at_tract
 
-            return wards
+            stat_arr = []
+            for ward in wards: 
+                stat_arr.append(
+                    {
+                        "domain": int(ward), 
+                        "value": wards[ward]
+                    }
+                )
+            return stat_arr
 
 
         elif domain == "precincts":
             return "precincts"
 
         elif domain == "tracts":
-            return "tracts"
+            return StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
 
         return "none"
 
