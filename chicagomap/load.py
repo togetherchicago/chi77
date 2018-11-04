@@ -61,15 +61,11 @@ tract_mapping = {
     'geom': 'MULTIPOLYGON',
 }
 
-domains = ['Census Tract',
-           'Precinct',
-           'ZIP Code',
-           'Ward',
-           'Neighborhood',
-           ]
-
 
 def run(verbose=True):
+    if len(Domain.objects.all()) > 0:
+        print("No domain import necessary.")
+        return
     for pair in [[neighborhood_mapping, neighborhood_geojson, 'Neighborhood'], [ward_mapping, ward_geojson, 'Ward'],
                  [zip_mapping, zip_geojson, 'ZIP Code'],
                  [precinct_mapping, precinct_geojson, 'Precinct'], [tract_mapping, tract_geojson, 'Census Tract']]:

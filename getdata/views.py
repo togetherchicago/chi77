@@ -4,6 +4,7 @@ import ast
 
 from .serializers import *
 from chicagomap.models import Equivalency, Domain
+from getdata.models import Indicator, Statistic
 from rest_framework import viewsets
 
 from django.http import Http404
@@ -65,53 +66,36 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
         index = None
 
         if domain == "neighborhoods":
-            equivalency_table = Equivalency.objects.filter(
-                Q(geom_a__domain_name="Neighborhood") | Q(geom_b__domain_name="Neighborhood"))
-            domain_table = list(Domain.objects.filter(domain_name="Neighborhood").values('name'))
-            index = "neighborhood_id"
+            return "neighborhoods"
+
         elif domain == "zips":
-            equivalency_table = Equivalency.objects.filter(
-                Q(geom_a__domain_name="ZIP Code") | Q(geom_b__domain_name="ZIP Code"))
-            domain_table = list(Domain.objects.filter(domain_name="ZIP Code").values('name'))
-            index = "zip_id"
+            return "zips"
+
         elif domain == "wards":
-            equivalency_table = Equivalency.objects.filter(
-                Q(geom_a__domain_name="Ward") | Q(geom_b__domain_name="Ward"))
-            domain_table = list(Domain.objects.filter(domain_name="Ward").values('name'))
-            index = "ward_id"
+            wards = {}
+            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
+            
+            statistic_id = Indicator.objects.get(name='Population')
+            population_tracts = Statistic.objects.filter(indicator=statistic_id)
+
+            for eq in ward_to_tracts: 
+                pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
+
+                if eq.geom_b.name in wards: 
+                    wards[eq.geom_b.name] += eq.pct * pop_at_tract
+                else: 
+                    wards[eq.geom_b.name] = eq.pct * pop_at_tract
+
+            return wards
+
+
         elif domain == "precincts":
-            equivalency_table = Equivalency.objects.filter(
-                (Q(geom_a__domain_name="Precinct") | Q(geom_b__domain_name="Precinct")))
-            domain_table = list(Domain.objects.filter(domain_name="Precinct").values('name'))
-            index = "precinct_id"
+            return "precincts"
+
         elif domain == "tracts":
-            equivalency_table = Equivalency.objects.filter(
-                (Q(geom_a__domain_name="Tract") | Q(geom_b__domain_name="Tract")))
-            domain_table = list(Domain.objects.filter(domain_name="Tract").values('name'))
-            index = "tract_id"
+            return "tracts"
 
-        for row in equivalency_table:
-            pop_at_tract = Statistic.objects.filter(domain_id=row.domain_id)[0].value
-
-            if getattr(row, index) in result.keys():
-                result[getattr(row, index)] += pop_at_tract * row.pct
-            else:
-                result[getattr(row, index)] = pop_at_tract * row.pct
-
-        if domain == "neighborhoods":
-            for neighborhood in domain_table:
-                neighborhood['pop_100'] = result[neighborhood['id']]
-        elif domain == "wards":
-            for ward in domain_table:
-                ward['pop_100'] = result[ward['id']]
-        elif domain == "zips":
-            for zipcode in domain_table:
-                zipcode['pop_100'] = result[zipcode['id']]
-        elif domain == "precincts":
-            for precinct in domain_table:
-                precinct['pop_100'] = result[precinct['id']]
-
-        return domain_table
+        return "none"
 
 
 @api_view(['GET'])
@@ -131,6 +115,7 @@ def dataset_list(request, dataset):
 
 @api_view(['GET'])
 def dataset_list_domain(request, dataset, domain):
+    print('dataset_list_domain')
     if request.method == 'GET':
 
         if dataset == "population":
@@ -149,6 +134,7 @@ def dataset_list_domain(request, dataset, domain):
 
 @api_view(['GET'])
 def dataset_list_date(request, dataset, date):
+    print('dataset_list_date')
     if request.method == 'GET':
 
         if dataset == "population":
@@ -165,6 +151,7 @@ def dataset_list_date(request, dataset, date):
 
 @api_view(['GET'])
 def dataset_list_date_domain(request, dataset, date, domain):
+    print('dataset_list_date_domain')
     if request.method == 'GET':
 
         if dataset == "population":
@@ -188,6 +175,7 @@ def dataset_list_date_domain(request, dataset, date, domain):
 # POST is glorified GET but can send body for specific domains e.g. "{neighborhoods": ["Chicago Loop", "Wicker Park"]}
 @api_view(['GET', 'POST'])
 def population_list(request):
+    print('population_list')
     """
         get: returns entire table (domain: tract)
         post: send body for specific domains e.g. "{neighborhoods": ["Chicago Loop", "Wicker Park"]}
@@ -199,6 +187,7 @@ def population_list(request):
 
 @api_view(['GET'])
 def population_list_wards(request):
+    print('population_list_wards')
     if request.method == 'GET':
         ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name='Ward', geom_b__domain_name='Census Tract')
         populations = Statistic.objects.all()
@@ -225,6 +214,7 @@ def population_list_wards(request):
 
 @api_view(['GET'])
 def population_list_domain(request, domain):
+    print('population_list_domain')
     if request.method == 'GET':
         print("domain:")
         print(domain)
