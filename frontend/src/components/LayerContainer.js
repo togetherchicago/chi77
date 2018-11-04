@@ -128,10 +128,7 @@ class Layer extends Container {
             console.log("selectFilter Data:", res.data)
             let tract_pop = {}
             for (let idx in res.data) {
-                tract_pop[res.data[idx].census_tract] = res.data[idx].pop_100
-                if (res.data[idx].census_tract == "3301") {
-                    console.log("HIT", res.data[idx].pop_100)
-                }
+                tract_pop[res.data[idx].domain] = res.data[idx].value
             }
             this.setState({filterData: tract_pop})
         })
