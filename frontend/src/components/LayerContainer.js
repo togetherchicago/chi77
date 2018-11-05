@@ -5,6 +5,7 @@ import neighborhoodFile from '../data/neighborhoods.geojson';
 import precinctFile from '../data/precincts.geojson';
 import wardFile from '../data/wards.geojson';
 import zipFile from '../data/zipcodes.geojson';
+import _ from 'lodash';
 
 class Layer extends Container {
   constructor () {
@@ -27,6 +28,7 @@ class Layer extends Container {
 
     this.onEachFeature = this.onEachFeature.bind(this);
     this.getStyle = this.getStyle.bind(this);
+    this.rangeFilter = _.debounce(this.rangeFilter, 50);
   }
 
 
