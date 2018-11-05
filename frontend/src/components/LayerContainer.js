@@ -33,43 +33,40 @@ class Layer extends Container {
 
 
   getStyle(feature, layer){
-    //   console.log('hit')
-      const MAXPOP = 17000;
     if (this.state.filterData !== null) {
-        const pop = this.state.filterData[feature.properties.name10]
+        const val = this.state.filterData[feature.properties.name10]
         
-        if (pop < this.state.lowerBound|| pop > this.state.upperBound) {
+        if (val < this.state.lowerBound|| val > this.state.upperBound) {
             return {color: 'none'}
         }
-
-        if (pop > 11000){
+        if (val > this.state.maxval * 1){
             return {color: '#E50800'}
         }
-        else if (pop > 10000){
+        else if (val > this.state.maxval * .9){
             return {color: '#E72008'}
         }
-        else if (pop > 9000){
+        else if (val > this.state.maxval * .8){
             return {color: '#E93910'}
         }
-        else if (pop > 8000){
+        else if (val > this.state.maxval * .7){
             return {color: '#EB5218'}
         }
-        else if (pop > 7000){
+        else if (val > this.state.maxval * .6){
             return {color: '#EE6A20'}
         }
-        else if (pop > 6000){
+        else if (val > this.state.maxval * .5){
             return {color: '#F08329'}
         }
-        else if (pop > 5000){
+        else if (val > this.state.maxval * .4){
             return {color: '#F29C31'}
         }
-        else if (pop > 4000){
+        else if (val > this.state.maxval * .3){
             return {color: '#F5B439'}
         }
-        else if (pop > 3000){
+        else if (val > this.state.maxval * .2){
             return {color: '#F7CD41'}
         }
-        else if (pop > 2000){
+        else if (val > this.state.maxval * .1){
             return {color: '#F9E649'}
         }
         else {
@@ -129,10 +126,16 @@ class Layer extends Container {
           axios.get('http://localhost:5000/api/population').then(res => {
             console.log("selectFilter Data:", res.data)
             let tract_pop = {}
+            let maxval = 0;
             for (let idx in res.data) {
+
+                if (res.data[idx].value > maxval) {
+                    maxval = res.data[idx].value;
+                }
+
                 tract_pop[res.data[idx].domain] = res.data[idx].value
             }
-            this.setState({filterData: tract_pop})
+            this.setState({filterData: tract_pop, maxval: maxval})
         })
       }
   }
