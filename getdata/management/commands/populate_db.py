@@ -47,6 +47,43 @@ class Command(BaseCommand):
                 new_pop = Statistic(domain=tract, value=int(pop_100), date_ingested=date_ingested, indicator=pop_indicator)
                 new_pop.save()
 
+        print("Done reading population data!")
+
+    def _put_income(self):
+        # TODO: not sure if necessary to delete all objects in these tables
+        # delete existing population table
+        # Statistic.objects.all().delete()
+        # Indicator.objects.all().delete()
+
+        # get all Neighborhood objects
+        neighborhoods = Domain.objects.filter(domain_name="Neighborhood")
+        income_indicator = Indicator(name="Per Capita Income", description="Per Capita Income by Neighborhood")
+        income_indicator.save()
+
+        # create dataframe
+        # TODO: not sure if URL is correct
+        url = "https://data.cityofchicago.org/api/views/r6ad-wvtk/rows.csv?accessType=DOWNLOAD"
+        df = pd.read_csv(url, usecols=['COMMUNITY AREA NAME', 'PER CAPITA INCOME'])
+
+        # find relevant neighborhoods in income csv
+        for neighborhood in neighborhoods:
+
+            # pull row with corresponding neighborhood name
+            row = df.loc[df['COMMUNITY AREA NAME'] == neighborhood.name]
+
+            # pull statistic
+            income = row.iloc[0]['PER CAPITA INCOME']
+
+            # currently hard coding start and end dates
+            date_ingested = date.today()
+
+            # create object and save
+            new_income = Statistic(domain=neighborhood, value=int(income), date_ingested=date_ingested, indicator=income_indicator)
+            new_income.save()
+            
+        print("Done reading income per capita data!")
+
+
         # print(df.head)
 
         # # delete everything in the table
@@ -67,7 +104,8 @@ class Command(BaseCommand):
         #         tract.save()
         #         print("Population @ tract ", find_tract[0], " saved.")
 
-        print("Done reading population data!")
+
 
     def handle(self, *args, **options):
             self._put_population()
+            self._put_income()
