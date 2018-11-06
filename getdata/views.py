@@ -55,6 +55,13 @@ def filter_date(dataset, date):
         filtered_date = datetime.datetime(int(year), int(month), int(day), 0, 0)
         filtered_list = Statistic.objects.filter(start_date__lte=filtered_date, end_date__gte=filtered_date)
         serializer = StatisticSerializer(filtered_list, many=True)
+
+    if dataset == "income":
+        year, month, day = date.split("-")
+        filtered_date = datetime.datetime(int(year), int(month), int(day), 0, 0)
+        filtered_list = Statistic.objects.filter(start_date__lte=filtered_date, end_date__gte=filtered_date)
+        serializer = StatisticSerializer(filtered_list, many=True)
+
     return serializer.data
 
 
@@ -71,21 +78,62 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
 
         elif domain == "wards":
             wards = {}
-            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")  
+            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
 
-            for eq in ward_to_tracts: 
+            for eq in ward_to_tracts:
                 pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
 
-                if eq.geom_b.name in wards: 
+                if eq.geom_b.name in wards:
                     wards[eq.geom_b.name] += eq.pct * pop_at_tract
-                else: 
+                else:
                     wards[eq.geom_b.name] = eq.pct * pop_at_tract
 
             stat_arr = []
-            for ward in wards: 
+            for ward in wards:
                 stat_arr.append(
                     {
-                        "domain": int(ward), 
+                        "domain": int(ward),
+                        "value": wards[ward]
+                    }
+                )
+            return stat_arr
+
+
+        elif domain == "precincts":
+            return "precincts"
+
+        elif domain == "tracts":
+            return StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
+
+        return "none"
+
+    if dataset == "income":
+
+        statistic_id = Indicator.objects.get(name='income')
+
+        if domain == "neighborhoods":
+            return "neighborhoods"
+
+        elif domain == "zips":
+            return "zips"
+
+        elif domain == "wards":
+            wards = {}
+            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
+
+            for eq in ward_to_tracts:
+                pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
+
+                if eq.geom_b.name in wards:
+                    wards[eq.geom_b.name] += eq.pct * pop_at_tract
+                else:
+                    wards[eq.geom_b.name] = eq.pct * pop_at_tract
+
+            stat_arr = []
+            for ward in wards:
+                stat_arr.append(
+                    {
+                        "domain": int(ward),
                         "value": wards[ward]
                     }
                 )
@@ -106,6 +154,10 @@ def dataset_list(request, dataset):
     if request.method == 'GET':
 
         if dataset == "population":
+            serializer = StatisticSerializer(Statistic.objects.all(), many=True)
+            return Response(serializer.data)
+
+        elif dataset == "income":
             serializer = StatisticSerializer(Statistic.objects.all(), many=True)
             return Response(serializer.data)
 
@@ -131,6 +183,16 @@ def dataset_list_domain(request, dataset, domain):
                 serializer = StatisticSerializer(Statistic.objects.all(), many=True)
                 return Response(serializer.data)
 
+        elif dataset == "income":
+
+            if not domain == "tracts":
+                res = convert_domain(dataset, domain)
+                return Response(res)
+
+            else:
+                serializer = StatisticSerializer(Statistic.objects.all(), many=True)
+                return Response(serializer.data)
+
         else:
             raise Http404
 
@@ -141,6 +203,11 @@ def dataset_list_date(request, dataset, date):
     if request.method == 'GET':
 
         if dataset == "population":
+
+            serializer = filter_date(dataset, date)
+            return Response(serializer)
+
+        elif dataset == "income":
 
             serializer = filter_date(dataset, date)
             return Response(serializer)
@@ -158,6 +225,15 @@ def dataset_list_date_domain(request, dataset, date, domain):
     if request.method == 'GET':
 
         if dataset == "population":
+
+            serializer = filter_date(dataset, date)
+            if not domain == "tracts":
+                res = convert_domain(dataset, domain, serializer, True)
+                return Response(res)
+            else:
+                return Response(serializer)
+                
+        elif dataset == "income":
 
             serializer = filter_date(dataset, date)
             if not domain == "tracts":
