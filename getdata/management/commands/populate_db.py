@@ -63,7 +63,7 @@ class Command(BaseCommand):
         # create dataframe
         # TODO: not sure if URL is correct
         url = "https://data.cityofchicago.org/api/views/r6ad-wvtk/rows.csv?accessType=DOWNLOAD"
-        df = pd.read_csv(url, usecols=['COMMUNITY AREA NAME', 'PER CAPITA INCOME'])
+        df = pd.read_csv(url, usecols=['COMMUNITY AREA NAME', 'PER CAPITA INCOME '])
 
         # find relevant neighborhoods in income csv
         for neighborhood in neighborhoods:
@@ -71,16 +71,18 @@ class Command(BaseCommand):
             # pull row with corresponding neighborhood name
             row = df.loc[df['COMMUNITY AREA NAME'] == neighborhood.name]
 
-            # pull statistic
-            income = row.iloc[0]['PER CAPITA INCOME']
+            # in case the neighborhood in our database is not available in dataset
+            if not row.empty:
+                # pull statistic
+                income = row.iloc[0]['PER CAPITA INCOME ']
 
-            # currently hard coding start and end dates
-            date_ingested = date.today()
+                # currently hard coding start and end dates
+                date_ingested = date.today()
 
-            # create object and save
-            new_income = Statistic(domain=neighborhood, value=int(income), date_ingested=date_ingested, indicator=income_indicator)
-            new_income.save()
-            
+                # create object and save
+                new_income = Statistic(domain=neighborhood, value=int(income), date_ingested=date_ingested, indicator=income_indicator)
+                new_income.save()
+
         print("Done reading income per capita data!")
 
 
