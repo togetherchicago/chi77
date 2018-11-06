@@ -11,7 +11,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <NavBar />
+        <NavBar id='navbar'/>
         <SideBar />
         <div id="mapwrap"><LMap /></div>
       </div>

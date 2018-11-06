@@ -1,53 +1,33 @@
-import React, { Component } from 'react';
-import {
-  Container,
-  Row,
-  Col,
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from "reactstrap";
+import React, { Component} from 'react';
+import { Navbar, NavItem, FormGroup, FormControl, Button } from 'react-bootstrap/lib';
 import './navbar.css';
 
 
-class NavBar extends Component{
+
+class NavBar extends Component {
   constructor(props) {
     super(props);
-
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      isOpen: false
-    };
   }
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen
-  });
-}
+
   render() {
+
     return (
-        <Navbar className="navbar" color="dark" expand="lg">
-          <NavbarBrand href="/">CHI77 Logo</NavbarBrand>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink href="/components/">Components</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="https://github.com/reactstrap/reactstrap">
-                  GitHub
-                </NavLink>
-              </NavItem>
-            </Nav>
-        </Navbar>
+      <Navbar className="navbar">
+        <Navbar.Form className="searchbar">
+          <FormGroup>
+            <FormControl type="text" placeholder="Search" />
+          </FormGroup>{' '}
+          <Button type="submit">Submit</Button>
+        </Navbar.Form>
+        <div className="linkSection">
+          <a href="#">About</a>
+          <div className="profile">
+            <img src="./assets/imgs/profile-temp.png" className="profileImage"/>
+            <a href="#">temporary name</a>
+          </div>
+        </div>
+      </Navbar>
       );
     };
   }
-export default NavBar;
+  export default NavBar;

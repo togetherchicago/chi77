@@ -9,7 +9,7 @@ const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
 const Handle = Slider.Handle;
 
-const style = { width: 200, margin: 50 };
+const style = { };
 
 function log(value) {
   console.log(value); //eslint-disable-line
@@ -30,8 +30,7 @@ class CustomizedRange extends React.Component {
         {layer => (
             <div style={style}>
                 <Range allowCross={false} defaultValue={[0, 17000]} onChange={e => layer.rangeFilter(e)} />
-                Lower: {layer.state.lowerBound} <br></br>
-                Upper: {layer.state.upperBound}
+                {layer.state.lowerBound} to {layer.state.upperBound}
             </div>
         )}
         </Subscribe>
