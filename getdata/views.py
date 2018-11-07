@@ -154,7 +154,7 @@ def dataset_list(request, dataset):
     if request.method == 'GET':
 
         if dataset == "population":
-            serializer = StatisticSerializer(Statistic.objects.all(indicator__name__contains="Population"), many=True)
+            serializer = StatisticSerializer(Statistic.objects.filter(indicator__name__contains="Population"), many=True)
             return Response(serializer.data)
 
         elif dataset == "income":
