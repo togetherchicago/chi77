@@ -154,11 +154,11 @@ def dataset_list(request, dataset):
     if request.method == 'GET':
 
         if dataset == "population":
-            serializer = StatisticSerializer(Statistic.objects.all(), many=True)
+            serializer = StatisticSerializer(Statistic.objects.all(indicator__name__contains="Population"), many=True)
             return Response(serializer.data)
 
         elif dataset == "income":
-            serializer = StatisticSerializer(Statistic.objects.all(), many=True)
+            serializer = StatisticSerializer(Statistic.objects.filter(indicator__name__contains="Per Capita Income"), many=True)
             return Response(serializer.data)
 
         elif dataset == "domains":
@@ -232,7 +232,7 @@ def dataset_list_date_domain(request, dataset, date, domain):
                 return Response(res)
             else:
                 return Response(serializer)
-                
+
         elif dataset == "income":
 
             serializer = filter_date(dataset, date)

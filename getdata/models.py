@@ -32,7 +32,6 @@ class Dataset(models.Model):
 class Statistic(models.Model):
     value = models.IntegerField()
     indicator = models.ForeignKey('Indicator', on_delete=models.CASCADE, null=True)
-    # TODO: not sure which domain to trace this back to
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
     dataset = models.ForeignKey('Dataset', on_delete=models.CASCADE, null=True)
     date_ingested = models.DateField(null=True)
