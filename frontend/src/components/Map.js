@@ -12,6 +12,7 @@ import {
     GeoJSON
 } from 'react-leaflet';
 
+
 import axios from 'axios';
 
 import tractFile from '../data/censustracts.geojson';
@@ -69,8 +70,8 @@ class LMap extends Component {
             console.log("Heck")
         }
 
-        
-        
+
+
 
         // axios.get('http://localhost:5000/api/population').then(res => {
         //     // console.log(res.data)
@@ -78,7 +79,7 @@ class LMap extends Component {
         // })
     }
 
-    render(){ 
+    render(){
         const center = [41.8781, -87.69];
         console.log("Hit")
 
@@ -86,17 +87,17 @@ class LMap extends Component {
             <Subscribe to={[Layer]}>
             {layer => (
 
-                
+
                 <Map onbaselayerchange={(e) => layer.setLayer(e)} center={center} zoom={11} minZoom={9}>
                     <TileLayer
                     attribution=""
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                     <FeatureGroup>
-                        <GeoJSON 
-                        key={Math.random()} 
+                        <GeoJSON
+                        key={Math.random()}
                         data={layer.state.domain}
-                        style={layer.getStyle} 
+                        style={layer.getStyle}
                         onEachFeature = {layer.onEachFeature}/>
                     </FeatureGroup>
 

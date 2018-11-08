@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import {
-  Circle,
   FeatureGroup,
-  LayerGroup,
   LayersControl,
-  Map,
-  Marker,
-  Popup,
-  Rectangle,
-  TileLayer,
 } from 'react-leaflet';
-const { BaseLayer, Overlay } = LayersControl
+// const { BaseLayer, Overlay } = LayersControl
 
 
 class Population extends Component {
@@ -23,7 +16,7 @@ class Population extends Component {
     //   axios.get('localhost:5000/api/population').then( res => {
     //       this.state.population
     //   })
-    console.log(LayersControl); 
+    console.log(LayersControl);
   }
 
   render() {
