@@ -29,6 +29,15 @@ class SideBar extends Component{
     }
   }
 
+  handleFilter(e, id, layer){
+    console.log(document.getElementById(id))
+    if (document.getElementById(id).classList.contains('btn-primary')){
+      layer.setFilter(e.target.name);
+    } else {
+      layer.setFilter('nothing');
+    }
+  }
+
   renderButtons(title,i){
     return(   <Subscribe key={'subscribe'+i} to={[Layer]}>
       {layer => (
@@ -38,10 +47,10 @@ class SideBar extends Component{
           key={'button'+title+i}
           id={'button'+title+i}
           bsStyle={this.state.bsStyle}
-          onClick={e => {
-            layer.setFilter(e.target.name);
+          onClick={e=>{
             document.getElementById('slider'+title+i).classList.toggle('hidden');
             document.getElementById('button'+title+i).classList.toggle('btn-'+this.handleClick());
+            this.handleFilter(e, 'button'+title+i, layer);
           }}
         >{title}
       </Button>
