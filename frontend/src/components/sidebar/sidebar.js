@@ -34,7 +34,7 @@ class SideBar extends Component{
       {layer => (
         <div className='items'>
           <Button
-          title={title}
+          name={title}
           key={'button'+title+i}
           id={'button'+title+i}
           bsStyle={this.state.bsStyle}
