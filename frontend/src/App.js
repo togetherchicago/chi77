@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
-import logo from './logo.svg';
+// import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
+// import logo from './logo.svg';
 import './App.css';
 import LMap from './components/Map';
 import SideBar from './components/sidebar/sidebar';

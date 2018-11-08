@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import './sidebar.css';
-import{Provider, Subscribe, Container} from 'unstated';
+import{Subscribe} from 'unstated';
 import Layer from '../LayerContainer'
-import {SplitButton, MenuItem, ButtonToolbar,DropdownButton, Dropdown, DropdownMenu, DropdownToggle, Button} from 'react-bootstrap/lib'
 import CustomizedRange from '../slider/slider'
+import {MenuItem, DropdownButton, Button} from 'react-bootstrap'
+
+import 'bootstrap/dist/css/bootstrap.css';
+import './sidebar.css';
 
 
 class SideBar extends Component{
@@ -26,13 +28,9 @@ class SideBar extends Component{
         return "default"
     }
   }
-  onClick(e) {
-    console.log(e)
-    this.setState({domain: e})
-  }
 
   renderButtons(title,i){
-    return(   <Subscribe key={i+title} to={[Layer]}>
+    return(   <Subscribe key={'subscribe'+i} to={[Layer]}>
       {layer => (
         <div className='items'>
           <Button
@@ -47,16 +45,13 @@ class SideBar extends Component{
           }}
         >{title}
       </Button>
-      <div className='slider hidden' key={'2'-i} id={'slider'+title+i}><CustomizedRange></CustomizedRange></div>
+      <div className='slider hidden' key={'slider'+title+i} id={'slider'+title+i}><CustomizedRange></CustomizedRange></div>
     </div>
   )}
 </Subscribe>)
   }
 
   render() {
-    console.log(this.state);
-    console.log(this.renderButtons());
-
 
     const DEMOGRAPHICS=[
       'population','age','income','unemployment'
@@ -98,13 +93,62 @@ class SideBar extends Component{
                 title= {layer.state.layer}
                 id='dropdown-button-basic'
                 data-toggle="dropdown"
-                onToggle={!this.state.isOpen}
               >
-                <MenuItem name="Census Tract" onClick={e => layer.setLayer(e.target.name)} eventKey="1">Census Tract</MenuItem>
-                <MenuItem name="Neighborhood" onClick={e => layer.setLayer(e.target.name)} eventKey="2">Neighborhood</MenuItem>
-                <MenuItem name="Precinct" onClick={e => layer.setLayer(e.target.name)} eventKey="3">Precinct</MenuItem>
-                <MenuItem name="Ward" onClick={e => layer.setLayer(e.target.name)} eventKey="4">Ward</MenuItem>
-                <MenuItem name="Zip" onClick={e => layer.setLayer(e.target.name)} eventKey="5">Zip</MenuItem>
+                <MenuItem
+                  name="Census Tract"
+                  onClick={e =>{
+                    layer.setLayer(e.target.name);
+                    this.setState({domain: e.target.name});
+                    }
+                  }
+                  eventKey="1"
+                  >
+                    Census Tract
+                  </MenuItem>
+                <MenuItem
+                  name="Neighborhood"
+                  onClick={e =>{
+                    layer.setLayer(e.target.name);
+                    this.setState({domain: e.target.name});
+                    }
+                  }
+                  eventKey="2"
+                  >
+                  Neighborhood
+                </MenuItem>
+                <MenuItem
+                  name="Precinct"
+                  onClick={e =>{
+                    layer.setLayer(e.target.name);
+                    this.setState({domain: e.target.name});
+                    }
+                  }
+                  eventKey="3"
+                  >
+                  Precinct
+                </MenuItem>
+                <MenuItem
+                  name="Ward"
+                  onClick={e =>{
+                    layer.setLayer(e.target.name);
+                    this.setState({domain: e.target.name});
+                    }
+                  }
+                  eventKey="4"
+                  >
+                  Ward
+                </MenuItem>
+                <MenuItem
+                  name="Zip"
+                  onClick={e =>{
+                    layer.setLayer(e.target.name);
+                    this.setState({domain: e.target.name});
+                    }
+                  }
+                  eventKey="5"
+                  >
+                  Zip
+                </MenuItem>
               </DropdownButton>
           </div>
 
