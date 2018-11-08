@@ -249,55 +249,6 @@ def dataset_list_date_domain(request, dataset, date, domain):
             raise Http404
 
 
-# /api/population
-# GET returns entire table (domain: tract)
-# POST is glorified GET but can send body for specific domains e.g. "{neighborhoods": ["Chicago Loop", "Wicker Park"]}
-@api_view(['GET', 'POST'])
-def population_list(request):
-    print('population_list')
-    """
-        get: returns entire table (domain: tract)
-        post: send body for specific domains e.g. "{neighborhoods": ["Chicago Loop", "Wicker Park"]}
-    """
-    if request.method == 'GET':
-        serializer = StatisticSerializer(Statistic.objects.all(), many=True)
-        return Response(serializer.data)
-
-
-@api_view(['GET'])
-def population_list_wards(request):
-    print('population_list_wards')
-    if request.method == 'GET':
-        ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name='Ward', geom_b__domain_name='Census Tract')
-        populations = Statistic.objects.all()
-
-        wards = {}
-
-        total = 0
-
-        for object in ward_to_tracts:
-
-            pop_at_tract = Statistic.objects.filter(domain_id=object.tract_id)[0].value
-
-            if object.geom_a.name in wards.keys():
-                wards[object.geom_a.name] += pop_at_tract * object.pct
-                total += pop_at_tract * object.pct
-            else:
-                wards[object.geom_a.name] = pop_at_tract * object.pct
-                total += pop_at_tract * object.pct
-
-        print(total)
-
-        return Response(wards)
-
-
-@api_view(['GET'])
-def population_list_domain(request, domain):
-    print('population_list_domain')
-    if request.method == 'GET':
-        print("domain:")
-        print(domain)
-        return Response(domain)
 
 
 @api_view(['GET'])
