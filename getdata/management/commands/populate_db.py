@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
         # get all Tract objects
         tracts = Domain.objects.filter(domain_name="Census Tract")
-        pop_indicator = Indicator(name="Population", description="Population by Census Tract")
+        pop_indicator = Indicator(name="population", description="Population by Census Tract")
         pop_indicator.save()
         # create dataframe
         url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
         # get all Neighborhood objects
         neighborhoods = Domain.objects.filter(domain_name="Neighborhood")
-        income_indicator = Indicator(name="Per Capita Income", description="Per Capita Income by Neighborhood")
+        income_indicator = Indicator(name="percapitaincome", description="Per Capita Income by Neighborhood")
         income_indicator.save()
 
         # create dataframe

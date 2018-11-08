@@ -11,6 +11,7 @@ from django.http import Http404
 from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 import json
 import datetime
@@ -153,18 +154,15 @@ def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
 def dataset_list(request, dataset):
     if request.method == 'GET':
 
-        if dataset == "population":
-            serializer = StatisticSerializer(Statistic.objects.filter(indicator__name__contains="Population"), many=True)
-            return Response(serializer.data)
-
-        elif dataset == "income":
-            serializer = StatisticSerializer(Statistic.objects.filter(indicator__name__contains="Per Capita Income"), many=True)
-            return Response(serializer.data)
-
-        elif dataset == "domains":
+        if dataset == "domains":
             return Response(content)
 
-        else:
+        try: 
+            statistic_id = Indicator.objects.get(name=dataset)
+            serializer = StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
+            return Response(serializer.data)
+
+        except ObjectDoesNotExist: 
             raise Http404
 
 
