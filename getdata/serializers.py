@@ -5,6 +5,7 @@ from chicagomap.models import Domain
 
 
 class StatisticSerializer(serializers.ModelSerializer):
+    domain = serializers.ReadOnlyField(source='domain.name')
     class Meta:
         model = Statistic
         fields = '__all__'
