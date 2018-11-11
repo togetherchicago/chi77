@@ -34,7 +34,12 @@ class Layer extends Container {
 
   getStyle(feature, layer){
     if (this.state.filterData !== null) {
-        const val = this.state.filterData[feature.properties.name10]
+        let val;
+        if (this.state.filter === "population") {
+            val = this.state.filterData[feature.properties.name10]
+        } else if (this.state.filter === "income") {
+            val = this.state.filterData[feature.properties.pri_neigh]
+        }
         
         if (val < this.state.lowerBound|| val > this.state.upperBound) {
             return {color: 'none'}
@@ -76,9 +81,12 @@ class Layer extends Container {
     
 }
   onEachFeature(feature, layer){
-    if (this.state.filterData !== null) {
+    if (this.state.filterData !== null && this.state.filter === "population") {
         layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
             'Population: ' + this.state.filterData[feature.properties.name10])
+    } else if (this.state.filterData !== null && this.state.filter === "income") {
+        layer.bindPopup('Neighborhood: ' + feature.properties.pri_neigh + '<br/>' +
+            'Income: ' + this.state.filterData[feature.properties.pri_neigh]) 
     }
 }
 
@@ -124,22 +132,32 @@ class Layer extends Container {
   selectFilter(filter) {
       if (this.state.filter === "population") {
           axios.get('http://localhost:5000/api/population').then(res => {
-            console.log("selectFilter Data:", res.data)
-            let tract_pop = {}
-            let maxval = 0;
-            for (let idx in res.data) {
-
-                if (res.data[idx].value > maxval) {
-                    maxval = res.data[idx].value;
-                }
-
-                tract_pop[res.data[idx].domain] = res.data[idx].value
-            }
-            this.setState({filterData: tract_pop, maxval: maxval})
+            console.log("population Data:", res.data)
+            let result = this.convertDict(res);
+            this.setState({filterData: result[0], maxval: result[1]})
         })
+      } else if (this.state.filter === "income") {
+          axios.get('http://localhost:5000/api/percapitaincome').then(res => {
+              console.log("income data:", res.data)
+              let result = this.convertDict(res);
+              this.setState({filterData: result[0], maxval: result[1]})
+          })
       }
   }
 
+  convertDict(res) {
+    let dict = {}
+    let maxVal = 0;
+    for (let idx in res.data) {
+
+        if (res.data[idx].value > maxVal) {
+            maxVal = res.data[idx].value;
+        }
+
+        dict[res.data[idx].domain] = res.data[idx].value
+    }
+    return [dict, maxVal];
+  }
   setFilter(newFilter) {
       console.log("newFilter", newFilter)
       this.setState({filter: newFilter, filterData: null})
