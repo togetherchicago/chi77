@@ -11,7 +11,7 @@ import './sidebar.css';
 class SideBar extends Component{
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
+    // this.handleClick = this.handleClick.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
     this.state = {
       isOpen: false,
@@ -21,21 +21,21 @@ class SideBar extends Component{
     };
   }
 
-  handleClick(bsStyle) {
-    if (this.state.bsStyle ==='default'){
-        return "primary"
-    } else {
-        return "default"
-    }
-  }
+  // handleClick(bsStyle) {
+  //   if (this.state.bsStyle ==='default'){
+  //       return "primary"
+  //   } else {
+  //       return "default"
+  //   }
+  // }
 
-  handleFilter(e, id, layer){
-    console.log(document.getElementById(id))
-    if (document.getElementById(id).classList.contains('btn-primary')){
-      layer.setFilter(e.target.name);
-    } else {
-      layer.setFilter('nothing');
-    }
+  handleFilter(e, layer){
+    layer.setFilter(e.target.name)
+    // if (document.getElementById(id).classList.contains('btn-primary')){
+    //   layer.setFilter(e.target.name);
+    // } else {
+    //   layer.setFilter('nothing');
+    // }
   }
 
   renderButtons(title,i){
@@ -48,9 +48,10 @@ class SideBar extends Component{
           id={'button'+title+i}
           bsStyle={this.state.bsStyle}
           onClick={e=>{
+            this.handleFilter(e, layer);
             document.getElementById('slider'+title+i).classList.toggle('hidden');
-            document.getElementById('button'+title+i).classList.toggle('btn-'+this.handleClick());
-            this.handleFilter(e, 'button'+title+i, layer);
+            document.getElementById('button'+title+i).classList.toggle('btn-primary');
+            
           }}
         >{title}
       </Button>
@@ -89,73 +90,47 @@ class SideBar extends Component{
       {layer => (
         <div className="sidebar">
           <div className="item-container">
+
             <div className="logo">Logo</div>
+
             <div className="tagline">tagline</div>
+            
             <div className="intro-text">
-              Lorem ipsum dolor sit amet, fermentum dapibus fusce volutpat, pellentesque in. Eleifend nostrum leo sit netus mauris orci, facilisis vel posuere elementum. Neque sit arcu enim ac aliquet vivamus. Phasellus lectus, fermentum commodo amet, pulvinar at vel pede dui tristique. Quam hic viverra orci.
+              Welcome to Chi77
             </div>
+
             <div className="domainSection">
+
               <div className="sectionHeader">
                 Geographic Area
               </div>
-              <DropdownButton
-                title= {layer.state.layer}
-                id='dropdown-button-basic'
-                data-toggle="dropdown"
-              >
-                <MenuItem
-                  name="Census Tract"
-                  onClick={e =>{
-                    layer.setLayer(e.target.name);
-                    this.setState({domain: e.target.name});
-                    }
-                  }
-                  eventKey="1"
-                  >
-                    Census Tract
-                  </MenuItem>
-                <MenuItem
-                  name="Neighborhood"
-                  onClick={e =>{
-                    layer.setLayer(e.target.name);
-                    this.setState({domain: e.target.name});
-                    }
-                  }
-                  eventKey="2"
-                  >
+              
+              <DropdownButton title= {layer.state.layer} id='dropdown-button-basic' data-toggle="dropdown">
+
+                <MenuItem name="Census Tract" 
+                onClick={e =>{layer.setLayer(e.target.name); this.setState({domain: e.target.name}); }}>
+                    Census Tract 
+                    </MenuItem>
+
+                <MenuItem name="Neighborhood"
+                  onClick={e =>{layer.setLayer(e.target.name);this.setState({domain: e.target.name});}}>
                   Neighborhood
                 </MenuItem>
-                <MenuItem
-                  name="Precinct"
-                  onClick={e =>{
-                    layer.setLayer(e.target.name);
-                    this.setState({domain: e.target.name});
-                    }
-                  }
-                  eventKey="3"
-                  >
+
+                <MenuItem name="Precinct"
+                  onClick={e =>{layer.setLayer(e.target.name);this.setState({domain: e.target.name});}}>
                   Precinct
                 </MenuItem>
+
                 <MenuItem
                   name="Ward"
-                  onClick={e =>{
-                    layer.setLayer(e.target.name);
-                    this.setState({domain: e.target.name});
-                    }
-                  }
-                  eventKey="4"
-                  >
+                  onClick={e =>{layer.setLayer(e.target.name);this.setState({domain: e.target.name});}}>
                   Ward
                 </MenuItem>
+
                 <MenuItem
                   name="Zip"
-                  onClick={e =>{
-                    layer.setLayer(e.target.name);
-                    this.setState({domain: e.target.name});
-                    }
-                  }
-                  eventKey="5"
-                  >
+                  onClick={e =>{layer.setLayer(e.target.name);this.setState({domain: e.target.name});}}>
                   Zip
                 </MenuItem>
               </DropdownButton>

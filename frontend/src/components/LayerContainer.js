@@ -84,9 +84,11 @@ class Layer extends Container {
     if (this.state.filterData !== null && this.state.filter === "population") {
         layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
             'Population: ' + this.state.filterData[feature.properties.name10])
-    } else if (this.state.filterData !== null && this.state.filter === "income") {
-        layer.bindPopup('Neighborhood: ' + feature.properties.pri_neigh + '<br/>' +
-            'Income: ' + this.state.filterData[feature.properties.pri_neigh]) 
+        } 
+
+        else if (this.state.filterData !== null && this.state.filter === "income") {
+            layer.bindPopup('Neighborhood: ' + feature.properties.pri_neigh + '<br/>' +
+                'Income: ' + this.state.filterData[feature.properties.pri_neigh]) 
     }
 }
 
@@ -126,7 +128,7 @@ class Layer extends Container {
     this.setState({ layer: domain, filter: "Nothing", filterData: null  })
     .then(() => {
       this.selectLayer(domain);
-    })
+    });
   }
 
   selectFilter(filter) {
@@ -135,13 +137,14 @@ class Layer extends Container {
             console.log("population Data:", res.data)
             let result = this.convertDict(res);
             this.setState({filterData: result[0], maxval: result[1]})
-        })
+        });
+
       } else if (this.state.filter === "income") {
           axios.get('http://localhost:5000/api/percapitaincome').then(res => {
               console.log("income data:", res.data)
               let result = this.convertDict(res);
               this.setState({filterData: result[0], maxval: result[1]})
-          })
+          });
       }
   }
 
