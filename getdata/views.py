@@ -66,6 +66,11 @@ def filter_date(dataset, date):
     return serializer.data
 
 
+def convert_domainv2(indicator_id, domain): 
+    print(indicator_id)
+    print(domain)
+
+
 def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
     if dataset == "population":
 
@@ -158,8 +163,8 @@ def dataset_list(request, dataset):
             return Response(content)
 
         try: 
-            statistic_id = Indicator.objects.get(name=dataset)
-            serializer = StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
+            indicator_id = Indicator.objects.get(name=dataset)
+            serializer = StatisticSerializer(Statistic.objects.filter(indicator=indicator_id), many=True)
             return Response(serializer.data)
 
         except ObjectDoesNotExist: 
@@ -171,79 +176,15 @@ def dataset_list_domain(request, dataset, domain):
     print('dataset_list_domain')
     if request.method == 'GET':
 
-        if dataset == "population":
-
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain)
-                return Response(res)
-
-            else:
-                serializer = StatisticSerializer(Statistic.objects.all(), many=True)
-                return Response(serializer.data)
-
-        elif dataset == "income":
-
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain)
-                return Response(res)
-
-            else:
-                serializer = StatisticSerializer(Statistic.objects.all(), many=True)
-                return Response(serializer.data)
-
-        else:
-            raise Http404
-
-
-@api_view(['GET'])
-def dataset_list_date(request, dataset, date):
-    print('dataset_list_date')
-    if request.method == 'GET':
-
-        if dataset == "population":
-
-            serializer = filter_date(dataset, date)
-            return Response(serializer)
-
-        elif dataset == "income":
-
-            serializer = filter_date(dataset, date)
-            return Response(serializer)
-
-        elif dataset == "domains":
+        if dataset == "domains": 
             return Response(content)
 
-        else:
-            raise Http404
-
-
-@api_view(['GET'])
-def dataset_list_date_domain(request, dataset, date, domain):
-    print('dataset_list_date_domain')
-    if request.method == 'GET':
-
-        if dataset == "population":
-
-            serializer = filter_date(dataset, date)
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain, serializer, True)
-                return Response(res)
-            else:
-                return Response(serializer)
-
-        elif dataset == "income":
-
-            serializer = filter_date(dataset, date)
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain, serializer, True)
-                return Response(res)
-            else:
-                return Response(serializer)
-
-
-        # elif dataset == "domains":
-
-        else:
+        try: 
+            indicator_id = Indicator.objects.get(name=dataset)
+            res = convert_domainv2(statistic_id, domain)
+            return Response(res)
+        
+        except ObjectDoesNotExist: 
             raise Http404
 
 
