@@ -31,10 +31,6 @@ urlpatterns = [
     # path('api/<str:dataset>/<slug:date>', api.dataset_list_date),
     # path('api/<str:dataset>/<slug:date>/<str:domain>/', api.dataset_list_date_domain),
 
-    # path('api/population/', api.population_list),
-    # path('api/population/wards/', api.population_list_wards),
-    # path('api/population/wards/<str:domain>', api.population_list_domain),
-
     # path('api/domain/', api.domain_list),
     # path('api/domain/tracts/', api.tract_list),
     # path('api/domain/zips/', api.zip_list),
