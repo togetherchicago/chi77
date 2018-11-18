@@ -12,5 +12,5 @@ class Equivalency(models.Model):
     geom_a = models.ForeignKey(Domain, related_name='geom_a', on_delete=models.SET_NULL, null=True)
     geom_b = models.ForeignKey(Domain, related_name='geom_b', on_delete=models.SET_NULL, null=True)
     intersection = models.MultiPolygonField()
-    pct = models.DecimalField(max_digits=8, decimal_places=7, null=True)
+    pct = models.FloatField(null=True)
 

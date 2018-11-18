@@ -12,7 +12,10 @@ from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F, Count, Value
+from django.db.models.fields import IntegerField, DecimalField
 
+import time
 import json
 import datetime
 
@@ -66,93 +69,23 @@ def filter_date(dataset, date):
     return serializer.data
 
 
-def convert_domainv2(indicator_id, domain): 
-    print(indicator_id)
-    print(domain)
+def convert_domainv2(indicator, b_domain): 
 
+    to_domain = {}
+    domains = Domain.objects.filter(domain_name=b_domain).values('name')
+    for domain in domains: 
+        to_domain[domain['name']] = 0.0
 
-def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
-    if dataset == "population":
+    from_stats = {}
+    stats = Statistic.objects.filter(indicator=indicator).values('value', 'domain__name')
+    for stat in stats: 
+        from_stats[stat['domain__name']] = float(stat['value'])
 
-        statistic_id = Indicator.objects.get(name='Population')
+    eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct', 'geom_a__name', 'geom_b__name')
+    for eq in eqs: 
+        to_domain[eq['geom_b__name']] += eq['pct'] * from_stats[eq['geom_a__name']]
 
-        if domain == "neighborhoods":
-            return "neighborhoods"
-
-        elif domain == "zips":
-            return "zips"
-
-        elif domain == "wards":
-            wards = {}
-            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
-
-            for eq in ward_to_tracts:
-                pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
-
-                if eq.geom_b.name in wards:
-                    wards[eq.geom_b.name] += eq.pct * pop_at_tract
-                else:
-                    wards[eq.geom_b.name] = eq.pct * pop_at_tract
-
-            stat_arr = []
-            for ward in wards:
-                stat_arr.append(
-                    {
-                        "domain": int(ward),
-                        "value": wards[ward]
-                    }
-                )
-            return stat_arr
-
-
-        elif domain == "precincts":
-            return "precincts"
-
-        elif domain == "tracts":
-            return StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
-
-        return "none"
-
-    if dataset == "income":
-
-        statistic_id = Indicator.objects.get(name='income')
-
-        if domain == "neighborhoods":
-            return "neighborhoods"
-
-        elif domain == "zips":
-            return "zips"
-
-        elif domain == "wards":
-            wards = {}
-            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
-
-            for eq in ward_to_tracts:
-                pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
-
-                if eq.geom_b.name in wards:
-                    wards[eq.geom_b.name] += eq.pct * pop_at_tract
-                else:
-                    wards[eq.geom_b.name] = eq.pct * pop_at_tract
-
-            stat_arr = []
-            for ward in wards:
-                stat_arr.append(
-                    {
-                        "domain": int(ward),
-                        "value": wards[ward]
-                    }
-                )
-            return stat_arr
-
-
-        elif domain == "precincts":
-            return "precincts"
-
-        elif domain == "tracts":
-            return StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
-
-        return "none"
+    return to_domain
 
 
 @api_view(['GET'])
@@ -164,8 +97,8 @@ def dataset_list(request, dataset):
 
         try: 
             indicator_id = Indicator.objects.get(name=dataset)
-            serializer = StatisticSerializer(Statistic.objects.filter(indicator=indicator_id), many=True)
-            return Response(serializer.data)
+            stats = Statistic.objects.filter(indicator=indicator_id).values('domain__name', 'value')
+            return Response(stats)
 
         except ObjectDoesNotExist: 
             raise Http404
@@ -173,7 +106,6 @@ def dataset_list(request, dataset):
 
 @api_view(['GET'])
 def dataset_list_domain(request, dataset, domain):
-    print('dataset_list_domain')
     if request.method == 'GET':
 
         if dataset == "domains": 
@@ -181,7 +113,8 @@ def dataset_list_domain(request, dataset, domain):
 
         try: 
             indicator_id = Indicator.objects.get(name=dataset)
-            res = convert_domainv2(statistic_id, domain)
+            res = convert_domainv2(indicator_id, domain)
+            # data = DomainGeoSerializer(res, many=True)
             return Response(res)
         
         except ObjectDoesNotExist: 
