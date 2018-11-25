@@ -19,6 +19,7 @@ class Layer extends Container {
       filterData: null,
       upperBound: 0,
       lowerBound: 0,
+      timeRange: ["test"]
 
     }
     this.setLayer = this.setLayer.bind(this);
@@ -26,6 +27,7 @@ class Layer extends Container {
 
     this.onEachFeature = this.onEachFeature.bind(this);
     this.getStyle = this.getStyle.bind(this);
+    this.compareTimes = this.compareTimes.bind(this);
     this.rangeFilter = _.debounce(this.rangeFilter, 50);
   }
 
@@ -144,14 +146,23 @@ class Layer extends Container {
   setFilter(newFilter) {
       this.setState({filter: newFilter, filterData: null})
       .then(() => {
+          //maybe here make call to API for timestamps available
         if (this.state.filter === "population") {
             axios.get('http://localhost:5000/api/population').then(res => {
               console.log("population Data:", res.data)
               let result = this.convertDict(res);
               this.setState({filterData: result[0], maxval: result[1], lowerBound: 0, upperBound: result[1]})
+          })
+          .then(() => {
+            //axios.get(http://localhost:5000/getTimestampsavailable).th
+            this.setState({timeRange: [2017, 2018] })
+            .then(() => {
+                console.log("typeof timerange", typeof(this.state.timeRange), this.state.timeRange);
+            })
+            
           });
-  
-        } 
+        }//if population
+
         else if (this.state.filter === "income") {
             axios.get('http://localhost:5000/api/percapitaincome').then(res => {
                 console.log("income data:", res.data)
@@ -165,9 +176,27 @@ class Layer extends Container {
   rangeFilter(value) {
       this.setState({lowerBound: this.state.maxval * value[0] / 100, upperBound: this.state.maxval * value[1] / 100})
   }
-  getLayer() {
-    return this.state;
+
+  compareTimes(time1, time2) {
+
+    let time_diff_data = {};
+    if (this.state.filter === "population") {
+        //TODO: change to api route for time1
+        axios.get('http://localhost:5000/api/population').then(res => {
+          let result = this.convertDict(res);
+          time_diff_data = result[0];
+      })
+      .then(() => {
+        //TODO: Change to api route for actual time2, and change data
+       for (let idx in time_diff_data) {
+           time_diff_data[idx] = this.state.maxval;
+       }
+        this.setState({filterData: time_diff_data})
+      });
+    }//if population
+    
   }
+
 }
 
-export default Layer  
+export default Layer;  
