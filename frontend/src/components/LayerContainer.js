@@ -33,7 +33,7 @@ class Layer extends Container {
     this.rangeFilter = this.rangeFilter.bind(this);
     this.rangeTimeFilter = this.rangeTimeFilter.bind(this);
 
-    this.rangeFilter = _.debounce(this.rangeFilter, 50);
+    this.rangeFilter = _.debounce(this.rangeFilter, 500);
 
     this.rangeTimeFilter = _.debounce(this.rangeTimeFilter, 50);
 
@@ -184,7 +184,11 @@ class Layer extends Container {
                 console.log("income data:", res.data)
                 let result = this.convertDict(res);
                 this.setState({filterData: result[0], maxval: result[1], lowerBound: 0, upperBound: result[1]})
-            });//axios
+            })//axios
+            .then(() => {
+                //axios.get(http://localhost:5000/getTimestampsavailable).th
+                this.setState({timeRange: [2016, 2018], lowerTimeBound: 2016, upperTimeBound: 2018, min_year: 2016, max_time_val: 2018 })
+            })
         }//elif
       })//.then()
   }//setFilter
@@ -235,6 +239,33 @@ class Layer extends Container {
         this.setState({filterData: time_diff_data, lowerBound: 0, upperBound: this.state.maxval})
       });
     }//if population
+
+    else if (this.state.filter === "income") {
+        //TODO: change to api route for this.state.lowerTimeBound
+        axios.get('http://localhost:5000/api/percapitaincome').then(res => {
+          let result = this.convertDict(res);
+          time_diff_data = result[0];
+      })
+        .then(() => {
+          console.log(this.state.lowerTimeBound)
+            if (this.state.lowerTimeBound === 2016) {
+                console.log('2016')
+            }
+            else if (this.state.lowerTimeBound === 2017) {
+                console.log('2017')
+                for (let idx in time_diff_data) {
+                    time_diff_data[idx] = this.state.maxval / 2;
+                }
+            }
+            else if (this.state.lowerTimeBound === 2018) {
+                console.log(2018)
+                for (let idx in time_diff_data) {
+                    time_diff_data[idx] = 0;
+                }
+            }
+            this.setState({filterData: time_diff_data, lowerBound: 0, upperBound: this.state.maxval})
+        });
+    } //elseif
     
   }
 
