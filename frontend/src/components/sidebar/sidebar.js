@@ -13,7 +13,7 @@ class SideBar extends Component{
     super(props);
     // this.handleClick = this.handleClick.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
-    this.setTime = this.setTime.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
     this.state = {
       isOpen: false,
       domain: 'tract',
@@ -29,25 +29,7 @@ class SideBar extends Component{
     layer.setFilter(e.target.name)
   }
 
-  // test(elt) {
-  //   console.log("Test elt", elt)
-  //   return elt
-  // }
-
-  setTime(time, idx) {
-    console.log("setTime", time)
-    if (idx === "1") {
-      this.setState({time1: time})
-
-      return;
-    }//if
-
-    this.setState({time2: time})
-    return;
-  }//fxn
-
   renderButtons(title,i){
-
     return(   
       <Subscribe key={'subscribe'+i} to={[Layer]}>
         {layer => (
@@ -59,6 +41,7 @@ class SideBar extends Component{
               bsStyle={this.state.bsStyle}
               onClick={e=>{
                 this.handleFilter(e, layer);
+                //TODO: Maybe dont do this? But it works.
                 document.getElementById('slider'+title+i).classList.toggle('hidden');
                 document.getElementById('button'+title+i).classList.toggle('btn-primary');
               }}>
@@ -66,38 +49,18 @@ class SideBar extends Component{
             {title}
             </Button>
             <div className='slider hidden' key={'slider'+title+i} id={'slider'+title+i}>
-              <CustomizedRange></CustomizedRange>
+              <CustomizedRange type='value' lowerBound={layer.state.lowerBound} upperBound={layer.state.upperBound}> 
+              </CustomizedRange>
 
               Compare by Time Range! Wow!
-              <DropdownButton title= {this.state.time1} id='dropdown-button-basic' data-toggle="dropdown">
-                {layer.state.timeRange.map((elt) => 
-                  <div>
-                    <MenuItem name={elt}
-                     onClick={e => {this.setTime(e.target.name, "1")}}>
-                        {elt}
-                      </MenuItem>
-                  </div>
-                )}
-              </DropdownButton>
+              <CustomizedRange type='time' min_year={layer.state.lowerTimeBound} lowerBound={layer.state.lowerTimeBound} upperBound={layer.state.upperTimeBound}>
+              </CustomizedRange>
 
-              <DropdownButton title= {this.state.time2} id='dropdown-button-basic' data-toggle="dropdown">
-              {layer.state.timeRange.map((elt) => 
-                <div>
-                  <MenuItem name={elt}
-                    onClick={e => {this.setTime(e.target.name, "2")}}>
-                      {elt}
-                    </MenuItem>
-                </div>
-              )}
-              </DropdownButton>
-
-              <Button 
-              onClick={e => {layer.compareTimes(this.state.time1, this.state.time2); this.setState({time1: "Timestamp1", time2: "Timestamp2"})}}> 
-              Compare </Button>
             </div>
           </div>
-  )}
-</Subscribe>)
+          )}
+        </Subscribe>
+      );
   }
 
   render() {

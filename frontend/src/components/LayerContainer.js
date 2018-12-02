@@ -17,10 +17,12 @@ class Layer extends Container {
       layer: 'Census Tract', //[tracts, neighborhood, precint, ward, zip]
       filter: 'Nothing',
       filterData: null,
-      upperBound: 0,
       lowerBound: 0,
+      upperBound: 1000,
+      maxval: 1,
+      lowerTimeBound:0,
+      upperTimeBound: 1000,
       timeRange: ["test"]
-
     }
     this.setLayer = this.setLayer.bind(this);
     this.setFilter = this.setFilter.bind(this);
@@ -28,19 +30,26 @@ class Layer extends Container {
     this.onEachFeature = this.onEachFeature.bind(this);
     this.getStyle = this.getStyle.bind(this);
     this.compareTimes = this.compareTimes.bind(this);
+    this.rangeFilter = this.rangeFilter.bind(this);
+    this.rangeTimeFilter = this.rangeTimeFilter.bind(this);
+
     this.rangeFilter = _.debounce(this.rangeFilter, 50);
+
+    this.rangeTimeFilter = _.debounce(this.rangeTimeFilter, 50);
+
   }
 
 
   getStyle(feature, layer){
     if (this.state.filterData !== null) {
         let val;
+        
         if (this.state.filter === "population") {
             val = this.state.filterData[feature.properties.name10]
         } else if (this.state.filter === "income") {
             val = this.state.filterData[feature.properties.pri_neigh];
         }
-
+        // console.log("getStyle")
         if (val === undefined) {
             return {color: '#808080'};
         }
@@ -147,6 +156,13 @@ class Layer extends Container {
       this.setState({filter: newFilter, filterData: null})
       .then(() => {
           //maybe here make call to API for timestamps available
+
+          /**
+           * TODO
+           * Instead of many if/else statements for the filter, 
+           * Make it so we can just do
+           * axios.get('http://localhost:5000/api/' + this.state.filter)
+           */
         if (this.state.filter === "population") {
             axios.get('http://localhost:5000/api/population').then(res => {
               console.log("population Data:", res.data)
@@ -155,9 +171,9 @@ class Layer extends Container {
           })
           .then(() => {
             //axios.get(http://localhost:5000/getTimestampsavailable).th
-            this.setState({timeRange: [2017, 2018] })
+            this.setState({timeRange: [2016, 2018], lowerTimeBound: 2016, upperTimeBound: 2018, min_year: 2016, max_time_val: 2018 })
             .then(() => {
-                console.log("typeof timerange", typeof(this.state.timeRange), this.state.timeRange);
+                // console.log("typeof timerange", typeof(this.state.timeRange), this.state.timeRange);
             })
             
           });
@@ -177,21 +193,46 @@ class Layer extends Container {
       this.setState({lowerBound: this.state.maxval * value[0] / 100, upperBound: this.state.maxval * value[1] / 100})
   }
 
-  compareTimes(time1, time2) {
+  rangeTimeFilter(value) {
+      console.log("this.state.max_time_val:", this.state.max_time_val, "value", value,
+                    (this.state.max_time_val - this.state.min_year) * value[0]/100 + this.state.min_year )
 
+    const min_time = (this.state.max_time_val - this.state.min_year) * value[0]/100 + this.state.min_year;
+
+    //lowerTimeBound: this.state.max_time_val * value[0] / 100
+    this.setState({lowerTimeBound: Math.floor(min_time), upperTimeBound: Math.floor(this.state.max_time_val * value[1] / 100)})
+    .then(()=> {
+        this.compareTimes();
+    })
+}
+
+  compareTimes() {
+    console.log("Compare times")
     let time_diff_data = {};
     if (this.state.filter === "population") {
-        //TODO: change to api route for time1
+        //TODO: change to api route for this.state.lowerTimeBound
         axios.get('http://localhost:5000/api/population').then(res => {
           let result = this.convertDict(res);
           time_diff_data = result[0];
       })
       .then(() => {
-        //TODO: Change to api route for actual time2, and change data
-       for (let idx in time_diff_data) {
-           time_diff_data[idx] = this.state.maxval;
-       }
-        this.setState({filterData: time_diff_data})
+          console.log(this.state.lowerTimeBound)
+        if (this.state.lowerTimeBound === 2016) {
+            console.log('2016')
+        }
+        else if (this.state.lowerTimeBound === 2017) {
+            console.log('2017')
+            for (let idx in time_diff_data) {
+                time_diff_data[idx] = this.state.maxval / 2;
+            }
+        }
+        else if (this.state.lowerTimeBound === 2018) {
+            console.log(2018)
+            for (let idx in time_diff_data) {
+                time_diff_data[idx] = 0;
+            }
+        }
+        this.setState({filterData: time_diff_data, lowerBound: 0, upperBound: this.state.maxval})
       });
     }//if population
     

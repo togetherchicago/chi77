@@ -18,23 +18,51 @@ function log(value) {
 class CustomizedRange extends React.Component {
   constructor(props) {
     super(props);
+    console.log("slider props", this.props);
     this.state = {
-      lowerBound: 0,
-      upperBound: 17000,
-    };
+      lowerBound : this.props.lowerBound,
+      upperBound : this.props.upperBound
+    }
   }
 
   render() {
-    return (
+    if (this.props.type === "time") {
+      // console.log("hit", this.props.lowerBound, this.props.upperBound)
+      return (
         <Subscribe to={[Layer]}>
         {layer => (
             <div style={style}>
-                <Range allowCross={false} defaultValue={[0, 17000]} onChange={e => layer.rangeFilter(e)} />
-                {layer.state.lowerBound} to {layer.state.upperBound}
+                <Range allowCross={false} 
+                // min={this.props.min_year}
+                defaultValue={[this.props.lowerBound, this.props.upperBound]}
+                onChange={e => layer.rangeTimeFilter(e)} 
+                />
+
+                {this.props.lowerBound} to {this.props.upperBound}
             </div>
         )}
         </Subscribe>
-    );
+      );
+    }
+    else {
+      console.log("hit", this.props.lowerBound, this.props.upperBound)
+      return (
+        <Subscribe to={[Layer]}>
+        {layer => (
+            <div style={style}>
+                <Range allowCross={false} 
+                defaultValue={[this.props.lowerBound,this.props.upperBound]} 
+                onChange={e => layer.rangeFilter(e)} 
+                />
+                
+                {this.props.lowerBound} to {this.props.upperBound}
+            </div>
+        )}
+        </Subscribe>
+      );
+    }
+
+    
   }
 }
 
