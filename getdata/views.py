@@ -21,31 +21,31 @@ import datetime
 
 content = [
     {
-        "title": "Census Tracts",
+        "title": "Census Tract",
         "description": "Fetch GeoJSON objects of all tracts",
         "method": "GET",
         "domain": "/api/domain/tracts"
     },
     {
-        "title": "Wards",
+        "title": "Ward",
         "description": "Fetch GEOJSON objects of all wards",
         "method": "GET",
         "domain": "/api/domain/wards"
     },
     {
-        "title": "Neighborhoods",
+        "title": "Neighborhood",
         "description": "Fetch GEOJSON objects of all neighborhoods",
         "method": "GET",
         "domain": "/api/domain/neighborhoods"
     },
     {
-        "title": "Precincts",
+        "title": "Precinct",
         "description": "Fetch GEOJSON objects of all precincts",
         "method": "GET",
         "domain": "/api/domain/precincts"
     },
     {
-        "title": "Zip Codes",
+        "title": "ZIP Code",
         "description": "Fetch GEOJSON objects of all zip codes",
         "method": "GET",
         "domain": "/api/domain/zipcodes"
@@ -70,6 +70,14 @@ def filter_date(dataset, date):
 
 
 def convert_domainv2(indicator, b_domain): 
+    
+    rank = {
+        "Precinct": 5, 
+        "Census Tract": 4, 
+        "Neighborhood": 1, 
+        "ZIP Code": 2, 
+        "Ward": 3
+    }
 
     to_domain = {}
     domains = Domain.objects.filter(domain_name=b_domain).values('name')
@@ -81,11 +89,25 @@ def convert_domainv2(indicator, b_domain):
     for stat in stats: 
         from_stats[stat['domain__name']] = float(stat['value'])
 
-    eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct', 'geom_a__name', 'geom_b__name')
-    for eq in eqs: 
-        to_domain[eq['geom_b__name']] += eq['pct'] * from_stats[eq['geom_a__name']]
+    total = 0.0
+    # determine A -> B or B- > A
+    if rank[indicator.domain_name] < rank[b_domain]: 
+    
+        eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct', 'geom_a__name', 'geom_b__name')
+        for eq in eqs: 
+            if eq['geom_a__name'] in from_stats.keys(): 
+                total += eq['pct'] * from_stats[eq['geom_a__name']]
+                to_domain[eq['geom_b__name']] += eq['pct'] * from_stats[eq['geom_a__name']]
+    
+    else: 
 
-    return to_domain
+        eqs = Equivalency.objects.filter(geom_a__domain_name=b_domain, geom_b__domain_name=indicator.domain_name).values('pct', 'geom_a__name', 'geom_b__name')
+        for eq in eqs: 
+            if eq['geom_b__name'] in from_stats.keys(): 
+                total += eq['pct'] * from_stats[eq['geom_b__name']]
+                to_domain[eq['geom_a__name']] += eq['pct'] * from_stats[eq['geom_b__name']]
+
+    return total
 
 
 @api_view(['GET'])
@@ -98,7 +120,10 @@ def dataset_list(request, dataset):
         try: 
             indicator_id = Indicator.objects.get(name=dataset)
             stats = Statistic.objects.filter(indicator=indicator_id).values('domain__name', 'value')
-            return Response(stats)
+            to_domain = {}
+            for stat in stats: 
+                to_domain[stat['domain__name']] = stat['value']
+            return Response(to_domain)
 
         except ObjectDoesNotExist: 
             raise Http404
@@ -113,8 +138,14 @@ def dataset_list_domain(request, dataset, domain):
 
         try: 
             indicator_id = Indicator.objects.get(name=dataset)
-            res = convert_domainv2(indicator_id, domain)
-            # data = DomainGeoSerializer(res, many=True)
+            if indicator_id.domain_name != domain: 
+                res = convert_domainv2(indicator_id, domain)
+            else: 
+                stats = Statistic.objects.filter(indicator=indicator_id).values('domain__name', 'value')
+                to_domain = {}
+                for stat in stats: 
+                    to_domain[stat['domain__name']] = stat['value']
+                return Response(to_domain)
             return Response(res)
         
         except ObjectDoesNotExist: 
