@@ -19,7 +19,8 @@ from chicagomap.models import Domain
 
 class Indicator(models.Model):
     name = models.CharField(max_length=64)
-    description = models.CharField(max_length=256)
+    description = models.CharField(max_length=256, null=True)
+    domain_name = models.CharField(max_length=256, null=True)
 
 
 class Dataset(models.Model):

@@ -141,6 +141,19 @@ class Layer extends Container {
     return [dict, maxVal];
   }
 
+  convertDict(res) {
+    let dict = {}
+    let maxVal = 0;
+    for (let idx in res.data) {
+
+        if (res.data[idx].value > maxVal) {
+            maxVal = res.data[idx].value;
+        }
+
+        dict[res.data[idx].domain] = res.data[idx].value
+    }
+    return [dict, maxVal];
+  }
   setFilter(newFilter) {
       this.setState({filter: newFilter, filterData: null})
       .then(() => {
