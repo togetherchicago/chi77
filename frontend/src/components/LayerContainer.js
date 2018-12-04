@@ -17,13 +17,11 @@ class Layer extends Container {
       layer: 'Census Tract', //[tracts, neighborhood, precint, ward, zip]
       filter: 'Nothing',
       filterData: null,
-      upperBound: 17000,
+      upperBound: 0,
       lowerBound: 0,
 
     }
     this.setLayer = this.setLayer.bind(this);
-    this.selectLayer = this.selectLayer.bind(this);
-
     this.setFilter = this.setFilter.bind(this);
 
     this.onEachFeature = this.onEachFeature.bind(this);
@@ -38,13 +36,17 @@ class Layer extends Container {
         if (this.state.filter === "population") {
             val = this.state.filterData[feature.properties.name10]
         } else if (this.state.filter === "income") {
-            val = this.state.filterData[feature.properties.pri_neigh]
+            val = this.state.filterData[feature.properties.pri_neigh];
         }
-        
+
+        if (val === undefined) {
+            return {color: '#808080'};
+        }
+
         if (val < this.state.lowerBound|| val > this.state.upperBound) {
-            return {color: 'none'}
+            return {color: '#808080'}
         }
-        if (val > this.state.maxval * 1){
+        if (val >= this.state.maxval * .99){
             return {color: '#E50800'}
         }
         else if (val > this.state.maxval * .9){
@@ -78,47 +80,19 @@ class Layer extends Container {
             return {color: '#FDFF94'}
         }
     }
-    
+
 }
   onEachFeature(feature, layer){
     if (this.state.filterData !== null && this.state.filter === "population") {
         layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
             'Population: ' + this.state.filterData[feature.properties.name10])
-        } 
+        }
 
-        else if (this.state.filterData !== null && this.state.filter === "income") {
-            layer.bindPopup('Neighborhood: ' + feature.properties.pri_neigh + '<br/>' +
-                'Income: ' + this.state.filterData[feature.properties.pri_neigh]) 
+    else if (this.state.filterData !== null && this.state.filter === "income") {
+        layer.bindPopup('Neighborhood: ' + feature.properties.pri_neigh + '<br/>' +
+            'Income: ' + this.state.filterData[feature.properties.pri_neigh])
     }
 }
-
-  selectLayer(domain) {
-      if (this.state.layer === "Census Tract") {
-        axios.get(tractFile).then(res => {
-            this.setState({domain: res.data})
-        })
-      }
-      else if (this.state.layer === "Neighborhood") {
-          axios.get(neighborhoodFile).then(res => {
-              this.setState({domain: res.data})
-          })
-      }
-      else if (this.state.layer === "Precinct") {
-          axios.get(precinctFile).then(res => {
-              this.setState({domain: res.data})
-          })
-      }
-      else if (this.state.layer === "Ward") {
-          axios.get(wardFile).then(res => {
-              this.setState({domain: res.data})
-          })
-      }
-      else if (this.state.layer === "Zip") {
-          axios.get(zipFile).then(res => {
-              this.setState({domain: res.data})
-          })
-      }
-  }
 
   setLayer (newLayer) {
     if (newLayer === this.state.layer) {
@@ -127,25 +101,44 @@ class Layer extends Container {
     let domain = newLayer
     this.setState({ layer: domain, filter: "Nothing", filterData: null  })
     .then(() => {
-      this.selectLayer(domain);
+        if (this.state.layer === "Census Tract") {
+            axios.get(tractFile).then(res => {
+                this.setState({domain: res.data})
+            })
+          }
+          else if (this.state.layer === "Neighborhood") {
+              axios.get(neighborhoodFile).then(res => {
+                  this.setState({domain: res.data})
+              })
+          }
+          else if (this.state.layer === "Precinct") {
+              axios.get(precinctFile).then(res => {
+                  this.setState({domain: res.data})
+              })
+          }
+          else if (this.state.layer === "Ward") {
+              axios.get(wardFile).then(res => {
+                  this.setState({domain: res.data})
+              })
+          }
+          else if (this.state.layer === "Zip") {
+              axios.get(zipFile).then(res => {
+                  this.setState({domain: res.data})
+              })
+          }
     });
   }
 
-  selectFilter(filter) {
-      if (this.state.filter === "population") {
-          axios.get('http://localhost:5000/api/population').then(res => {
-            console.log("population Data:", res.data)
-            let result = this.convertDict(res);
-            this.setState({filterData: result[0], maxval: result[1]})
-        });
-
-      } else if (this.state.filter === "income") {
-          axios.get('http://localhost:5000/api/percapitaincome').then(res => {
-              console.log("income data:", res.data)
-              let result = this.convertDict(res);
-              this.setState({filterData: result[0], maxval: result[1]})
-          });
-      }
+  convertDict(res) {
+    let dict = {}
+    let maxVal = 0;
+    for (let idx in res.data) {
+        if (res.data[idx].value > maxVal) {
+            maxVal = res.data[idx].value;
+        }
+        dict[res.data[idx].domain] = res.data[idx].value
+    }
+    return [dict, maxVal];
   }
 
   convertDict(res) {
@@ -162,20 +155,32 @@ class Layer extends Container {
     return [dict, maxVal];
   }
   setFilter(newFilter) {
-      console.log("newFilter", newFilter)
       this.setState({filter: newFilter, filterData: null})
       .then(() => {
-          this.selectFilter(newFilter)
-      })
-  }
+        if (this.state.filter === "population") {
+            axios.get('http://localhost:5000/api/population').then(res => {
+              console.log("population Data:", res.data)
+              let result = this.convertDict(res);
+              this.setState({filterData: result[0], maxval: result[1], lowerBound: 0, upperBound: result[1]})
+          });
+
+        }
+        else if (this.state.filter === "income") {
+            axios.get('http://localhost:5000/api/percapitaincome').then(res => {
+                console.log("income data:", res.data)
+                let result = this.convertDict(res);
+                this.setState({filterData: result[0], maxval: result[1], lowerBound: 0, upperBound: result[1]})
+            });//axios
+        }//elif
+      })//.then()
+  }//setFilter
 
   rangeFilter(value) {
-    //   console.log(value[0], value[1])
-      this.setState({lowerBound: 17000 * value[0] / 100, upperBound: 17000 * value[1] / 100})
+      this.setState({lowerBound: this.state.maxval * value[0] / 100, upperBound: this.state.maxval * value[1] / 100})
   }
   getLayer() {
     return this.state;
   }
 }
 
-export default Layer  
+export default Layer
