@@ -31,22 +31,33 @@ class SideBar extends Component{
         {layer => (
           <div className='items'>
             <Button
-            name={title}
-            key={'button'+title+i}
-            id={'button'+title+i}
-            bsStyle={this.state.bsStyle}
-            onClick={e=>{
-              this.handleFilter(e, layer);
-              document.getElementById('slider'+title+i).classList.toggle('hidden');
-              document.getElementById('button'+title+i).classList.toggle('btn-primary');
-              
-            }}
-              >{title}
-              </Button>
-            <div className='slider hidden' key={'slider'+title+i} id={'slider'+title+i}><CustomizedRange></CustomizedRange></div>
+              name={title}
+              key={'button'+title+i}
+              id={'button'+title+i}
+              bsStyle={this.state.bsStyle}
+              onClick={e=>{
+                this.handleFilter(e, layer);
+                /**
+                 * TODO:
+                 * direct DOM manipulations like this are not the correct "React" way to
+                 * write frontend code. That being said, it does work with no known bugs.
+                 * So, its something maybe you could fix but not immediately needed.
+                 */
+                document.getElementById('slider'+title+i).classList.toggle('hidden');
+                document.getElementById('button'+title+i).classList.toggle('btn-primary');
+              }}>
+
+            {title}
+            </Button>
+            <div className='slider hidden' key={'slider'+title+i} id={'slider'+title+i}>
+              <CustomizedRange type='value' lowerBound={layer.state.lowerBound} upperBound={layer.state.upperBound}> 
+              </CustomizedRange>
+
+            </div>
           </div>
-      )}
-</Subscribe>)
+          )}
+        </Subscribe>
+      );
   }
 
   render() {
