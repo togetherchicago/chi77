@@ -1,15 +1,15 @@
-Dear future Chi77 developers - 
+##### Dear future Chi77 developers - 
   Here is a guide which explains the design, and the reasoning
   behind the choices we have made,
   the immediate TODO's that should be taken care of once you get comfortable
   within the application, as well as the further optimizations that should get made.
 
-  What is this application?
+  * What is this application?
       This is a full-stack social service mapping application. It uses 
       the Javascript Leaflet library for the map, and React as a front end framework.
 
 
-  Design + Design Choices:
+  * Design + Design Choices:
       We built this in React for a couple of reasons. We chose to use a modern framework
       because it makes the code readable, scalable, and uses a MVC architecture.
       We chose React over Vue.js or Angular because the React-Leaflet library makes it very
@@ -22,7 +22,7 @@ Dear future Chi77 developers -
       We are using Unstated(http://unstated.io/) for state management within the application,
       so our components can easily share information.
 
-  Folder layout:
+  * Folder layout:
       All the frontend code lives in the frontend/ folder, and should remain that way. 
       Within frontend/
 
@@ -44,7 +44,7 @@ Dear future Chi77 developers -
         - package.json:
             config file for requirements. This is what node_modules references when building.
         
-  src/ breakdown:
+  * src/ breakdown:
       
         * components/: 
             this is where most of our code lives. 
@@ -82,13 +82,13 @@ Dear future Chi77 developers -
             we didnt write this code, it came from somewhere, but looks important for production.
 
 
-      Immediate TODOS:
+      * Immediate TODOS:
         1. Add the ability to make calls to the population API for neighborhoods.
         2. Change how we make API calls, so we don't need to add cases each time an 
             API route becomes available. I documented where this would be within the 
             setFilter() function in LayerContainer.js.
 
-      Other Todos:
+      * Other Todos:
         These are things that are more big picture, and not so much code changes.
 
         One thing we tried implementing was showing how data changes over time. For example,
