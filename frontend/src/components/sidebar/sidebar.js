@@ -11,8 +11,8 @@ import './sidebar.css';
 class SideBar extends Component{
   constructor(props) {
     super(props);
-    // this.handleClick = this.handleClick.bind(this);
     this.renderButtons = this.renderButtons.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
     this.state = {
       isOpen: false,
       domain: 'tract',
@@ -21,44 +21,43 @@ class SideBar extends Component{
     };
   }
 
-  // handleClick(bsStyle) {
-  //   if (this.state.bsStyle ==='default'){
-  //       return "primary"
-  //   } else {
-  //       return "default"
-  //   }
-  // }
-
   handleFilter(e, layer){
     layer.setFilter(e.target.name)
-    // if (document.getElementById(id).classList.contains('btn-primary')){
-    //   layer.setFilter(e.target.name);
-    // } else {
-    //   layer.setFilter('nothing');
-    // }
   }
 
   renderButtons(title,i){
-    return(   <Subscribe key={'subscribe'+i} to={[Layer]}>
-      {layer => (
-        <div className='items'>
-          <Button
-          name={title}
-          key={'button'+title+i}
-          id={'button'+title+i}
-          bsStyle={this.state.bsStyle}
-          onClick={e=>{
-            this.handleFilter(e, layer);
-            document.getElementById('slider'+title+i).classList.toggle('hidden');
-            document.getElementById('button'+title+i).classList.toggle('btn-primary');
-            
-          }}
-        >{title}
-      </Button>
-      <div className='slider hidden' key={'slider'+title+i} id={'slider'+title+i}><CustomizedRange></CustomizedRange></div>
-    </div>
-  )}
-</Subscribe>)
+    return(   
+      <Subscribe key={'subscribe'+i} to={[Layer]}>
+        {layer => (
+          <div className='items'>
+            <Button
+              name={title}
+              key={'button'+title+i}
+              id={'button'+title+i}
+              bsStyle={this.state.bsStyle}
+              onClick={e=>{
+                this.handleFilter(e, layer);
+                /**
+                 * TODO:
+                 * direct DOM manipulations like this are not the correct "React" way to
+                 * write frontend code. That being said, it does work with no known bugs.
+                 * So, its something maybe you could fix but not immediately needed.
+                 */
+                document.getElementById('slider'+title+i).classList.toggle('hidden');
+                document.getElementById('button'+title+i).classList.toggle('btn-primary');
+              }}>
+
+            {title}
+            </Button>
+            <div className='slider hidden' key={'slider'+title+i} id={'slider'+title+i}>
+              <CustomizedRange type='value' lowerBound={layer.state.lowerBound} upperBound={layer.state.upperBound}> 
+              </CustomizedRange>
+
+            </div>
+          </div>
+          )}
+        </Subscribe>
+      );
   }
 
   render() {

@@ -11,26 +11,32 @@ const Handle = Slider.Handle;
 
 const style = { };
 
-function log(value) {
-  console.log(value); //eslint-disable-line
-}
-
 class CustomizedRange extends React.Component {
   constructor(props) {
+    //passed props from sidebar.js.
     super(props);
+   
+    /**
+     * right now, we have nothing in state because we are just tracking lowerBound and upperBound,
+     * which we get from props anyways
+     */
     this.state = {
-      lowerBound: 0,
-      upperBound: 17000,
     };
   }
 
   render() {
     return (
+        //subscribes to state
         <Subscribe to={[Layer]}>
         {layer => (
+          //<Range ...> is the slider which we import from rc-slider
+          //our onChange function lives in the state, because the state needs to be alerted
+          //when the slider moves so it can alter the map.
             <div style={style}>
-                <Range allowCross={false} defaultValue={[0, 17000]} onChange={e => layer.rangeFilter(e)} />
-                {layer.state.lowerBound} to {layer.state.upperBound}
+                <Range allowCross={false} 
+                defaultValue={[this.props.lowerBound, this.props.upperBound]} 
+                onChange={e => layer.rangeFilter(e)} />
+                {this.props.lowerBound} to {this.props.upperBound}
             </div>
         )}
         </Subscribe>

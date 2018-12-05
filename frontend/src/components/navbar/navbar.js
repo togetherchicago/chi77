@@ -4,7 +4,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './navbar.css';
 
 
-
+/**
+ * This code is for the navbar that lives at the top of the application
+ * As of now, it has no functionality, and is just in as a scaffold
+ */
 class NavBar extends Component {
   // constructor(props) {
   //   super(props);

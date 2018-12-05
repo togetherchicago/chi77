@@ -12,7 +12,6 @@ import {
     GeoJSON
 } from 'react-leaflet';
 
-
 import axios from 'axios';
 
 import tractFile from '../data/censustracts.geojson';
@@ -20,8 +19,6 @@ import neighborhoodFile from '../data/neighborhoods.geojson';
 import precinctFile from '../data/precincts.geojson';
 import wardFile from '../data/wards.geojson';
 import zipFile from '../data/zipcodes.geojson';
-
-import Population from './Population';
 
 import { Subscribe } from 'unstated';
 import Layer from './LayerContainer';
@@ -39,55 +36,46 @@ class LMap extends Component {
 
 
     componentDidMount(){
-        const temp = new Layer();
+        /** 
+         * this may not be the best way to do this, but we could not find a better way 
+         * to access layer within this function.
+        */
+        const layer_ = new Layer();
 
-        if (temp.state.layer === "tract") {
+        if (layer_.state.layer === "tract") {
             axios.get(tractFile).then(res => {
                 this.setState({domain: res.data})
             })
         }
-        else if (temp.state.layer === "neighborhood") {
+        else if (layer_.state.layer === "neighborhood") {
             axios.get(neighborhoodFile).then(res => {
                 this.setState({domain: res.data})
             })
         }
-        else if (temp.state.layer === "precinct") {
+        else if (layer_.state.layer === "precinct") {
             axios.get(precinctFile).then(res => {
                 this.setState({domain: res.data})
             })
         }
-        else if (temp.state.layer === "ward") {
+        else if (layer_.state.layer === "ward") {
             axios.get(wardFile).then(res => {
                 this.setState({domain: res.data})
             })
         }
-        else if (temp.state.layer === "zip") {
+        else if (layer_.state.layer === "zip") {
             axios.get(zipFile).then(res => {
                 this.setState({domain: res.data})
             })
         }
-        else {
-            console.log("Heck")
-        }
-
-
-
-
-        // axios.get('http://localhost:5000/api/population').then(res => {
-        //     // console.log(res.data)
-        //     this.setState({population: res.data})
-        // })
     }
 
     render(){
+
         const center = [41.8781, -87.69];
-        console.log("Hit")
 
         return (
             <Subscribe to={[Layer]}>
             {layer => (
-
-
                 <Map onbaselayerchange={(e) => layer.setLayer(e)} center={center} zoom={11} minZoom={9}>
                     <TileLayer
                     attribution=""
@@ -96,8 +84,11 @@ class LMap extends Component {
                     <FeatureGroup>
                         <GeoJSON
                         key={Math.random()}
+                        //renders map from layer
                         data={layer.state.domain}
+                        //renders the styling for the map
                         style={layer.getStyle}
+                        //runs a function on each feature/geoJSON object on map
                         onEachFeature = {layer.onEachFeature}/>
                     </FeatureGroup>
 
