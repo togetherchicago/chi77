@@ -93,21 +93,21 @@ def convert_domainv2(indicator, b_domain):
     # determine A -> B or B- > A
     if rank[indicator.domain_name] < rank[b_domain]: 
     
-        eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct', 'geom_a__name', 'geom_b__name')
+        eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct_a', 'geom_a__name', 'geom_b__name')
         for eq in eqs: 
             if eq['geom_a__name'] in from_stats.keys(): 
-                total += eq['pct'] * from_stats[eq['geom_a__name']]
-                to_domain[eq['geom_b__name']] += eq['pct'] * from_stats[eq['geom_a__name']]
+                total += eq['pct_a'] * from_stats[eq['geom_a__name']]
+                to_domain[eq['geom_b__name']] += eq['pct_a'] * from_stats[eq['geom_a__name']]
     
     else: 
 
-        eqs = Equivalency.objects.filter(geom_a__domain_name=b_domain, geom_b__domain_name=indicator.domain_name).values('pct', 'geom_a__name', 'geom_b__name')
+        eqs = Equivalency.objects.filter(geom_a__domain_name=b_domain, geom_b__domain_name=indicator.domain_name).values('pct_b', 'geom_a__name', 'geom_b__name')
         for eq in eqs: 
             if eq['geom_b__name'] in from_stats.keys(): 
-                total += eq['pct'] * from_stats[eq['geom_b__name']]
-                to_domain[eq['geom_a__name']] += eq['pct'] * from_stats[eq['geom_b__name']]
+                total += eq['pct_b'] * from_stats[eq['geom_b__name']]
+                to_domain[eq['geom_a__name']] += eq['pct_b'] * from_stats[eq['geom_b__name']]
 
-    return total
+    return to_domain
 
 
 @api_view(['GET'])
