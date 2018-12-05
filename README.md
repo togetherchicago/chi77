@@ -81,3 +81,30 @@ Chi77 will run on the Heroku cloud. Configure your Heroku Dyno as follows:
 
 * `BUILD_WITH_GEO_LIBRARIES` = `1`
 * `DATABASE_URL` = (_URI of database_)
+
+
+
+##### Helpful hints
+These are things that we struggled with while developing, but are stupidly easy to fix.
+
+We recommend you add to this as you uncover new workarounds, so you don't forget them
+by the end of the project.
+
+
+* When I `docker-compose up`, why doesn't my changes in code show up?
+
+    - If you added new frontend dependencies, you need to `docker-compose build`. I recommend also pruning docker 
+        every now and then, by doing `docker volume prune` and `docker system prune`. This will get rid of a TON
+        of memory that Docker is eating up from past containers. After pruning, run `docker-compose build --no-cache`
+        for a clean build.
+
+* When I spin up the application and try to apply a filter, nothing happens. Why?
+    
+    - We are currently running into a problem with CORS (Cross-Origin Resource Sharing), because we are calling our 
+        API from localhost:5000, and running the application on localhost:3000. Eventually, you will need to 
+        look up how to actually fix this problem, but for the time being we used the `Allow-Control-Allow-Origin:`
+        Chrome extension plugin to avoid this problem.
+* After developing, and using the application on `localhost:3000`, my computer is getting alot of errors when I 
+    visit other websites, why?
+    
+    - You probably didn't turn off your CORS plugin. Make sure that is off, because it messing with most websites.
