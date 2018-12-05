@@ -5,10 +5,23 @@ from chicagomap.models import Domain
 
 import pandas as pd
 from datetime import date
+import csv
 
-
+# python manage.py populate_db
 class Command(BaseCommand):
-    # python manage.py populate_db
+    def extract_tract(self, geoid):
+        # 17031835600
+        # (state) 1-2 (county) 3-5 (census tract) 6-end
+        # last 8 to get the right county and census tract
+        pass
+
+
+
+
+
+
+
+
 
     # this is a method that creates a dataframe from a url and creates Django objects from that
     def _put_population(self):
@@ -49,65 +62,56 @@ class Command(BaseCommand):
 
         print("Done reading population data!")
 
-    def _put_income(self):
-        # TODO: not sure if necessary to delete all objects in these tables
-        # delete existing population table
-        # Statistic.objects.all().delete()
-        # Indicator.objects.all().delete()
-
-        # get all Neighborhood objects
-        neighborhoods = Domain.objects.filter(domain_name="Neighborhood")
-        income_indicator = Indicator(name="percapitaincome", description="Per Capita Income by Neighborhood", domain_name="Neighborhood")
-        income_indicator.save()
-
-        # create dataframe
-        # TODO: not sure if URL is correct
-        url = "https://data.cityofchicago.org/api/views/r6ad-wvtk/rows.csv?accessType=DOWNLOAD"
-        df = pd.read_csv(url, usecols=['COMMUNITY AREA NAME', 'PER CAPITA INCOME '])
-
-        # find relevant neighborhoods in income csv
-        for neighborhood in neighborhoods:
-
-            # pull row with corresponding neighborhood name
-            row = df.loc[df['COMMUNITY AREA NAME'] == neighborhood.name]
-
-            # in case the neighborhood in our database is not available in dataset
-            if not row.empty:
-                # pull statistic
-                income = row.iloc[0]['PER CAPITA INCOME ']
-
-                # currently hard coding start and end dates
-                date_ingested = date.today()
-
-                # create object and save
-                new_income = Statistic(domain=neighborhood, value=int(income), date_ingested=date_ingested, indicator=income_indicator)
-                new_income.save()
-
-        print("Done reading income per capita data!")
+    def _put(self):
+        # delete existing  table
+        Statistic.objects.all().delete()
+        Indicator.objects.all().delete()
 
 
-        # print(df.head)
 
-        # # delete everything in the table
-        # Population.objects.all().delete()
-        # print("Reading Population data...")
-        # url = "http://censusdata.ire.org/17/all_140_in_17.P1.csv"
-        # c = pd.read_csv(url, usecols=[8,9])
-        # for entry in c.iterrows():
-        #     # cleaning census tract number column
-        #     census_tract = ''.join(filter(lambda x: x.isdigit() or x == '.', entry[1]['NAME']))
-        #     find_tract = Tract.objects.filter(name10=census_tract)
-        #     # if tract is in chicago
-        #     if find_tract:
-        #         # pull corresponding pop100
-        #         pop_100 = entry[1]['POP100']
-        #         # create object with foreign key to tract table
-        #         tract = Population(census_tract=find_tract[0], pop_100=pop_100)
-        #         tract.save()
-        #         print("Population @ tract ", find_tract[0], " saved.")
+        with open('datasource.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for line in csv_reader:
+                # percapitaincome,Neighborhood,https:...,PER CAPITA INCOME ,COMMUNITY AREA NAME,per capita income by neighborhood
+                dataset_name, domain_type, url, statistic_col, domain_col, description = line
+
+                # get all domain objects of domain_type
+                domains = Domain.objects.filter(domain_name=domain_type)
+
+                indicator = Indicator(name=dataset_name,description=description)
+                indicator.save()
+
+                # create dataframe from dataset information
+                # TODO: try to cover csv, json, etc. formats
+                df = pd.read_csv(url, usecols=[domain_col, statistic_col])
+
+                for domain in domains:
+
+                    # pull row with corresponding neighborhood name
+                    row = df.loc[df[domain_col] == domain.name]
+
+
+                    # currently hard coding start and end dates
+                    date_ingested = date.today()
+
+                    # in case the domain in our database is not available in dataset
+                    new_statistic = None
+                    if not row.empty:
+                        # pull statistic
+                        # TODO: what happens if statistic is not necessarily of int type
+                        statistic = row.iloc[0][statistic_col]
+
+                        # create object and save
+                        new_statistic = Statistic(domain=domain, value=int(statistic), date_ingested=date_ingested, indicator=indicator)
+                    else:
+                        # create "null" object and save
+                        new_statistic = Statistic(domain=domain, value=0, date_ingested=date_ingested, indicator=indicator)
+                    new_statistic.save()
+
+                print(f'Done reading {dataset_name} data!')
 
 
 
     def handle(self, *args, **options):
             self._put_population()
-            self._put_income()
+            self._put()
