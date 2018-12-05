@@ -12,37 +12,40 @@ from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F, Count, Value
+from django.db.models.fields import IntegerField, DecimalField
 
+import time
 import json
 import datetime
 
 content = [
     {
-        "title": "Census Tracts",
+        "title": "Census Tract",
         "description": "Fetch GeoJSON objects of all tracts",
         "method": "GET",
         "domain": "/api/domain/tracts"
     },
     {
-        "title": "Wards",
+        "title": "Ward",
         "description": "Fetch GEOJSON objects of all wards",
         "method": "GET",
         "domain": "/api/domain/wards"
     },
     {
-        "title": "Neighborhoods",
+        "title": "Neighborhood",
         "description": "Fetch GEOJSON objects of all neighborhoods",
         "method": "GET",
         "domain": "/api/domain/neighborhoods"
     },
     {
-        "title": "Precincts",
+        "title": "Precinct",
         "description": "Fetch GEOJSON objects of all precincts",
         "method": "GET",
         "domain": "/api/domain/precincts"
     },
     {
-        "title": "Zip Codes",
+        "title": "ZIP Code",
         "description": "Fetch GEOJSON objects of all zip codes",
         "method": "GET",
         "domain": "/api/domain/zipcodes"
@@ -66,88 +69,45 @@ def filter_date(dataset, date):
     return serializer.data
 
 
-def convert_domain(dataset, domain, filtered={}, sent_filtered=False):
-    if dataset == "population":
+def convert_domainv2(indicator, b_domain): 
+    
+    rank = {
+        "Precinct": 5, 
+        "Census Tract": 4, 
+        "Neighborhood": 1, 
+        "ZIP Code": 2, 
+        "Ward": 3
+    }
 
-        statistic_id = Indicator.objects.get(name='Population')
+    to_domain = {}
+    domains = Domain.objects.filter(domain_name=b_domain).values('name')
+    for domain in domains: 
+        to_domain[domain['name']] = 0.0
 
-        if domain == "neighborhoods":
-            return "neighborhoods"
+    from_stats = {}
+    stats = Statistic.objects.filter(indicator=indicator).values('value', 'domain__name')
+    for stat in stats: 
+        from_stats[stat['domain__name']] = float(stat['value'])
 
-        elif domain == "zips":
-            return "zips"
+    total = 0.0
+    # determine A -> B or B- > A
+    if rank[indicator.domain_name] < rank[b_domain]: 
+    
+        eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct_a', 'geom_a__name', 'geom_b__name')
+        for eq in eqs: 
+            if eq['geom_a__name'] in from_stats.keys(): 
+                total += eq['pct_a'] * from_stats[eq['geom_a__name']]
+                to_domain[eq['geom_b__name']] += eq['pct_a'] * from_stats[eq['geom_a__name']]
+    
+    else: 
 
-        elif domain == "wards":
-            wards = {}
-            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
+        eqs = Equivalency.objects.filter(geom_a__domain_name=b_domain, geom_b__domain_name=indicator.domain_name).values('pct_b', 'geom_a__name', 'geom_b__name')
+        for eq in eqs: 
+            if eq['geom_b__name'] in from_stats.keys(): 
+                total += eq['pct_b'] * from_stats[eq['geom_b__name']]
+                to_domain[eq['geom_a__name']] += eq['pct_b'] * from_stats[eq['geom_b__name']]
 
-            for eq in ward_to_tracts:
-                pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
-
-                if eq.geom_b.name in wards:
-                    wards[eq.geom_b.name] += eq.pct * pop_at_tract
-                else:
-                    wards[eq.geom_b.name] = eq.pct * pop_at_tract
-
-            stat_arr = []
-            for ward in wards:
-                stat_arr.append(
-                    {
-                        "domain": int(ward),
-                        "value": wards[ward]
-                    }
-                )
-            return stat_arr
-
-
-        elif domain == "precincts":
-            return "precincts"
-
-        elif domain == "tracts":
-            return StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
-
-        return "none"
-
-    if dataset == "income":
-
-        statistic_id = Indicator.objects.get(name='income')
-
-        if domain == "neighborhoods":
-            return "neighborhoods"
-
-        elif domain == "zips":
-            return "zips"
-
-        elif domain == "wards":
-            wards = {}
-            ward_to_tracts = Equivalency.objects.filter(geom_a__domain_name="Census Tract", geom_b__domain_name="Ward")
-
-            for eq in ward_to_tracts:
-                pop_at_tract = Statistic.objects.filter(indicator=statistic_id, domain=eq.geom_a)[0].value
-
-                if eq.geom_b.name in wards:
-                    wards[eq.geom_b.name] += eq.pct * pop_at_tract
-                else:
-                    wards[eq.geom_b.name] = eq.pct * pop_at_tract
-
-            stat_arr = []
-            for ward in wards:
-                stat_arr.append(
-                    {
-                        "domain": int(ward),
-                        "value": wards[ward]
-                    }
-                )
-            return stat_arr
-
-
-        elif domain == "precincts":
-            return "precincts"
-
-        elif domain == "tracts":
-            return StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
-
-        return "none"
+    return to_domain
 
 
 @api_view(['GET'])
@@ -158,9 +118,12 @@ def dataset_list(request, dataset):
             return Response(content)
 
         try: 
-            statistic_id = Indicator.objects.get(name=dataset)
-            serializer = StatisticSerializer(Statistic.objects.filter(indicator=statistic_id), many=True)
-            return Response(serializer.data)
+            indicator_id = Indicator.objects.get(name=dataset)
+            stats = Statistic.objects.filter(indicator=indicator_id).values('domain__name', 'value')
+            to_domain = {}
+            for stat in stats: 
+                to_domain[stat['domain__name']] = stat['value']
+            return Response(to_domain)
 
         except ObjectDoesNotExist: 
             raise Http404
@@ -168,82 +131,24 @@ def dataset_list(request, dataset):
 
 @api_view(['GET'])
 def dataset_list_domain(request, dataset, domain):
-    print('dataset_list_domain')
     if request.method == 'GET':
 
-        if dataset == "population":
-
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain)
-                return Response(res)
-
-            else:
-                serializer = StatisticSerializer(Statistic.objects.all(), many=True)
-                return Response(serializer.data)
-
-        elif dataset == "income":
-
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain)
-                return Response(res)
-
-            else:
-                serializer = StatisticSerializer(Statistic.objects.all(), many=True)
-                return Response(serializer.data)
-
-        else:
-            raise Http404
-
-
-@api_view(['GET'])
-def dataset_list_date(request, dataset, date):
-    print('dataset_list_date')
-    if request.method == 'GET':
-
-        if dataset == "population":
-
-            serializer = filter_date(dataset, date)
-            return Response(serializer)
-
-        elif dataset == "income":
-
-            serializer = filter_date(dataset, date)
-            return Response(serializer)
-
-        elif dataset == "domains":
+        if dataset == "domains": 
             return Response(content)
 
-        else:
-            raise Http404
-
-
-@api_view(['GET'])
-def dataset_list_date_domain(request, dataset, date, domain):
-    print('dataset_list_date_domain')
-    if request.method == 'GET':
-
-        if dataset == "population":
-
-            serializer = filter_date(dataset, date)
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain, serializer, True)
-                return Response(res)
-            else:
-                return Response(serializer)
-
-        elif dataset == "income":
-
-            serializer = filter_date(dataset, date)
-            if not domain == "tracts":
-                res = convert_domain(dataset, domain, serializer, True)
-                return Response(res)
-            else:
-                return Response(serializer)
-
-
-        # elif dataset == "domains":
-
-        else:
+        try: 
+            indicator_id = Indicator.objects.get(name=dataset)
+            if indicator_id.domain_name != domain: 
+                res = convert_domainv2(indicator_id, domain)
+            else: 
+                stats = Statistic.objects.filter(indicator=indicator_id).values('domain__name', 'value')
+                to_domain = {}
+                for stat in stats: 
+                    to_domain[stat['domain__name']] = stat['value']
+                return Response(to_domain)
+            return Response(res)
+        
+        except ObjectDoesNotExist: 
             raise Http404
 
 

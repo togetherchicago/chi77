@@ -35,27 +35,31 @@ class Command(BaseCommand):
             wards = all_wards.filter(geom__intersects=neighborhood.geom)
             for elt in zips:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    n2z = Equivalency(intersection=overlap, geom_a=elt, geom_b=neighborhood, pct=ratio)
+                ratio_a = overlap.area / neighborhood.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    n2z = Equivalency(intersection=overlap, geom_a=neighborhood, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     n2z.save()
             for elt in tracts:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    n2t = Equivalency(intersection=overlap, geom_a=elt, geom_b=neighborhood, pct=ratio)
+                ratio_a = overlap.area / neighborhood.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    n2t = Equivalency(intersection=overlap, geom_a=neighborhood, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     n2t.save()
             for elt in precincts:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    n2p = Equivalency(intersection=overlap, geom_a=elt, geom_b=neighborhood, pct=ratio)
+                ratio_a = overlap.area / neighborhood.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    n2p = Equivalency(intersection=overlap, geom_a=neighborhood, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     n2p.save()
             for elt in wards:
                 overlap = filtershapes(elt.geom.intersection(neighborhood.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    n2w = Equivalency(intersection=overlap, geom_a=elt, geom_b=neighborhood, pct=ratio)
+                ratio_a = overlap.area / neighborhood.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    n2w = Equivalency(intersection=overlap, geom_a=neighborhood, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     n2w.save()
         for zipcode in all_zips:
             tracts = all_tracts.filter(geom__intersects=zipcode.geom)
@@ -63,37 +67,42 @@ class Command(BaseCommand):
             wards = all_wards.filter(geom__intersects=zipcode.geom)
             for elt in tracts:
                 overlap = filtershapes(elt.geom.intersection(zipcode.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    z2t = Equivalency(intersection=overlap, geom_a=elt, geom_b=zipcode, pct=ratio)
+                ratio_a = overlap.area / zipcode.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    z2t = Equivalency(intersection=overlap, geom_a=zipcode, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     z2t.save()
             for elt in precincts:
                 overlap = filtershapes(elt.geom.intersection(zipcode.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    z2p = Equivalency(intersection=overlap, geom_a=elt, geom_b=zipcode, pct=ratio)
+                ratio_a = overlap.area / zipcode.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    z2p = Equivalency(intersection=overlap, geom_a=zipcode, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     z2p.save()
             for elt in wards:
                 overlap = filtershapes(elt.geom.intersection(zipcode.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    z2w = Equivalency(intersection=overlap, geom_a=elt, geom_b=zipcode, pct=ratio)
+                ratio_a = overlap.area / zipcode.geom.area 
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    z2w = Equivalency(intersection=overlap, geom_a=zipcode, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     z2w.save()
         for ward in all_wards:
             tracts = all_tracts.filter(geom__intersects=ward.geom)
             for elt in tracts:
                 overlap = filtershapes(elt.geom.intersection(ward.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    w2t = Equivalency(intersection=overlap, geom_a=elt, geom_b=ward, pct=ratio)
+                ratio_a = overlap.area / ward.geom.area
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    w2t = Equivalency(intersection=overlap, geom_a=ward, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     w2t.save()
         for tract in all_tracts:
             precincts = all_precincts.filter(geom__intersects=tract.geom)
             for elt in precincts:
                 overlap = filtershapes(elt.geom.intersection(tract.geom))
-                ratio = overlap.area / elt.geom.area
-                if ratio > 0.000001:
-                    t2p = Equivalency(intersection=overlap, geom_a=elt, geom_b=tract, pct=ratio)
+                ratio_a = overlap.area / tract.geom.area                 
+                ratio_b = overlap.area / elt.geom.area
+                if ratio_a > 0.000001 and ratio_b > 0.000001:
+                    t2p = Equivalency(intersection=overlap, geom_a=tract, geom_b=elt, pct_a=ratio_a, pct_b=ratio_b)
                     t2p.save()
 
 

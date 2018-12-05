@@ -36,13 +36,6 @@ services:
     ports:
       - "3000:3000"
 
-  watchtower:
-    image: v2tec/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /root/.docker/config.json:/config.json
-    command: --interval 30
-
 volumes:
   geodb-volume:
   node-modules:
