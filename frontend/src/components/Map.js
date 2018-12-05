@@ -70,13 +70,12 @@ class LMap extends Component {
     }
 
     render(){
+
         const center = [41.8781, -87.69];
 
         return (
             <Subscribe to={[Layer]}>
             {layer => (
-
-
                 <Map onbaselayerchange={(e) => layer.setLayer(e)} center={center} zoom={11} minZoom={9}>
                     <TileLayer
                     attribution=""
@@ -85,8 +84,11 @@ class LMap extends Component {
                     <FeatureGroup>
                         <GeoJSON
                         key={Math.random()}
+                        //renders map from layer
                         data={layer.state.domain}
+                        //renders the styling for the map
                         style={layer.getStyle}
+                        //runs a function on each feature/geoJSON object on map
                         onEachFeature = {layer.onEachFeature}/>
                     </FeatureGroup>
 

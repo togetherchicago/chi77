@@ -82,9 +82,22 @@ Dear future Chi77 developers -
             we didnt write this code, it came from somewhere, but looks important for production.
 
 
+      Immediate TODOS:
+        1. Add the ability to make calls to the population API for neighborhoods.
+        2. Change how we make API calls, so we don't need to add cases each time an 
+            API route becomes available. I documented where this would be within the 
+            setFilter() function in LayerContainer.js.
 
+      Other Todos:
+        These are things that are more big picture, and not so much code changes.
 
-      Immediate TODOs: (Also tagged within the code as //TODO)
+        One thing we tried implementing was showing how data changes over time. For example,
+        we could show how population changes over time, and display the delta as a different
+        coloring. These led to a couple problems:
+          1. The UI for this was very confusing and we struggled with the right way to do this.
+          2. How to handle not having complete data. For example, we may only have years for 2015, 2017,2018
+             and not 2016.
+
 
         And thats all for the frontend code! Within all of the coding files I have included 
         (what i believe to be) thorough comments outlining everything. Good luck!
