@@ -73,8 +73,11 @@ class Layer extends Container {
       //make sure only runs if actually have data to filter
     if (this.state.filterData !== null) {
         let val;
+        //TODO: Change this so you dont do if/else for everything
         if (this.state.filter === "population") {
-            val = this.state.filterData[feature.properties.name10]
+            //TODO: This currently only works for neighborhoods. Change so it works for
+            //      All domains. Tell backend team to change it to something like feature.properties.domain
+            val = this.state.filterData[feature.properties.pri_neigh]
         } else if (this.state.filter === "income") {
             val = this.state.filterData[feature.properties.pri_neigh];
         }
@@ -128,8 +131,9 @@ class Layer extends Container {
   //currently just used to add popups. 
   onEachFeature(feature, layer){
     if (this.state.filterData !== null && this.state.filter === "population") {
-        layer.bindPopup('Census Tract: ' + feature.properties.name10 + '<br/>' +
-            'Population: ' + this.state.filterData[feature.properties.name10])
+        console.log(feature.properties.pri_neigh)
+        layer.bindPopup('Census Tract: ' + feature.properties.pri_neigh + '<br/>' +
+            'Population: ' + this.state.filterData[feature.properties.pri_neigh])
         }
 
     else if (this.state.filterData !== null && this.state.filter === "income") {
@@ -202,16 +206,20 @@ class Layer extends Container {
   }
 
   convertDict(res) {
+      console.log("convertDict", res.data)
     let dict = {}
     let maxVal = 0;
     for (let idx in res.data) {
+        console.log("idx", idx, res.data[idx])
 
-        if (res.data[idx].value > maxVal) {
-            maxVal = res.data[idx].value;
+        if (res.data[idx] > maxVal) {
+            maxVal = res.data[idx];
         }
 
-        dict[res.data[idx].domain] = res.data[idx].value
+        dict[idx] = res.data[idx]
     }
+
+    console.log(dict, maxVal)
     return [dict, maxVal];
   }
   setFilter(newFilter) {
@@ -229,7 +237,9 @@ class Layer extends Container {
         if (this.state.filter === "population") {
             //this API route is going to be changed ASAP, but is not complete yet so 
             //I have not been able to update it myself.
-            axios.get('http://localhost:5000/api/population').then(res => {
+            axios.get('http://localhost:5000/api/2010pop').then(res => {
+
+                console.log(res.data)
               //returns list where result[0] is dictionary of data, result[1] is maxval
               let result = this.convertDict(res);
               /**
