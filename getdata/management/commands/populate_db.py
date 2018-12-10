@@ -78,7 +78,7 @@ class Command(BaseCommand):
                 # get all domain objects of domain_type
                 domains = Domain.objects.filter(domain_name=domain_type)
 
-                indicator = Indicator(name=dataset_name,description=description)
+                indicator = Indicator(name=dataset_name,description=description,domain_name=domain_type)
                 indicator.save()
 
                 # create dataframe from dataset information
