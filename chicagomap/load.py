@@ -1,6 +1,6 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from chicagomap.models import Domain
+from chicagomap.models import Domain, Domain_Meta
 
 
 class CustomLayer(LayerMapping):
@@ -66,8 +66,10 @@ def run(verbose=True):
     if len(Domain.objects.all()) > 0:
         print("No domain import necessary.")
         return
-    for pair in [[neighborhood_mapping, neighborhood_geojson, 'Neighborhood'], [ward_mapping, ward_geojson, 'Ward'],
-                 [zip_mapping, zip_geojson, 'ZIP Code'],
-                 [precinct_mapping, precinct_geojson, 'Precinct'], [tract_mapping, tract_geojson, 'Census Tract']]:
+    for pair in [[neighborhood_mapping, neighborhood_geojson, 'Neighborhood', 1], [ward_mapping, ward_geojson, 'Ward', 3],
+                 [zip_mapping, zip_geojson, 'ZIP Code', 2],
+                 [precinct_mapping, precinct_geojson, 'Precinct', 5], [tract_mapping, tract_geojson, 'Census Tract', 4]]:
+        domain = Domain_Meta(name=pair[2], rank=pair[3])
+        domain.save()
         layermapping = CustomLayer(model=Domain, data=pair[1], mapping=pair[0], custom={'domain_name': pair[2]}, transform=False)
         layermapping.save(strict=True, verbose=verbose)

@@ -1,6 +1,9 @@
 # This is an auto-generated Django model module created by ogrinspect.
 from django.contrib.gis.db import models
 
+class Domain_Meta(models.Model): 
+    name = models.CharField(max_length=64)
+    rank = models.IntegerField(null=True)
 
 class Domain(models.Model):
     geom = models.MultiPolygonField()

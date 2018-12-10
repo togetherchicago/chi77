@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 import ast
 
 from .serializers import *
-from chicagomap.models import Equivalency, Domain
+from chicagomap.models import Equivalency, Domain, Domain_Meta
 from getdata.models import Indicator, Statistic
 from rest_framework import viewsets
 
@@ -70,14 +70,6 @@ def filter_date(dataset, date):
 
 
 def convert_domainv2(indicator, b_domain): 
-    
-    rank = {
-        "Precinct": 5, 
-        "Census Tract": 4, 
-        "Neighborhood": 1, 
-        "ZIP Code": 2, 
-        "Ward": 3
-    }
 
     to_domain = {}
     domains = Domain.objects.filter(domain_name=b_domain).values('name')
@@ -91,7 +83,7 @@ def convert_domainv2(indicator, b_domain):
 
     total = 0.0
     # determine A -> B or B- > A
-    if rank[indicator.domain_name] < rank[b_domain]: 
+    if Domain_Meta.objects.get(name=indicator.domain_name).rank < Domain_Meta.objects.get(name=b_domain).rank: 
     
         eqs = Equivalency.objects.filter(geom_a__domain_name=indicator.domain_name, geom_b__domain_name=b_domain).values('pct_a', 'geom_a__name', 'geom_b__name')
         for eq in eqs: 
