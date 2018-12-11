@@ -26,15 +26,15 @@ Once these tools are installed you have two options for linking the application 
 
 Runs the application server and database in a linked pair of Docker containers. **Pros**: Easy to setup. **Cons**: Takes longer to startup as all analysis data must be downloaded and processed locally before you can use the app.
 
-1. Start the Django application server and Postgres database using Docker Compose:
+1. Start the Django application server, React webapp, and Postgres database using Docker Compose:
 ```
-$ docker-compose up
+$ docker-compose -f docker-compose.dev.yaml up
 ```
-2. In a web browser, navigate to the app at `http://localhost:5000`
+2. In a web browser, navigate to the app at `http://localhost:3000`
 
-Note that when running Django inside of Docker, a default Django admin user is automatically created. Log into the Django admin console at `http://localhost:5000/admin` as user `admin` with password `test1234`.
+Note that when running Django inside of Docker, a default Django admin user is automatically created. Log into the Django admin console at `http://localhost:3000/admin` as user `admin` with password `test1234`.
 
-#### Option 2: Run Django natively and connect to the production database
+#### Option 2: Run Django natively and connect to the production database (Deprecated)
 
 Runs the application server natively (no use of Docker) and attaches to the Heroku-deployed database instance. **Pros**: Starts faster; has access to same datasets that the end user does. **Cons**: More complicated to initially get setup.
 
@@ -60,7 +60,7 @@ $ heroku local
 
 If you need to log into the Django admin console you'll need to first create a default user: Execute the `scripts/init_django.sh` script, then log into the console at `http://localhost:5000/admin` as user `admin` with password `test1234`
 
-### Deployment to Heroku
+### Deployment to Heroku (Deprecated, see wiki for DigitalOcean deployment)
 
 Chi77 will run on the Heroku cloud. Configure your Heroku Dyno as follows:
 
