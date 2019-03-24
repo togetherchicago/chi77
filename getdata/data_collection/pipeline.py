@@ -2,6 +2,9 @@ from .adaptors import *
 
 class Pipeline(object):
     
+    def __init__(self, section):
+        self._section = section
+
     def resources(self):
         """
         List of API resources adaptors backend can use
@@ -19,13 +22,13 @@ class Pipeline(object):
             }
         }
 
-    def fetch(self, section, resource, category, query):
+    def fetch(self, resource, category, query):
         """
         Arguments:
             category {str} -- category one of healthcare/transit
             query {dict} -- parsed query data
         """
-        api = self.resources()[section][resource]
+        api = self.resources()[self._section][resource]
         api.transfer(api.extract(category, query))
         return api.load()
         

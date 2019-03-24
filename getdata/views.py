@@ -10,7 +10,7 @@ from .helpers import request as requestHelper
 @require_http_methods(['GET'])
 def view_general_data(request):
     resource, category, query = requestHelper.extract_data_request(request)
-    return JsonResponse(Pipeline().fetch('general', resource, category, query), safe=False)
+    return JsonResponse(Pipeline('general').fetch(resource, category, query), safe=False)
 
 #######################
 ## Transit APIs
@@ -18,7 +18,7 @@ def view_general_data(request):
 @require_http_methods(['GET'])
 def view_transit_data(request):
     resource, category, query = requestHelper.extract_data_request(request)
-    return JsonResponse(Pipeline().fetch('transit', resource, category, query), safe=False)
+    return JsonResponse(Pipeline('transit').fetch(resource, category, query), safe=False)
 
 #######################
 ## Healthcare APIs
@@ -26,4 +26,4 @@ def view_transit_data(request):
 @require_http_methods(['GET'])
 def view_healthcare_data(request):
     resource, category, query = requestHelper.extract_data_request(request)
-    return JsonResponse(Pipeline().fetch('healthcare', resource, category, query), safe=False)
+    return JsonResponse(Pipeline('healthcare').fetch(resource, category, query), safe=False)
