@@ -26,18 +26,6 @@ urlpatterns = [
     path('api/docs/', schema_view),
     path('admin/', admin.site.urls),
 
-    path('api/<str:dataset>/', api.dataset_list),
-    path('api/<str:dataset>/<str:domain>/', api.dataset_list_domain),
-    # path('api/<str:dataset>/<slug:date>', api.dataset_list_date),
-    # path('api/<str:dataset>/<slug:date>/<str:domain>/', api.dataset_list_date_domain),
-
-    # path('api/domain/', api.domain_list),
-    # path('api/domain/tracts/', api.tract_list),
-    # path('api/domain/zips/', api.zip_list),
-    # path('api/domain/neighborhoods/', api.neighborhood_list),
-    # path('api/domain/precincts/', api.precinct_list),
-    # path('api/domain/wards/', api.ward_list),
-
     path('', TemplateView.as_view(template_name='index.html')),
 
 ]
