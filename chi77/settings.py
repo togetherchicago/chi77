@@ -28,6 +28,8 @@ SODA_SECRET_TOKEN = "8DIAx6z6ISq7lqHSHkrqKJwgXMv-YwJR9ORg"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "www.chi77.org", "chi77.org"]
 
@@ -46,9 +48,11 @@ INSTALLED_APPS = [
     'getdata',
     'rest_framework_swagger',
     'rest_framework_gis',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

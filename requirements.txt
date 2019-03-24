@@ -4,6 +4,7 @@ Django==2.0.2
 django-heroku==0.2.0
 djangorestframework==3.7.7
 djangorestframework-gis==0.12
+django-cors-headers==2.5.2
 Flask==0.12.2
 geos==0.2.1
 gunicorn==19.7.1
