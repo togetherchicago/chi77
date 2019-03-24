@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib.gis import admin
 from django.urls import path, include
-from getdata import views as api
+from getdata import urls as data_api_urls
 from rest_framework_swagger.views import get_swagger_view
 from django.views.generic import TemplateView
 
@@ -23,9 +23,14 @@ from django.views.generic import TemplateView
 schema_view = get_swagger_view(title='API Documentation')
 
 urlpatterns = [
+    # miscellaneous endpoints
     path('api/docs/', schema_view),
     path('admin/', admin.site.urls),
 
-    path('', TemplateView.as_view(template_name='index.html')),
+    # data api
+    path('api/data/', include(data_api_urls.urlpatterns)),
+
+    # default frontend
+    path(r'', TemplateView.as_view(template_name='index.html')),
 
 ]

@@ -22,6 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '06m&s59*db8q7%c_lp@33#4a%ap6c@vy0tn_u^l)m#5#8pvrf4'
 
+# SDOA api relate secrets
+SODA_APP_TOKEN = "ZDQ4Pe3CdPuLvRyRe1u51JnBb"
+SODA_SECRET_TOKEN = "8DIAx6z6ISq7lqHSHkrqKJwgXMv-YwJR9ORg"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -29,7 +33,6 @@ ALLOWED_HOSTS = ["localhost", "0.0.0.0", "www.chi77.org", "chi77.org"]
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
