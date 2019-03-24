@@ -19,6 +19,7 @@ psycopg2-binary==2.7.4
 python-dateutil==2.6.1
 pytz==2018.3
 six==1.11.0
+sodapy==1.5.2
 Werkzeug==0.14.1
 whitenoise==4.0b4
 django-rest-swagger==2.1.2
