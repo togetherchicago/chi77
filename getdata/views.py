@@ -1,29 +1,42 @@
 from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse
 
 from .data_collection.pipeline import Pipeline
-from .helpers import request as requestHelper
+from .helpers.request import *
+from .helpers.response import *
+
+
+######################
+## Helper
+######################
+def respond_with_data(data_type, resource, category, query):
+    try:
+        data = Pipeline('general').fetch(resource, category, query)
+        return respondJSON('success', 'Data is fetched', data)
+    except Exception as error:
+        #TODO: in the future the exception class can be extended to show different error message to the frontend
+        print(error)
+        return respondJSON('error', 'Unexpected error happens while fetching data', status_code=STATUS_SERVER_ERROR)
 
 ######################
 ## General API
 ######################
 @require_http_methods(['GET'])
 def view_general_data(request):
-    resource, category, query = requestHelper.extract_data_request(request)
-    return JsonResponse(Pipeline('general').fetch(resource, category, query), safe=False)
+    resource, category, query = extract_data_request(request)
+    return respond_with_data('general', resource, category, query)
 
 #######################
 ## Transit APIs
 #######################
 @require_http_methods(['GET'])
 def view_transit_data(request):
-    resource, category, query = requestHelper.extract_data_request(request)
-    return JsonResponse(Pipeline('transit').fetch(resource, category, query), safe=False)
+    resource, category, query = extract_data_request(request)
+    return respond_with_data('transit', resource, category, query)
 
 #######################
 ## Healthcare APIs
 #######################
 @require_http_methods(['GET'])
 def view_healthcare_data(request):
-    resource, category, query = requestHelper.extract_data_request(request)
-    return JsonResponse(Pipeline('healthcare').fetch(resource, category, query), safe=False)
+    resource, category, query = extract_data_request(request)
+    return respond_with_data('healthcare', resource, category, query)

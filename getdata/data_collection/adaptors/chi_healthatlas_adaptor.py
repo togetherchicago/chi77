@@ -1,11 +1,23 @@
 from .base import Adaptor as BaseAdaptor
+from .base import QueryLoader as BaseQueryLoader
 import requests
+
+class Chi_HealthAtlas_Query_Loader(BaseQueryLoader):
+    pass
 
 class Chi_HealthAtlas_Adaptor(BaseAdaptor):
     
     def __init__(self):
         super().__init__()
+
+        """
+        Params:
+        - base_url: Base API url for all Chicago Health Atlas Public API
+        """
         self._base_url = "https://api.chicagohealthatlas.org/api/v1"
+
+        self._query_loader = Chi_HealthAtlas_Query_Loader()
+        
     
     def extract(self, category, query):
         """
