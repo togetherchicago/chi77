@@ -10,7 +10,7 @@ from .helpers.response import *
 ######################
 def respond_with_data(data_type, resource, category, query):
     try:
-        data = Pipeline('general').fetch(resource, category, query)
+        data = Pipeline(date_type).fetch(resource, category, query)
         return respondJSON('success', 'Data is fetched', data)
     except Exception as error:
         #TODO: in the future the exception class can be extended to show different error message to the frontend
