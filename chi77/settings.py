@@ -140,20 +140,27 @@ django_heroku.settings(locals())
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
-env = os.environ.copy()
+# import dj_database_url
+# env = os.environ.copy()
+#
+# db_url = env.get('DATABASE_URL', False)
+# if db_url != False:
+#     DATABASES = {
+#         'default': dj_database_url.config()
+#     }
+# else:
+#     DATABASES = {
+#         'default': dj_database_url.config(default='postgres://localdev:localpass@geodb:5432/chi77')
+#     }
+#
+# DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
-db_url = env.get('DATABASE_URL', False)
-if db_url != False:
-    DATABASES = {
-        'default': dj_database_url.config()
-    }
-else:
-    DATABASES = {
-        'default': dj_database_url.config(default='postgres://localdev:localpass@geodb:5432/chi77')
-    }
-
-DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.sqlite3',
+       'NAME': 'mydatabase',
+   }
+}
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
