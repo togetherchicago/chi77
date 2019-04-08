@@ -15,7 +15,6 @@ class Chi_HealthAtlas_Adaptor(BaseAdaptor):
         - base_url: Base API url for all Chicago Health Atlas Public API
         """
         self._base_url = "https://api.chicagohealthatlas.org/api/v1"
-
         self._query_loader = Chi_HealthAtlas_Query_Loader()
         
     

@@ -1,3 +1,6 @@
+from ..exceptions import QueryNotValidException
+from ..constants import *
+
 class Adaptor(object):
     """
     Abstract base class for data retrieval
@@ -64,10 +67,12 @@ class QueryLoader(object):
         Arguments:
             query {dict}
         """
-        # TODO
-        return True
+        for operator, subqueries in query.items():
+            if operator not in VALID_QUERY_OPERATORS:
+                raise QueryNotValidException("Query operator is not valid")
+            # TODO more query operator specific checks
 
-    def load_raw_query(self, query):
+    def process_query(self, query):
         """
         Load raw query from request
         
@@ -75,22 +80,50 @@ class QueryLoader(object):
             query {dict}
         """
         self.check(query)
-        self._query = query
-    
-    def set_data(self, data):
+        self.apply_query(query)
+
+    def get_results(self):
         """
-        Update the data to be applied by each query operation
-        E.g. the client can use this method to dynamically apply the query
-        on either the API url or the actual data
-        
-        Arguments:
-            data {mixed}
+        Get the final query results
+        Should be overridden
         """
-        self._data = data
-    
-    def apply_query(self):
+        pass
+
+    def apply_query(self, query):
         """
         Dissect the query and apply each operation
+        """
+        for operator, subqueries in query.items():
+            if operator == QUERY_SELECT:
+                self.apply_select(subqueries)
+            elif operator == QUERY_ORDER_BY:
+                self.apply_order_by(*subqueries)
+            elif operator == QUERY_LIMIT:
+                self.apply_limit(*subqueries)
+            elif operator == QUERY_OFFSET:
+                self.apply_offset(*subqueries)
+            elif operator == QUERY_WHERE:
+                self.apply_where(*subqueries)
+        
+
+    def apply_select(self, columns):
+        """
+        Apply a select operation on certain columns
+        Should be overridden
+
+        Arguments:
+            columns {list}
+        """
+        pass
+
+    def apply_where_results(self, data):
+        """
+        Retrieve the final result with multple where operators as a final
+        step of the where statements
+        Should be overriden
+
+        Arguments:
+            data {mixed}
         """
         pass
 
@@ -101,32 +134,11 @@ class QueryLoader(object):
         
         Arguments:
             column {str} -- Data column to filter on
-            operator {str} -- > < ===
+            operator {str} -- > < =
             value {str} -- Value to filter against
-        """
-        # TODO
-        pass
-    
-    def apply_union(self, data1, data2):
-        """
-        Apply a set union operator for two sides of data
-        Can be overridden
-
-        Arguments:
-            data1 {Iterable}
-            data2 {Iterable}
-        """
-        # TODO
-        pass
-    
-    def apply_intersection(self, data1, data2):
-        """
-        Apply a set union operator for two sides of data
-        Can be overridden
-
-        Arguments:
-            data1 {Iterable}
-            data2 {Iterable}
+        
+        Returns:
+            {mixed} -- filtered data
         """
         # TODO
         pass
@@ -134,7 +146,7 @@ class QueryLoader(object):
     def apply_order_by(self, columnm, order):
         """
         Apply a order by operator for the data
-        Can be overridden
+        Should be overridden
 
         Arguments:
             columnm {str} -- Data column to sort on
@@ -146,7 +158,7 @@ class QueryLoader(object):
     def apply_limit(self, value):
         """
         Apply a limit operation to the data
-        Can be overridden
+        Should be overridden
 
         Arguments:
             value {int} -- number of data items to limit on 
@@ -157,7 +169,7 @@ class QueryLoader(object):
     def apply_offset(self, offset):
         """
         Apply a paging/offset operation to the data
-        Can be overridden
+        Should be overridden
 
         Arguments:
             offset {int} -- number of items to skip 
