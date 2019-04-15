@@ -4,8 +4,10 @@ services:
   geodb:
     image: mdillon/postgis
     restart: always
+    networks:
+      - backend
     volumes:
-      - "geodb-volume:/var/lib/postgresql/data"
+      - geodb-volume:/var/lib/postgresql/data"
     environment:
       POSTGRES_USER: localdev
       POSTGRES_PASSWORD: localpass
@@ -17,8 +19,11 @@ services:
 
   django:
     image: togetherchicago/chi77-django
+    tty: true
     build: .
-    command: bash -c "sleep 15 && ./scripts/init_db.sh && ./scripts/init_django.sh  && python manage.py runserver 0.0.0.0:5000"
+    command: ["scripts/wait_for_it.sh", "geodb:5432", "--", "scripts/init_django.sh"]
+    networks:
+      - backend
     volumes:
       - .:/django
     ports:
@@ -39,3 +44,6 @@ services:
 volumes:
   geodb-volume:
   node-modules:
+
+networks:
+  backend:

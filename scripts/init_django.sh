@@ -1,4 +1,6 @@
 #!/bin/bash
-
-echo -e "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'test1234')" | python3 manage.py shell
-echo -e "Created superuser"                                                                                                                              
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py generate_equivalencies
+python3 manage.py createsuperuser
+python3 manage.py runserver 0.0.0.0:5000
