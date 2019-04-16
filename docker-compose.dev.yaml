@@ -7,7 +7,7 @@ services:
     networks:
       - backend
     volumes:
-      - geodb-volume:/var/lib/postgresql/data"
+      - geodb-volume:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: localdev
       POSTGRES_PASSWORD: localpass
