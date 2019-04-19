@@ -3,7 +3,7 @@ from chi77.settings import SODA_APP_TOKEN, SODA_SECRET_TOKEN
 
 from .base import Adaptor as BaseAdaptor
 
-class SODA_Adaptor(BaseAdaptor):
+class Adaptor(BaseAdaptor):
     
     def __init__(self):
         super().__init__()
@@ -21,7 +21,7 @@ class SODA_Adaptor(BaseAdaptor):
         """
         self._category = category
 
-    def transfer(self, extracted_data):
+    def transform(self, extracted_data):
         """
         See parent
         """
