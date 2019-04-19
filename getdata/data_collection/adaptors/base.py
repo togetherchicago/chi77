@@ -41,12 +41,19 @@ class QueryLoader(object):
                 if type(subqueries) != list:
                     raise QueryNotValidException("%s requires a list value" % operator)
             
+            if operator == QUERY_ORDER_BY:
+                for subquery in subqueries:
+                    if len(subquery) != 2:
+                        raise QueryNotValidException("$orderBy requires 2 conditions")
+                    if subquery[1].lower() not in ['asc', 'desc']:
+                        raise QueryNotValidException("$orderBy requires ASC or DESC")
+
             if operator == QUERY_WHERE:
                 for subquery in subqueries:
                     if type(subquery) != list:
                         raise QueryNotValidException("$where conditions requires a list value")
                     if len(subquery) != 3:
-                        raise QueryNotValidException("$where conditions require 3 operands")
+                        raise QueryNotValidException("$where conditions require 3 conditions")
                     if subquery[1] not in ['>', '<', '=']:
                         raise QueryNotValidException("$where condition operator not valid")
 
@@ -160,6 +167,29 @@ class QueryLoader(object):
             offset {int} -- number of items to skip 
         """
         pass
+
+    def _where_filter(self, column, operator, value):
+        """
+        Create a filter function for where
+        
+        Arguments:
+            item {dict} -- data item
+            column {str} -- column to filter
+            operator {str} -- operator used to compare
+            value {mixed} -- value to compare against
+        
+        Returns:
+            function
+        """
+
+        def _filter(item):
+            if operator == '=':
+                return item[column] == value
+            elif operator == '>':
+                return item[column] > value
+            elif operator == '<':
+                return item[column] < value
+        return _filter
 
 class Adaptor(object):
     """
