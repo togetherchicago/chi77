@@ -9,6 +9,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - react-redux, redux, and redux-saga: Redux and Redux-Saga
 - react-scripts: Bundled scripts that help run the application
 - reselect: Selectors creator for Redux
+- react-bootstrap and bootstrap: React Bootstrap UI Framework
 - styled-components: Helpful easy-to-style HTML React Components
 
 - eslint: Ensures unified code formatting
