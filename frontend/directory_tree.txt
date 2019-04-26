@@ -1,0 +1,29 @@
+.
+├── .eslintignore  // what should eslint ignore
+├── .eslintrc.json  // eslint config
+├── package.json  // npm package config
+├── package-lock.json  // npm package info DON'T MODIFY
+├── public
+│   ├── favicon.ico  // browser tab icon
+│   ├── index.html  // home html file
+│   └── manifest.json  // web page config for browser's use
+├── README.md
+└── src
+    ├── api.js  // axios setup
+    ├── App.js  // main app
+    ├── App.test.js
+    ├── [SUBPACKAGE]  // code related to a certain package (ex. chicago health atlas)
+    │   ├── actions.js  // action-types and action-creators for redux
+    │   ├── effects.js  // functions that perform "effects" for redux-saga
+    │   ├── reducers.js  // reducers for redux
+    │   └── sagas.js  // sagas for redux-saga
+    ├── components  // main react components
+    │   ├── ...
+    ├── constants.js  // constants (ex. tokens, endpoints, etc.)
+    ├── index.css  // css for index.html
+    ├── index.js  // js for index.html, react entry-point
+    ├── reduxExample.js  // example showing redux and redux-saga
+    ├── rootReducer.js  // main reducer for redux
+    ├── rootSaga.js  // main saga for redux-saga
+    ├── selectors.js  // selectors for redux
+    └── store.js  // store setup for redux
