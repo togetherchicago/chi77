@@ -15,6 +15,7 @@ export default function configureStore() {
   );
   sagaMiddleware.run(rootSaga);
 
+  // for debugging
   window.reduxStore = store;
 
   return store;

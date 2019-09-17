@@ -3,6 +3,7 @@ import { Map, TileLayer, LayersControl } from 'react-leaflet';
 
 import { CHI_POSITION, MAPBOX_TOKEN } from '../constants';
 import BasePolygons from './basePolygons';
+import HospitalPoints from './hospitalPoints';
 
 class MapComp extends Component {
   render() {
@@ -18,6 +19,11 @@ class MapComp extends Component {
               accessToken={MAPBOX_TOKEN}
             />
           </LayersControl.BaseLayer>
+
+          <LayersControl.Overlay name='Hospitals'>
+              <HospitalPoints />
+          </LayersControl.Overlay>
+
         </LayersControl>
         <BasePolygons />
       </Map>
