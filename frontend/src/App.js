@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import MapConn from './components/map';
-import { fetchPlacesAC } from './chicago-health-atlas/actions';
+import { fetchPlacesAC, fetchHospitalsAC } from './chicago-health-atlas/actions';
 
 const Container = styled.div`
   display: flex;
@@ -40,10 +40,12 @@ const MapContainer = styled.div`
 class App extends Component {
   static defaultProps = {
     fetchPlaces: () => {},
+    fetchHospitals: () => {},
   };
 
   componentDidMount() {
     this.props.fetchPlaces();
+    this.props.fetchHospitals();
   }
 
   render() {
@@ -62,6 +64,7 @@ class App extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     fetchPlaces: () => dispatch(fetchPlacesAC()),
+    fetchHospitals: () => dispatch(fetchHospitalsAC()),
   };
 }
 

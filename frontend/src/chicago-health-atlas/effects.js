@@ -1,31 +1,54 @@
 import { put, call } from 'redux-saga/effects';
 
 import { api } from '../api';
-import { addPlacesAC } from './actions';
+import { addPlacesAC, addHospitalsAC } from './actions';
 
 function parsePlaces(data) {
-  /* eslint-disable camelcase */
-  const relevant_keys = ['part', 'resource_cnt', 'name'];
-  const community_areas = {};
+  const relevantKeys = ['part', 'resource_cnt', 'name'];
+  const communityAreas = {};
   for (const place of data['community_areas']) {
 
     const info = {};
-    for (const key of relevant_keys) {
+    for (const key of relevantKeys) {
       info[key] = place[key];
     }
 
     // Swap longitudes and latitudes
-    const old_polygon = JSON.parse(place['geometry'])['coordinates'][0][0];
-    const new_polygon = [];
-    for (const coord of old_polygon) {
-      new_polygon.push([coord[1], coord[0]]);
+    const oldPolygon = JSON.parse(place['geometry'])['coordinates'][0][0];
+    const newPolygon = [];
+    for (const coord of oldPolygon) {
+      newPolygon.push([coord[1], coord[0]]);
     }
-    info['geometry'] = new_polygon;
+    info['geometry'] = newPolygon;
 
-    community_areas[place['slug']] = info;
+    communityAreas[place['slug']] = info;
   }
-  return community_areas;
-  /* eslint-enable camelcase */
+  return communityAreas;
+}
+
+function parseHospitals(data) {
+  let hospitals = {};
+
+  for (const h of data) {
+    let currentHospital = {};
+
+    // Grab slug
+    let slug = h['slug'];
+    currentHospital['slug'] = slug;
+    
+    // Parse latLong
+    let latLong = h['lat_long'].split(',');
+    latLong[0] = parseFloat(latLong[0]);
+    latLong[1] = parseFloat(latLong[1]);
+    currentHospital['lat_long'] = latLong;
+
+    // Grab name
+    currentHospital['name'] = h['name'];
+
+    hospitals[slug] = currentHospital;
+  }
+  
+  return hospitals;
 }
 
 export function * fetchPlaces() {
@@ -40,4 +63,18 @@ export function * fetchPlaces() {
   const communityAreas = yield call(parsePlaces, response.data);
 
   yield put(addPlacesAC({ communityAreas }));
+}
+
+export function * fetchHospitals() {
+  const response = yield api.get('/', {
+    params: {
+      resource: 'chi_health_atlas',
+      category: 'hospitals',
+      query: JSON.stringify({}),
+    },
+  });
+
+  const hospitals = yield call(parseHospitals, response.data);
+  
+  yield put(addHospitalsAC({ hospitals }));
 }
