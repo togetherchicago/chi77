@@ -10,11 +10,12 @@ Chi77 is a Python Django application communicating with a GIS-enabled Postgres d
 To run this software on a development machine, ensure that you have the following tools installed:
 
 1. [Download and install](https://docs.docker.com/install/) the latest version of Docker, then start the Docker agent on your machine (on Macs, a Docker icon will appear in the menubar when the agent is running).
-2. [Download and install](https://www.python.org/downloads/) the latest version of Python 3. Using Homebrew on the Mac:
+2. [Download and install](https://docs.docker.com/compose/install) the latest version of docker-compose, this will allow us to use templates for spinning up multiple docker services at once.
+3. [Download and install](https://www.python.org/downloads/) the latest version of Python 3. Using Homebrew on the Mac:
 ```
 $ brew install python3
 ```
-3. Clone this repository to your local filesystem, then navigate into the repo's directory:
+4. Clone this repository to your local filesystem, then navigate into the repo's directory:
 ```
 $ git clone https://github.com/togetherchicago/chi77.git
 $ cd chi77/
