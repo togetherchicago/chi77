@@ -2,9 +2,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import ast
 
-from .serializers import *
-from chicagomap.models import Equivalency, Domain
-from getdata.models import Indicator, Statistic
+from getdata.serializers import *
+from getdata.models import Domain, Equivalency, Indicator, Statistic
 from rest_framework import viewsets
 
 from django.http import Http404

@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from rest_framework_gis.serializers import GeoFeatureModelSerializer
-from getdata.models import Statistic, Indicator
-from chicagomap.models import Domain
+from getdata.models import Domain, Statistic, Indicator
 
 
 class StatisticSerializer(serializers.ModelSerializer):

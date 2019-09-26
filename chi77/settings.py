@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'rest_framework',
-    'chicagomap',
     'getdata',
     'rest_framework_swagger',
     'rest_framework_gis',
