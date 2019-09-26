@@ -22,19 +22,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '06m&s59*db8q7%c_lp@33#4a%ap6c@vy0tn_u^l)m#5#8pvrf4'
 
-# SDOA api relate secrets
-SODA_APP_TOKEN = "ZDQ4Pe3CdPuLvRyRe1u51JnBb"
-SODA_SECRET_TOKEN = "8DIAx6z6ISq7lqHSHkrqKJwgXMv-YwJR9ORg"
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-CORS_ORIGIN_ALLOW_ALL = True
-
 
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "www.chi77.org", "chi77.org"]
 
 
 # Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,15 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.gis',
     'rest_framework',
-    'chicagomap',
     'getdata',
     'rest_framework_swagger',
     'rest_framework_gis',
-    'corsheaders'
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -140,27 +132,20 @@ django_heroku.settings(locals())
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 # Parse database configuration from $DATABASE_URL
-# import dj_database_url
-# env = os.environ.copy()
-#
-# db_url = env.get('DATABASE_URL', False)
-# if db_url != False:
-#     DATABASES = {
-#         'default': dj_database_url.config()
-#     }
-# else:
-#     DATABASES = {
-#         'default': dj_database_url.config(default='postgres://localdev:localpass@geodb:5432/chi77')
-#     }
-#
-# DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+import dj_database_url
+env = os.environ.copy()
 
-DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': 'mydatabase',
-   }
-}
+db_url = env.get('DATABASE_URL', False)
+if db_url != False:
+    DATABASES = {
+        'default': dj_database_url.config()
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(default='postgres://localdev:localpass@geodb:5432/chi77')
+    }
+
+DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
 GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')

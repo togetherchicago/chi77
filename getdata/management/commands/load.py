@@ -1,6 +1,6 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from chicagomap.models import Domain
+from getdata.models import Domain
 
 
 class CustomLayer(LayerMapping):
