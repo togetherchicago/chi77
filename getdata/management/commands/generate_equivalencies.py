@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from chicagomap.models import Domain, Equivalency
+from getdata.models import Domain, Equivalency
 from django.contrib.gis.geos import MultiPolygon, Polygon, GeometryCollection
 
 
