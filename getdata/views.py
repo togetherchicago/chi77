@@ -8,6 +8,7 @@ from rest_framework import viewsets
 
 from django.http import Http404
 from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
 
 from .data_collection.pipeline import Pipeline
 from .helpers import request as requestHelper
