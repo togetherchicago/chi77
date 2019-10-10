@@ -7,9 +7,9 @@ STATUS_BAD_REQUEST = 400
 STATUS_SERVER_ERROR = 500
 
 def respondJSON(status, message, data = None, status_code=200):
-    data = {
+    responseData = {
         'status': status,
         'message': message
     }
-    if data: data['data'] = data
-    return JsonResponse(data, status=status_code, safe=False)
+    if data: responseData['data'] = data
+    return JsonResponse(responseData, status=status_code, safe=False)

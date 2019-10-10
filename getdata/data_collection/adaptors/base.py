@@ -196,7 +196,7 @@ class Adaptor(object):
     Abstract base class for data retrieval
     """
 
-    def set_resource(self, resources):
+    def set_resources(self, resources):
         """
         Set the sub resourse for some data types if necessary
         

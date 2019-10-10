@@ -33,13 +33,14 @@ class Pipeline(object):
             query {dict} -- parsed query data
         """
         # resource can use dot notation to access subresource
-        # e.g.
         resources = resource.split('.')
-        resource_adaptor = resources[0]
+        adaptor = resources[0]
         
-        api = self.resources()[self._data_type][resource_adaptor]
-        api.set_resources(resources[1:])
+        api = self.resources()[self._data_type][adaptor]
+        # bind subresources
+        if len(resources) > 1:
+            api.set_resources(resources[1:])
 
-        api.transfer(api.extract(category, query))
+        api.transform(api.extract(category, query))
         return api.load()
         

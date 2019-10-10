@@ -15,7 +15,7 @@ def respond_with_data(data_type, resource, category, query):
     except Exception as error:
         #TODO: in the future the exception class can be extended to show different error message to the frontend
         print(error)
-        return respondJSON('error', 'Unexpected error happens while fetching data', status_code=STATUS_SERVER_ERROR)
+        return respondJSON('error', 'Unexpected error happens while fetching data: %s' % error, status_code=STATUS_SERVER_ERROR)
 
 ######################
 ## General API
