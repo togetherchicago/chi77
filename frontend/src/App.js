@@ -1,38 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'react-bootstrap';
-import styled from 'styled-components';
 import logo from './logo.png';
-import './index.css'
 
 import MapConn from './components/map';
 import { fetchPlacesAC, fetchHospitalsAC } from './chicago-health-atlas/actions';
-
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  overflow: auto;
-`;
-
-
-const SideAndMapContainer = styled.div`
-  flex: 4;
-  display: flex;
-  flex-direction: row;
-`;
-
-const SideBar = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: blue; /* TEMP */
-`;
-
-const MapContainer = styled.div`
-  flex: 4;
-`;
 
 class App extends Component {
   static defaultProps = {
@@ -47,21 +19,21 @@ class App extends Component {
 
   render() {
     return (
-      <PageContainer>
-      <Navbar style={{ "padding": "15px" }} bg="dark" variant="dark">
-        <Navbar.Brand href="https://www.togetherchicago.com">
-          <img
-            alt=""
-            src={ logo }
-            width="80"
-            height="30"
-            className="d-inline-block align-top"
-          />
-        </Navbar.Brand>
-        <Button style={{ "margin-left":"74rem" }} variant="outline-light">Reset Search</Button>
-      </Navbar>
+      <Container>
+        <Navbar style={{ "padding": "15px" }} bg="dark" variant="dark">
+          <Navbar.Brand href="/">
+            <img
+              alt=""
+              src={ logo }
+              width="80"
+              height="30"
+              className="d-inline-block align-top"
+            />
+          </Navbar.Brand>
+          <Button style={{ "margin-left": "1000px" }} variant="outline-light">Reset Filters</Button>
+        </Navbar>
 
-      <Container style={{ "height": "100%", "padding-left": "0", "padding-right": "0" }}>
+        <Container style={{ "height": "100%", "padding-left": "0", "padding-right": "0" }}>
           <Row style={{"height": "100%", "padding-left": "0", "padding-right": "0" }}>
             <Col md={{ span: 3 }}>
               <React.Fragment style={{ "background-color": "lightgray" }}>
@@ -78,16 +50,12 @@ class App extends Component {
                 </DropdownButton>
 
               </React.Fragment>
-            
-              
             </Col>
-            <Col md={{ span: 9 }}> <MapConn style={{"padding-left": "0", "padding-right": "0"}}/> </Col>
+
+            <Col md={{ span: 9 }}> <MapConn style={{"padding-left": "0", "padding-right": "0"}}/></Col>
           </Row>
+        </Container>
       </Container>
-    </PageContainer>
-
-
-        
     );
   }
 }
