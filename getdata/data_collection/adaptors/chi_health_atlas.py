@@ -35,6 +35,11 @@ ATTR_CONFIG = {
             'tmpl': "/topic_info/${geo_slug}/${indicator_slug}",
             'keys': ['geo_slug', 'indicator_slug']
         }
+    },
+    "hospitals": {
+        "": {
+            'tmpl': "/hospitals"
+        }
     }
 }
 
@@ -42,11 +47,17 @@ class QueryLoader(BaseQueryLoader):
     
     def __init__(self):
         self._api_url = None
+        self.data = None
     
     def set_category(self, category):
         super().set_category(category)
         self._url_params_for_category = self._get_url_param(category)
         self._api_url = "%s/%s" % (BASE_API_URL, category)
+        
+    def get_data(self):
+        if not self.data:
+            self.data = self._retrieve_data()
+        return self.data
 
     def apply_where_aggregated(self, subqueries):
         """
@@ -157,7 +168,7 @@ class Adaptor(BaseAdaptor):
         See parent
         """
         self._query_loader.set_category(category)
-        self._query_loader.process_query(query)
+        # self._query_loader.process_query(query)
         return self._query_loader.get_data()
 
     def transform(self, extracted_data):
