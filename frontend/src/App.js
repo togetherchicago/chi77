@@ -4,12 +4,17 @@ import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'r
 import logo from './logo.png';
 
 import MapConn from './components/map';
-import { fetchPlacesAC, fetchHospitalsAC } from './chicago-health-atlas/actions';
+import {
+  fetchPlacesAC,
+  fetchHospitalsAC,
+  filterAreasByNumOfHospitalsAC,
+} from './chicago-health-atlas/actions';
 
 class App extends Component {
   static defaultProps = {
     fetchPlaces: () => {},
     fetchHospitals: () => {},
+    filterAreasByNumOfHospitals: () => {},
   };
 
   componentDidMount() {
@@ -43,10 +48,16 @@ class App extends Component {
                 <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
               </DropdownButton>
 
-              <DropdownButton className="dropdownFilter" variant="secondary" title="HEALTHCARE">
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+              <DropdownButton
+                className="dropdownFilter"
+                variant="secondary"
+                title="# of Hospitals"
+                onSelect={this.props.filterAreasByNumOfHospitals}
+              >
+                <Dropdown.Item eventKey={0}>0</Dropdown.Item>
+                <Dropdown.Item eventKey={1}>1</Dropdown.Item>
+                <Dropdown.Item eventKey={2}>2</Dropdown.Item>
+                <Dropdown.Item eventKey={3}>3</Dropdown.Item>
               </DropdownButton>
           </Col>
 
@@ -63,6 +74,7 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchPlaces: () => dispatch(fetchPlacesAC()),
     fetchHospitals: () => dispatch(fetchHospitalsAC()),
+    filterAreasByNumOfHospitals: (num) => dispatch(filterAreasByNumOfHospitalsAC(num)),
   };
 }
 
