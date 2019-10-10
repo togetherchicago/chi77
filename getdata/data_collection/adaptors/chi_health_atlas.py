@@ -10,6 +10,11 @@ BASE_API_URL = "https://api.chicagohealthatlas.org/api/v1"
 # these params are used to modify url params
 # TODO: this list is not complete yet!
 ATTR_CONFIG = {
+    "places": {
+        "": {
+            'tmpl': "/places"
+        }
+    },
     "zip_code": {
         "": {
             'tmpl': "/place/${geo_slug}",
@@ -39,6 +44,9 @@ ATTR_CONFIG = {
     "hospitals": {
         "": {
             'tmpl': "/hospitals"
+        },
+        "area": {
+            'tmpl': "/hospitals/{geo_slug}"
         }
     }
 }
@@ -159,17 +167,14 @@ class QueryLoader(BaseQueryLoader):
 
 class Adaptor(BaseAdaptor):
     
-    def __init__(self):
-        super().__init__()
-        self._query_loader = QueryLoader()
-        
     def extract(self, category, query):
         """
         See parent
         """
-        self._query_loader.set_category(category)
+        query_loader = QueryLoader()
+        query_loader.set_category(category)
         # self._query_loader.process_query(query)
-        return self._query_loader.get_data()
+        return query_loader.get_data()
 
     def transform(self, extracted_data):
         """
