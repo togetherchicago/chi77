@@ -11,42 +11,43 @@ BASE_API_URL = "https://api.chicagohealthatlas.org/api/v1"
 # TODO: this list is not complete yet!
 ATTR_CONFIG = {
     "places": {
-        "": {
+        "default": {
             'tmpl': "/places"
         }
     },
     "zip_code": {
-        "": {
+        "default": {
             'tmpl': "/place/${geo_slug}",
             'keys': ['geo_slug'],
             'data_keys': ['zip_codes']
         }
     },
     "community_areas": {
-        "": {
+        "default": {
             'tmpl': "/place/${geo_slug}",
             'keys': ['geo_slug'],
             'data_keys': ['community_areas']
         }
     },
     "race": {
-        "": {
+        "default": {
             'tmpl': "/race/${area_slug}",
             'keys': ['area_slug']
         }
     },
     "topic_info": {
-        "": {
+        "default": {
             'tmpl': "/topic_info/${geo_slug}/${indicator_slug}",
             'keys': ['geo_slug', 'indicator_slug']
         }
     },
     "hospitals": {
-        "": {
+        "default": {
             'tmpl': "/hospitals"
         },
         "area": {
-            'tmpl': "/hospitals/{geo_slug}"
+            'tmpl': "/${geo_slug}/hospitals",
+            'keys': ['geo_slug']
         }
     }
 }
@@ -54,13 +55,14 @@ ATTR_CONFIG = {
 class QueryLoader(BaseQueryLoader):
     
     def __init__(self):
+        super().__init__()
         self._api_url = None
-        self.data = None
     
     def set_category(self, category):
         super().set_category(category)
         self._url_params_for_category = self._get_url_param(category)
         self._api_url = "%s/%s" % (BASE_API_URL, category)
+        return self
         
     def get_data(self):
         if not self.data:
@@ -74,7 +76,7 @@ class QueryLoader(BaseQueryLoader):
         to_url, to_data = [], []
         for query in subqueries:
             if self._url_params_for_category and \
-                query[0] in self._url_params_for_category['keys']:
+                query[0] in self._url_params_for_category.get('keys', []):
                 to_url.append(query)
             else:
                 to_data.append(query)
@@ -86,7 +88,7 @@ class QueryLoader(BaseQueryLoader):
         if "${" in  self._api_url:
             raise QueryNotValidException("Some url parameters are missing!")
         self._api_url = BASE_API_URL + self._api_url
-
+    
         if not self.data:
             self.data = self._retrieve_data()
         
@@ -145,8 +147,8 @@ class QueryLoader(BaseQueryLoader):
         """
         res = get_nested(ATTR_CONFIG, category)
 
-        if type(res) == dict:
-            return res[""] # for the root value
+        if type(res) == dict and 'default' in res:
+            return res["default"] # for the root value
         else:
             return res
         
@@ -157,7 +159,7 @@ class QueryLoader(BaseQueryLoader):
         res = requests.get(self._api_url)
         if res.status_code != STATUS_OK:
             raise APIRequestFailureException(
-                "API call to Chicago Health Atlas failed")
+                "API call to Chicago Health Atlas failed: %s" % self._api_url)
         data = res.json()
         # check for data-keys to extract
         data_keys = self._url_params_for_category.get('date_keys', None)
@@ -172,8 +174,7 @@ class Adaptor(BaseAdaptor):
         See parent
         """
         query_loader = QueryLoader()
-        query_loader.set_category(category)
-        # self._query_loader.process_query(query)
+        query_loader.set_category(category).process_query(query)
         return query_loader.get_data()
 
     def transform(self, extracted_data):

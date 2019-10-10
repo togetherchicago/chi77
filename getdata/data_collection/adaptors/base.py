@@ -11,7 +11,7 @@ class QueryLoader(object):
         self.data = None
 
     def get_data(self):
-        pass
+        return self.data
     
     def get_category(self):
         return self.category
