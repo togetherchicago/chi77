@@ -55,8 +55,8 @@ ATTR_CONFIG = {
 class QueryLoader(BaseQueryLoader):
     
     def __init__(self):
+        super().__init__()
         self._api_url = None
-        self.data = None
     
     def set_category(self, category):
         super().set_category(category)
