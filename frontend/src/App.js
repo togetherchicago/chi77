@@ -19,8 +19,8 @@ class App extends Component {
 
   render() {
     return (
-      <Container style={{"height": "100vh"}} fluid={true}>
-        <Row>
+      <Container style={{"height": "100vh"}} fluid>
+        <Row md={{ span: 3 }}>
           <Navbar style={{"width": "100%"}} bg="dark" variant="dark">
             <Navbar.Brand href="/">
               <img
@@ -35,7 +35,7 @@ class App extends Component {
           </Navbar>
         </Row>
 
-        <Row>
+        <Row md={{ span: 9 }}>
           <Col md={{ span: 3 }}>
             <React.Fragment>
               <DropdownButton style={{"padding": "20px", "alignContent": "left"}} variant="secondary" id="dropdown-secondary-button" title="TRANSPORTATION">

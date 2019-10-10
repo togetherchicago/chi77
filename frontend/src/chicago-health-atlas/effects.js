@@ -27,17 +27,17 @@ function parsePlaces(data) {
 }
 
 function parseHospitals(data) {
-  let hospitals = {};
+  const hospitals = {};
 
   for (const h of data) {
-    let currentHospital = {};
+    const currentHospital = {};
 
     // Grab slug
-    let slug = h['slug'];
+    const slug = h['slug'];
     currentHospital['slug'] = slug;
-    
+
     // Parse latLong
-    let latLong = h['lat_long'].split(',');
+    const latLong = h['lat_long'].split(',');
     latLong[0] = parseFloat(latLong[0]);
     latLong[1] = parseFloat(latLong[1]);
     currentHospital['lat_long'] = latLong;
@@ -47,7 +47,7 @@ function parseHospitals(data) {
 
     hospitals[slug] = currentHospital;
   }
-  
+
   return hospitals;
 }
 
@@ -60,7 +60,7 @@ export function * fetchPlaces() {
     },
   });
 
-  const communityAreas = yield call(parsePlaces, response.data);
+  const communityAreas = yield call(parsePlaces, response.data.data);
 
   yield put(addPlacesAC({ communityAreas }));
 }
@@ -74,7 +74,7 @@ export function * fetchHospitals() {
     },
   });
 
-  const hospitals = yield call(parseHospitals, response.data);
-  
+  const hospitals = yield call(parseHospitals, response.data.data);
+
   yield put(addHospitalsAC({ hospitals }));
 }
