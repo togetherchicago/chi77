@@ -7,3 +7,4 @@ export const getHospitals = (state) => {
   return hospitals;
 };
 export const getFilterAreasByNumOfHospitals = (state) => state.filterAreasByNumOfHospitals;
+export const getTrainStations = (state) => state.trainStations;

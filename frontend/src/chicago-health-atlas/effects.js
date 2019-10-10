@@ -1,7 +1,7 @@
 import { put, call, select, take } from 'redux-saga/effects';
 
 import { api } from '../api';
-import { addPlacesAC, addHospitalsAC } from './actions';
+import { addPlacesAC, addHospitalsAC, addTrainStationsAC } from './actions';
 import { getCommunityAreas } from '../selectors';
 
 function parsePlaces(data) {
@@ -34,7 +34,7 @@ function parseHospitals(data) {
     // Grab slug
     const slug = h['slug'];
 
-    // Flip latLong
+    // Parse latLong
     const latLong = h['lat_long'].split(',');
     latLong[0] = parseFloat(latLong[0]);
     latLong[1] = parseFloat(latLong[1]);
@@ -47,7 +47,7 @@ function parseHospitals(data) {
 }
 
 export function * fetchPlaces() {
-  const response = yield api.get('/', {
+  const response = yield api.get('/general/view/', {
     params: {
       resource: 'chi_health_atlas',
       category: 'places',
@@ -65,7 +65,7 @@ export function * fetchHospitals() {
   const communityAreas = yield select(getCommunityAreas);
 
   for (const area in communityAreas) {
-    const response = yield api.get('/', {
+    const response = yield api.get('/general/view/', {
       params: {
         resource: 'chi_health_atlas',
         category: 'hospitals.area',
@@ -79,4 +79,30 @@ export function * fetchHospitals() {
       yield put(addHospitalsAC({ hospitals, area }));
     }
   }
+}
+
+export function * fetchTrainStations() {
+  const stations = {};
+
+  const response = yield api.get('/transit/view/', {
+    params: {
+      resource: 'soda.chicagocity',
+      category: 'cta.train-stations',
+    },
+  });
+
+  for (const ts of response.data.data) {
+    // Grab station name
+    const stationName = ts['station_name'];
+
+    // Parse latLong
+    ts['lat_long'] = [
+      parseFloat(ts.location.latitude),
+      parseFloat(ts.location.longitude),
+    ];
+
+    stations[stationName] = ts;
+  }
+
+  yield put(addTrainStationsAC({ stations }));
 }

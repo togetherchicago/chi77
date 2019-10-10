@@ -8,6 +8,7 @@ import {
   fetchPlacesAC,
   fetchHospitalsAC,
   filterAreasByNumOfHospitalsAC,
+  fetchTrainStationsAC,
 } from './chicago-health-atlas/actions';
 
 class App extends Component {
@@ -15,10 +16,12 @@ class App extends Component {
     fetchPlaces: () => {},
     fetchHospitals: () => {},
     filterAreasByNumOfHospitals: () => {},
+    fetchTrainStations: () => {},
   };
 
   componentDidMount() {
     this.props.fetchPlaces();
+    this.props.fetchTrainStations();
     this.props.fetchHospitals();
   }
 
@@ -42,23 +45,23 @@ class App extends Component {
 
         <Row style={{"height": "90%"}} noGutters>
           <Col id="sidebar" md={{ span: 2 }}>
-              <DropdownButton className="dropdownFilter" variant="secondary" title="TRANSPORTATION">
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </DropdownButton>
+            <DropdownButton className="dropdownFilter" variant="secondary" title="TRANSPORTATION">
+              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+            </DropdownButton>
 
-              <DropdownButton
-                className="dropdownFilter"
-                variant="secondary"
-                title="# of Hospitals"
-                onSelect={this.props.filterAreasByNumOfHospitals}
-              >
-                <Dropdown.Item eventKey={0}>0</Dropdown.Item>
-                <Dropdown.Item eventKey={1}>1</Dropdown.Item>
-                <Dropdown.Item eventKey={2}>2</Dropdown.Item>
-                <Dropdown.Item eventKey={3}>3</Dropdown.Item>
-              </DropdownButton>
+            <DropdownButton
+              className="dropdownFilter"
+              variant="secondary"
+              title="# of Hospitals"
+              onSelect={this.props.filterAreasByNumOfHospitals}
+            >
+              <Dropdown.Item eventKey={0}>0</Dropdown.Item>
+              <Dropdown.Item eventKey={1}>1</Dropdown.Item>
+              <Dropdown.Item eventKey={2}>2</Dropdown.Item>
+              <Dropdown.Item eventKey={3}>3</Dropdown.Item>
+            </DropdownButton>
           </Col>
 
           <Col md={{ span: 10 }}>
@@ -75,6 +78,7 @@ function mapDispatchToProps(dispatch) {
     fetchPlaces: () => dispatch(fetchPlacesAC()),
     fetchHospitals: () => dispatch(fetchHospitalsAC()),
     filterAreasByNumOfHospitals: (num) => dispatch(filterAreasByNumOfHospitalsAC(num)),
+    fetchTrainStations: () => dispatch(fetchTrainStationsAC()),
   };
 }
 
