@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'react-bootstrap';
-import logo from './logo.png';
+import logo from './resources/logo.png';
 
 import MapConn from './components/map';
 import {

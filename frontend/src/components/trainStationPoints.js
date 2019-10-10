@@ -6,7 +6,7 @@ import L from 'leaflet';
 import { getTrainStations } from '../selectors';
 
 const trainStationIcon = new L.Icon({
-  iconUrl: require('../train_station_icon.png'),
+  iconUrl: require('../resources/train_station_icon.png'),
   iconSize: new L.Point(25, 25),
 });
 

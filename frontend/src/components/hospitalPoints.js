@@ -6,7 +6,7 @@ import L from 'leaflet';
 import { getHospitals } from '../selectors';
 
 const hospitalIcon = new L.Icon({
-  iconUrl: require('../hospital_icon.png'),
+  iconUrl: require('../resources/hospital_icon.png'),
   iconSize: new L.Point(35, 35),
 });
 
