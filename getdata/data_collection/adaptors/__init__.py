@@ -1,8 +1,6 @@
-from .soda_adaptor import SODA_Adaptor
-from .chi_healthatlas_adaptor import Chi_HealthAtlas_Adaptor
+from .soda import Adaptor as SodaAdaptor
+from .chi_health_atlas import Adaptor as ChiHealthAtlasAdaptor
 
 # Note: add more API adaptor here
-SODA_API = SODA_Adaptor()
-CHI_HEALTHATLAS_API = Chi_HealthAtlas_Adaptor()
-
-
+SODA_API = SodaAdaptor()
+CHI_HEALTHATLAS_API = ChiHealthAtlasAdaptor()
