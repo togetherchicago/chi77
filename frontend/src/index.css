@@ -7,3 +7,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.dropdownFilter {
+  margin: 15px;
+}
+
+#sidebar {
+  background: #73cee9;
+}
+
+#mainContainer {
+  margin: 0;
+  padding: 0;
+}

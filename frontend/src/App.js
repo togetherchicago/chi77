@@ -19,8 +19,8 @@ class App extends Component {
 
   render() {
     return (
-      <Container style={{"height": "100vh"}} fluid>
-        <Row md={{ span: 3 }}>
+      <Container id="mainContainer" style={{"height": "100vh"}} fluid>
+        <Row style={{"height": "10%"}} noGutters>
           <Navbar style={{"width": "100%"}} bg="dark" variant="dark">
             <Navbar.Brand href="/">
               <img
@@ -35,24 +35,22 @@ class App extends Component {
           </Navbar>
         </Row>
 
-        <Row md={{ span: 9 }}>
-          <Col md={{ span: 3 }}>
-            <React.Fragment>
-              <DropdownButton style={{"padding": "20px", "alignContent": "left"}} variant="secondary" id="dropdown-secondary-button" title="TRANSPORTATION">
+        <Row style={{"height": "90%"}} noGutters>
+          <Col id="sidebar" md={{ span: 2 }}>
+              <DropdownButton className="dropdownFilter" variant="secondary" title="TRANSPORTATION">
                 <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
               </DropdownButton>
 
-              <DropdownButton style={{"width": "50px", "padding": "20px", "alignContent": "left"}} variant="secondary" id="dropdown-secondary-button" title="HEALTHCARE">
+              <DropdownButton className="dropdownFilter" variant="secondary" title="HEALTHCARE">
                 <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
               </DropdownButton>
-            </React.Fragment>
           </Col>
 
-          <Col md={{ span: 9 }}>
+          <Col md={{ span: 10 }}>
             <MapConn />
           </Col>
         </Row>
