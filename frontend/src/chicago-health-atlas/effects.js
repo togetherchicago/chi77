@@ -1,7 +1,8 @@
-import { put, call } from 'redux-saga/effects';
+import { put, call, select, take } from 'redux-saga/effects';
 
 import { api } from '../api';
 import { addPlacesAC, addHospitalsAC } from './actions';
+import { getCommunityAreas } from '../selectors';
 
 function parsePlaces(data) {
   const relevantKeys = ['part', 'resource_cnt', 'name'];
@@ -30,22 +31,16 @@ function parseHospitals(data) {
   const hospitals = {};
 
   for (const h of data) {
-    const currentHospital = {};
-
     // Grab slug
     const slug = h['slug'];
-    currentHospital['slug'] = slug;
 
-    // Parse latLong
+    // Flip latLong
     const latLong = h['lat_long'].split(',');
     latLong[0] = parseFloat(latLong[0]);
     latLong[1] = parseFloat(latLong[1]);
-    currentHospital['lat_long'] = latLong;
+    h['lat_long'] = latLong;
 
-    // Grab name
-    currentHospital['name'] = h['name'];
-
-    hospitals[slug] = currentHospital;
+    hospitals[slug] = h;
   }
 
   return hospitals;
@@ -66,15 +61,22 @@ export function * fetchPlaces() {
 }
 
 export function * fetchHospitals() {
-  const response = yield api.get('/', {
-    params: {
-      resource: 'chi_health_atlas',
-      category: 'hospitals',
-      query: JSON.stringify({}),
-    },
-  });
+  yield take(addPlacesAC); // Wait till places are added
+  const communityAreas = yield select(getCommunityAreas);
 
-  const hospitals = yield call(parseHospitals, response.data.data);
+  for (const area in communityAreas) {
+    const response = yield api.get('/', {
+      params: {
+        resource: 'chi_health_atlas',
+        category: 'hospitals.area',
+        query: JSON.stringify({"$where":[["geo_slug", "=", area]]}),
+      },
+    });
 
-  yield put(addHospitalsAC({ hospitals }));
+    if (response.data.data) {
+      const hospitals = yield call(parseHospitals, response.data.data);
+
+      yield put(addHospitalsAC({ hospitals, area }));
+    }
+  }
 }

@@ -16,7 +16,7 @@ export const fetchHospitalsAC = () => ({
   type: FETCH_HOSPITALS,
 });
 
-export const addHospitalsAC = ({ hospitals }) => ({
+export const addHospitalsAC = ({ hospitals, area }) => ({
   type: ADD_HOSPITALS,
-  payload: hospitals,
+  payload: { hospitals, area },
 });

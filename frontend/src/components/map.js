@@ -21,7 +21,7 @@ class MapComp extends Component {
           </LayersControl.BaseLayer>
 
           <LayersControl.Overlay name='Hospitals'>
-              <HospitalPoints />
+            <HospitalPoints />
           </LayersControl.Overlay>
 
         </LayersControl>
