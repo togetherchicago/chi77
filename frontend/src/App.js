@@ -5,24 +5,20 @@ import logo from './resources/logo.png';
 
 import MapConn from './components/map';
 import {
-  fetchPlacesAC,
-  fetchHospitalsAC,
+  fetchAC,
   filterAreasByNumOfHospitalsAC,
-  fetchTrainStationsAC,
 } from './chicago-health-atlas/actions';
 
 class App extends Component {
   static defaultProps = {
-    fetchPlaces: () => {},
-    fetchHospitals: () => {},
+    fetch: () => {},
     filterAreasByNumOfHospitals: () => {},
-    fetchTrainStations: () => {},
   };
 
   componentDidMount() {
-    this.props.fetchPlaces();
-    this.props.fetchTrainStations();
-    this.props.fetchHospitals();
+    this.props.fetch("PLACES");
+    this.props.fetch("TRAIN_STATIONS");
+    this.props.fetch("HOSPITALS");
   }
 
   render() {
@@ -75,10 +71,8 @@ class App extends Component {
 
 function mapDispatchToProps(dispatch) {
   return {
-    fetchPlaces: () => dispatch(fetchPlacesAC()),
-    fetchHospitals: () => dispatch(fetchHospitalsAC()),
+    fetch: (type) => dispatch(fetchAC(type)),
     filterAreasByNumOfHospitals: (num) => dispatch(filterAreasByNumOfHospitalsAC(num)),
-    fetchTrainStations: () => dispatch(fetchTrainStationsAC()),
   };
 }
 

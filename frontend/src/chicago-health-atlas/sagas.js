@@ -1,10 +1,6 @@
 import { takeEvery } from 'redux-saga/effects';
 
-import {
-  FETCH_PLACES,
-  FETCH_HOSPITALS,
-  FETCH_TRAIN_STATIONS,
-} from './actions';
+import { FetchBase } from './actions';
 import {
   fetchPlaces,
   fetchHospitals,
@@ -12,15 +8,15 @@ import {
 } from './effects';
 
 export function* fetchPlacesSaga() {
-  yield takeEvery(FETCH_PLACES, fetchPlaces);
+  yield takeEvery(FetchBase + "PLACES", fetchPlaces);
 }
 
 export function* fetchHospitalsSaga() {
-  yield takeEvery(FETCH_HOSPITALS, fetchHospitals);
+  yield takeEvery(FetchBase + "HOSPITALS", fetchHospitals);
 }
 
 export function* fetchTrainStationsSaga() {
-  yield takeEvery(FETCH_TRAIN_STATIONS, fetchTrainStations);
+  yield takeEvery(FetchBase + "TRAIN_STATIONS", fetchTrainStations);
 }
 
 export const chicagoHealthAtlasSagas = [
