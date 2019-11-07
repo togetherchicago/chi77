@@ -67,6 +67,7 @@ export function * fetchHospitals() {
   yield take(addPlacesAC); // Wait till places are added
   const communityAreas = yield select(getCommunityAreas);
 
+  // Fetch more detailed hospitals data region by region
   for (const area in communityAreas) {
     const response = yield api.get('/general/view/', {
       params: {
