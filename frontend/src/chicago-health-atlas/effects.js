@@ -39,6 +39,31 @@ export function * fetchPlaces() {
 }
 
 export function * fetchHospitals() {
+  const firstResponse = yield api.get('/general/view/', {
+    params: {
+      resource: 'chi_health_atlas',
+      category: 'hospitals',
+      query: JSON.stringify({}),
+    },
+  });
+
+  const hospitals = {};
+
+  for (const h of firstResponse.data.data) {
+    // Grab slug
+    const slug = h['slug'];
+
+    // Parse latLong
+    const latLong = h['lat_long'].split(',');
+    latLong[0] = parseFloat(latLong[0]);
+    latLong[1] = parseFloat(latLong[1]);
+    h['lat_long'] = latLong;
+
+    hospitals[slug] = h;
+  }
+
+  yield put(addHospitalsAC({ hospitals }));
+
   yield take(addPlacesAC); // Wait till places are added
   const communityAreas = yield select(getCommunityAreas);
 

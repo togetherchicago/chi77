@@ -13,7 +13,7 @@ export const addPlacesAC = ({ communityAreas }) => ({
   payload: communityAreas,
 });
 
-export const addHospitalsAC = ({ hospitals, area }) => ({
+export const addHospitalsAC = ({ hospitals, area = '' }) => ({
   type: ADD_HOSPITALS,
   payload: { hospitals, area },
 });
