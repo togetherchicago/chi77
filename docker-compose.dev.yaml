@@ -55,7 +55,7 @@ services:
       - selenium-hub
     environment:
       - HUB_HOST=selenium-hub
-        HUB_PORT=4444
+      - HUB_PORT=4444
 
 volumes:
   geodb-volume:
