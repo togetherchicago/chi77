@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'react-bootstrap';
+import { Range } from 'rc-slider';
+import 'rc-slider/assets/index.css';
 import logo from './resources/logo.png';
+
 
 import MapConn from './components/map';
 import {
@@ -35,16 +38,18 @@ class App extends Component {
                 className="d-inline-block align-top"
               />
             </Navbar.Brand>
-            <Button style={{"marginLeft": "auto"}} variant="outline-light">Reset Filters</Button>
           </Navbar>
         </Row>
 
-        <Row style={{"height": "90%"}} noGutters>
+        <Row style={{ "height": "90%" }} noGutters>
+        
           <Col id="sidebar" md={{ span: 2 }}>
-            <DropdownButton className="dropdownFilter" variant="secondary" title="TRANSPORTATION">
-              <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-              <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-              <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+            <DropdownButton className="dropdownFilter" variant="secondary" title="Transportation">
+              <Dropdown.Item href="#/action-1">
+                <span><b>Proximity to CTA train station</b></span><br/>
+                <h6>Show reference points</h6>
+                <Range />
+              </Dropdown.Item>
             </DropdownButton>
 
             <DropdownButton
@@ -58,6 +63,7 @@ class App extends Component {
               <Dropdown.Item eventKey={2}>2</Dropdown.Item>
               <Dropdown.Item eventKey={3}>3</Dropdown.Item>
             </DropdownButton>
+            <Button style={{"marginLeft": "60px", "marginTop": "500px"}} variant="outline-light">Reset Filters</Button>
           </Col>
 
           <Col md={{ span: 10 }}>
