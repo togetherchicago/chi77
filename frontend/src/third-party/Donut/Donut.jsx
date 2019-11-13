@@ -1,13 +1,12 @@
 // From American Panorama toolkit v0.1.16
 // @ https://github.com/americanpanorama/panorama
 import PropTypes from 'prop-types';
-import { Path, PropTypes as LeafletPropTypes } from 'react-leaflet';
+import { Path } from 'react-leaflet';
 import { LeafletDonut } from './L.Donut';
 
 export default class Donut extends Path {
   // Radii are in meters
   static propTypes = {
-    center: LeafletPropTypes.latlng.isRequired,
     outerRadius: PropTypes.number.isRequired,
     innerRadius: PropTypes.number.isRequired,
   };
