@@ -13,12 +13,29 @@ export function communityAreas(state = {}, action = {}) {
     };
   case ADD_HOSPITALS: {
     const { hospitals, area } = action.payload;
+    if (area) {
+      return {
+        ...state,
+        [area]: {
+          ...(state[area]),
+          hospitals: Object.keys(hospitals),
+        },
+      };
+    }
+    return state;
+  }
+  default:
+    return state;
+  }
+}
+
+export function hospitals(state = {}, action = {}) {
+  switch (action.type) {
+  case ADD_HOSPITALS: {
+    const { hospitals } = action.payload;
     return {
       ...state,
-      [area]: {
-        ...(state[area]),
-        hospitals: hospitals,
-      },
+      ...hospitals,
     };
   }
   default:
@@ -48,6 +65,7 @@ export function trainStations(state = {}, action = {}) {
 
 export const chicagoHealthAtlasReducers = {
   communityAreas,
+  hospitals,
   filterAreasByNumOfHospitals,
   trainStations,
 };
