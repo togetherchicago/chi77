@@ -17,7 +17,6 @@ class HospitalPoints extends Component {
 
   render() {
     const { hospitals } = this.props;
-    console.log(hospitals);
 
     const markers = [];
     for (const slug in hospitals) {

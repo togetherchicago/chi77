@@ -9,6 +9,7 @@
     "leaflet": "^1.4.0",
     "lodash": "^4.17.11",
     "npm": "^6.9.0",
+    "rc-slider": "^8.7.1",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.12",
     "react-dom": "^16.8.6",

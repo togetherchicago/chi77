@@ -6,6 +6,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - leaflet and react-leaflet: Map Visualization
 - lodash: Useful JS Methods
 - @panorama/toolkit: For use of its Leaflet Donut
+- rc-slider: Range Slider
 - react and react-dom: React
 - react-redux, redux, and redux-saga: Redux and Redux-Saga
 - react-scripts: Bundled scripts that help run the application
