@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'react-bootstrap';
-import { Range } from 'rc-slider';
+import Tooltip from 'rc-tooltip';
+import  Slider  from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import logo from './resources/logo.png';
-
-
 import MapConn from './components/map';
 import {
   fetchAC,
@@ -25,6 +24,11 @@ class App extends Component {
   }
 
   render() {
+
+    const createSliderWithTooltip = Slider.createSliderWithTooltip;
+    const Range = createSliderWithTooltip(Slider.Range);
+    const Handle = Slider.Handle;
+
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
         <Row style={{"height": "10%"}} noGutters>
@@ -47,8 +51,8 @@ class App extends Component {
             <DropdownButton className="dropdownFilter" variant="secondary" title="Transportation">
               <Dropdown.Item href="#/action-1">
                 <span><b>Proximity to CTA train station</b></span><br/>
-                <h6>Show reference points</h6>
-                <Range />
+                <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
+                <Range min={0} max={30} defaultValue={[0, 5]} tipFormatter={value => `${value}%`} />
               </Dropdown.Item>
             </DropdownButton>
 
