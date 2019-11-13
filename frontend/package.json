@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@panorama/toolkit": "^0.1.7",
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "leaflet": "^1.4.0",
