@@ -3,21 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@panorama/toolkit": "^0.1.7",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "bootstrap": "^4.3.1",
-    "leaflet": "^1.4.0",
-    "lodash": "^4.17.11",
-    "npm": "^6.9.0",
+    "leaflet": "^1.5.1",
+    "lodash": "^4.17.15",
+    "npm": "^6.13.0",
+    "prop-types": "^15.7.2",
     "rc-slider": "^8.7.1",
-    "react": "^16.8.6",
+    "react": "^16.11.0",
     "react-bootstrap": "^1.0.0-beta.12",
-    "react-dom": "^16.8.6",
-    "react-leaflet": "^2.2.1",
+    "react-dom": "^16.11.0",
+    "react-leaflet": "^2.5.0",
     "react-redux": "^6.0.1",
     "react-scripts": "2.1.8",
-    "redux": "^4.0.1",
-    "redux-saga": "^1.0.2",
+    "redux": "^4.0.4",
+    "redux-saga": "^1.1.3",
     "reselect": "^4.0.0"
   },
   "scripts": {
@@ -37,7 +37,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint": "^5.12.0",
-    "eslint-plugin-react": "^7.12.4"
+    "eslint": "5.12.0",
+    "eslint-plugin-react": "^7.16.0"
   }
 }
