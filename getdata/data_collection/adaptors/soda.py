@@ -65,7 +65,7 @@ class Adaptor(BaseAdaptor):
             with open(os.path.join(self._kml_base_dir, resource_meta['uid'] + '.kml')) as f:
                 doc = f.read()
             self._kml_reader.from_string(doc)
-            return [placemark.geometry.__geo_interface__ for placemark in extract_kml_placemarks(self._kml_reader)]
+            return extract_kml_placemarks(self._kml_reader, True)
 
     def transform(self, extracted_data):
         """
