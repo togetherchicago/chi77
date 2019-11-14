@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'react-bootstrap';
+import { Container, Row, Col, Navbar, Accordion, Card, Button } from 'react-bootstrap';
 import Tooltip from 'rc-tooltip';
 import  Slider  from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -48,25 +48,53 @@ class App extends Component {
         <Row style={{ "height": "90%" }} noGutters>
         
           <Col id="sidebar" md={{ span: 2 }}>
-            <DropdownButton className="dropdownFilter" variant="secondary" title="Transportation">
-              <Dropdown.Item href="#/action-1">
-                <span><b>Proximity to CTA train station</b></span><br/>
-                <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
-                <Range min={0} max={30} defaultValue={[0, 5]} tipFormatter={value => `${value}%`} />
-              </Dropdown.Item>
-            </DropdownButton>
 
-            <DropdownButton
+            <div className="filter">
+            <Accordion defaultActiveKey="0">
+              <Card className="transportation-filter">
+                <Accordion.Toggle as={Card.Header} eventKey="1">
+                  Transportation
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body className="referencePointHeader">
+                  <span className="referencePointHeader"><b>Proximity to CTA train station</b></span><br/>
+                  <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
+                  <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} />
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+              <Card className="healthcare-filter">
+                <Accordion.Toggle as={Card.Header} eventKey="1">
+                  Healthcare
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body className="referencePointHeader">
+                  <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
+                  <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
+                  <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} />
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+            </div>
+            
+
+            
+
+            {/* <DropdownButton
               className="dropdownFilter"
               variant="secondary"
-              title="# of Hospitals"
+              title="Healthcare"
               onSelect={this.props.filterAreasByNumOfHospitals}
             >
               <Dropdown.Item eventKey={0}>0</Dropdown.Item>
               <Dropdown.Item eventKey={1}>1</Dropdown.Item>
               <Dropdown.Item eventKey={2}>2</Dropdown.Item>
               <Dropdown.Item eventKey={3}>3</Dropdown.Item>
-            </DropdownButton>
+            </DropdownButton>  */}
+
+
+
             <Button style={{"marginLeft": "60px", "marginTop": "500px"}} variant="outline-light">Reset Filters</Button>
           </Col>
 

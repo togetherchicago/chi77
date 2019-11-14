@@ -20,3 +20,15 @@ code {
   margin: 0;
   padding: 0;
 }
+
+.filter {
+  margin: 20px;
+}
+
+.referencePoint {
+  font-size: 9px;
+}
+
+.referencePointHeader {
+  font-size: 11px;
+}

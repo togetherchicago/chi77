@@ -6,6 +6,7 @@ import BasePolygons from './basePolygons';
 import HospitalPoints from './hospitalPoints';
 import TrainStationPoints from './trainStationPoints';
 
+
 class MapComp extends Component {
   render() {
     return (
