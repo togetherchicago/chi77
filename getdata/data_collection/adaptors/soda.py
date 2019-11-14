@@ -62,7 +62,7 @@ class Adaptor(BaseAdaptor):
         if resource_meta['type'] == SODA_TYPE_API:
             return self._client.get(resource_meta['uid'])
         elif resource_meta['type'] == SODA_TYPE_KML:
-            with open(os.path.join(self._kml_base_dir, resource_meta['uid'] + '.kml')) as f:
+            with open(os.path.join(self._kml_base_dir, resource_meta['uid'] + '.kml'), 'rb') as f:
                 doc = f.read()
             self._kml_reader.from_string(doc)
             return extract_kml_placemarks(self._kml_reader, True)
