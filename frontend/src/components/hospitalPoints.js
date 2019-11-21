@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LayerGroup, Marker, Popup } from 'react-leaflet';
+import { LayerGroup, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 
-import { getHospitals } from '../selectors';
+import { METERS_PER_MILE } from '../constants';
+import { getHospitals, getFilterAreasByNumOfHospitals } from '../selectors';
 
 const hospitalIcon = new L.Icon({
   iconUrl: require('../resources/hospital_icon.png'),
@@ -13,10 +14,11 @@ const hospitalIcon = new L.Icon({
 class HospitalPoints extends Component {
   static defaultProps = {
     hospitals: {},
+    filterRadius: 0,
   };
 
   render() {
-    const { hospitals } = this.props;
+    const { hospitals, filterRadius } = this.props;
 
     const markers = [];
     for (const slug in hospitals) {
@@ -27,6 +29,11 @@ class HospitalPoints extends Component {
           icon={hospitalIcon}
         >
           <Popup>{hospitals[slug]['name']}</Popup>
+          <Circle
+            center={hospitals[slug]['lat_long']}
+            radius={METERS_PER_MILE * filterRadius}
+            stroke={false}
+          />
         </Marker>
       );
     }
@@ -42,6 +49,7 @@ class HospitalPoints extends Component {
 function mapStateToProps(state) {
   return {
     hospitals: getHospitals(state),
+    filterRadius: getFilterAreasByNumOfHospitals(state),
   };
 }
 

@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LayerGroup, Polygon } from 'react-leaflet';
-import _ from 'lodash';
 
-import { getCommunityAreas, getFilterAreasByNumOfHospitals } from '../selectors';
+import { getCommunityAreas } from '../selectors';
 
 class BasePolygons extends Component {
   static defaultProps = {
     communityAreas: {},
-    filterAreasByNumOfHospitals: -1,
   };
 
   render() {
-    const { communityAreas, filterAreasByNumOfHospitals } = this.props;
+    const { communityAreas } = this.props;
     const polygons = [];
 
     for (const area in communityAreas) {
-      const p = <Polygon positions={communityAreas[area]['geometry']} weight={2} key={area}/>;
-
-      // If filtering by num of hospitals
-      if (filterAreasByNumOfHospitals > 0
-        && (!communityAreas[area]['hospitals']
-          || _.size(communityAreas[area]['hospitals']) < filterAreasByNumOfHospitals)
-      ) continue; // Skip over
+      const p = <Polygon
+        positions={communityAreas[area]['geometry']}
+        weight={2}
+        key={area}
+        fillOpacity={0}
+      />;
 
       polygons.push(p);
     }
@@ -38,7 +35,6 @@ class BasePolygons extends Component {
 function mapStateToProps(state) {
   return {
     communityAreas: getCommunityAreas(state),
-    filterAreasByNumOfHospitals: getFilterAreasByNumOfHospitals(state),
   };
 }
 

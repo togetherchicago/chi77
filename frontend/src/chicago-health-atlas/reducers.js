@@ -43,7 +43,7 @@ export function hospitals(state = {}, action = {}) {
   }
 }
 
-export function filterAreasByNumOfHospitals(state = -1, action = {}) {
+export function filterAreasByNumOfHospitals(state = 0, action = {}) {
   switch (action.type) {
   case FILTER_AREAS_BY_NUM_OF_HOSPITALS:
     return action.payload;
