@@ -1,8 +1,8 @@
 import {
   ADD_PLACES,
   ADD_HOSPITALS,
-  UPDATE_HOSPITAL_FILTER,
   ADD_TRAIN_STATIONS,
+  UPDATE_FILTER,
 } from './actions';
 
 export function communityAreas(state = {}, action = {}) {
@@ -43,15 +43,6 @@ export function hospitals(state = {}, action = {}) {
   }
 }
 
-export function hospitalFilter(state = 0, action = {}) {
-  switch (action.type) {
-  case UPDATE_HOSPITAL_FILTER:
-    return action.payload;
-  default:
-    return state;
-  }
-}
-
 export function trainStations(state = {}, action = {}) {
   switch (action.type) {
   case ADD_TRAIN_STATIONS:
@@ -63,9 +54,23 @@ export function trainStations(state = {}, action = {}) {
   }
 }
 
+export function filters(state = {}, action = {}) {
+  switch (action.type) {
+  case UPDATE_FILTER: {
+    const { type, num } = action.payload;
+    return {
+      ...state,
+      [type]: num,
+    };
+  }
+  default:
+    return state;
+  }
+}
+
 export const chicagoHealthAtlasReducers = {
   communityAreas,
   hospitals,
-  hospitalFilter,
   trainStations,
+  filters,
 };

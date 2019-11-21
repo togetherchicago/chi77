@@ -8,7 +8,7 @@ import logo from './resources/logo.png';
 import MapConn from './components/map';
 import {
   fetchAC,
-  updateHospitalFilterAC,
+  updateFilterAC,
 } from './chicago-health-atlas/actions';
 import './index.css';
 
@@ -108,7 +108,7 @@ class App extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     fetch: (type) => dispatch(fetchAC(type)),
-    updateHospitalFilter: (num) => dispatch(updateHospitalFilterAC(num)),
+    updateHospitalFilter: (num) => dispatch(updateFilterAC({ type: 'hospital', num })),
   };
 }
 
