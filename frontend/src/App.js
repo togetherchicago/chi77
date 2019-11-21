@@ -23,6 +23,7 @@ class App extends Component {
   static defaultProps = {
     fetch: () => {},
     updateHospitalFilter: () => {},
+    updateTrainStationFilter: () => {},
   };
 
   componentDidMount() {
@@ -33,7 +34,7 @@ class App extends Component {
 
   render() {
     const SliderWithTooltip = createSliderWithTooltip(Slider);
-    const { updateHospitalFilter } = this.props;
+    const { updateHospitalFilter, updateTrainStationFilter } = this.props;
 
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
@@ -61,15 +62,14 @@ class App extends Component {
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
                     <Card.Body className="referencePointHeader">
-                      <span className="referencePointHeader"><b>Proximity to CTA train station</b></span>
+                      <span className="referencePointHeader"><b>Proximity to CTA Train Station</b></span>
                       <br/>
-                      <p className="referencePoint">
-                        <input type="checkbox" name="reference-point" value="disable-ref"></input>
-                        Show reference points
-                      </p>
                       <SliderWithTooltip
                         tipFormatter={value => `${value} mi`}
-                        tipProps={{ overlayClassName: 'foo' }}
+                        tipProps={{}}
+                        onChange={updateTrainStationFilter}
+                        max={4}
+                        step={0.05}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
@@ -109,6 +109,7 @@ function mapDispatchToProps(dispatch) {
   return {
     fetch: (type) => dispatch(fetchAC(type)),
     updateHospitalFilter: (num) => dispatch(updateFilterAC({ type: 'hospital', num })),
+    updateTrainStationFilter: (num) => dispatch(updateFilterAC({ type: 'trainStation', num })),
   };
 }
 
