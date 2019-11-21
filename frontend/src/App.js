@@ -55,6 +55,23 @@ class App extends Component {
           <Col id="sidebar" md={{ span: 2 }}>
             <div className="filter">
               <Accordion defaultActiveKey="0">
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="1">
+                    Healthcare
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body className="referencePointHeader">
+                      <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
+                      <SliderWithTooltip
+                        tipFormatter={value => `${value} mi`}
+                        tipProps={{}}
+                        onChange={updateHospitalFilter}
+                        max={4}
+                        step={0.05}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
                 <Card className="transportation-filter">
                   <Accordion.Toggle as={Card.Header} eventKey="1">
                     Transportation
@@ -70,23 +87,6 @@ class App extends Component {
                       <SliderWithTooltip
                         tipFormatter={value => `${value} mi`}
                         tipProps={{ overlayClassName: 'foo' }}
-                      />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-                <Card>
-                  <Accordion.Toggle as={Card.Header} eventKey="1">
-                    Healthcare
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body className="referencePointHeader">
-                      <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
-                      <SliderWithTooltip
-                        tipFormatter={value => `${value} mi`}
-                        tipProps={{}}
-                        onChange={updateHospitalFilter}
-                        max={4}
-                        step={0.05}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LayerGroup, Polygon } from 'react-leaflet';
+import { LayerGroup, FeatureGroup, Polygon } from 'react-leaflet';
 
 import { getCommunityAreas } from '../selectors';
 
