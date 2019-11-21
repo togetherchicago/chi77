@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Navbar, Accordion, Card, Button } from 'react-bootstrap';
-import Tooltip from 'rc-tooltip';
 import Slider, { createSliderWithTooltip } from 'rc-slider';
 import 'rc-slider/assets/index.css';
+
 import logo from './resources/logo.png';
 import MapConn from './components/map';
 import {
   fetchAC,
-  filterAreasByNumOfHospitalsAC,
+  updateHospitalFilterAC,
 } from './chicago-health-atlas/actions';
 import './index.css';
-
 
 class App extends Component {
   constructor(props) {
@@ -23,7 +22,7 @@ class App extends Component {
 
   static defaultProps = {
     fetch: () => {},
-    filterAreasByNumOfHospitals: () => {},
+    updateHospitalFilter: () => {},
   };
 
   componentDidMount() {
@@ -34,8 +33,6 @@ class App extends Component {
 
   render() {
     const SliderWithTooltip = createSliderWithTooltip(Slider);
-    const Range = createSliderWithTooltip(Slider.Range);
-    const Handle = Slider.Handle;
 
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
@@ -54,43 +51,47 @@ class App extends Component {
         </Row>
 
         <Row style={{ "height": "90%" }} noGutters>
-        
           <Col id="sidebar" md={{ span: 2 }}>
             <div className="filter">
-            <Accordion defaultActiveKey="0">
-              <Card className="transportation-filter">
-                <Accordion.Toggle as={Card.Header} eventKey="1">
-                  Transportation
-                </Accordion.Toggle>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body className="referencePointHeader">
-                  <span className="referencePointHeader"><b>Proximity to CTA train station</b></span><br/>
-                  <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
-                    <SliderWithTooltip
-                      tipFormatter={value => `${value} mi`}
-                      tipProps={{ overlayClassName: 'foo' }}
-                    />
-                    {/* <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} /> */}
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-              <Card>
-                <Accordion.Toggle as={Card.Header} eventKey="1">
-                  Healthcare
-                </Accordion.Toggle>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body className="referencePointHeader">
-                  <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
-                    <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
-                    <SliderWithTooltip
-                      tipFormatter={value => `${value} mi`}
-                      tipProps={{ overlayClassName: 'foo' }}
-                    />
-                    {/* <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} /> */}
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
+              <Accordion defaultActiveKey="0">
+                <Card className="transportation-filter">
+                  <Accordion.Toggle as={Card.Header} eventKey="1">
+                    Transportation
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body className="referencePointHeader">
+                      <span className="referencePointHeader"><b>Proximity to CTA train station</b></span>
+                      <br/>
+                      <p className="referencePoint">
+                        <input type="checkbox" name="reference-point" value="disable-ref"></input>
+                        Show reference points
+                      </p>
+                      <SliderWithTooltip
+                        tipFormatter={value => `${value} mi`}
+                        tipProps={{ overlayClassName: 'foo' }}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+                <Card>
+                  <Accordion.Toggle as={Card.Header} eventKey="1">
+                    Healthcare
+                  </Accordion.Toggle>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body className="referencePointHeader">
+                      <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
+                      <p className="referencePoint">
+                        <input type="checkbox" name="reference-point" value="disable-ref"></input>
+                        Show reference points
+                      </p>
+                      <SliderWithTooltip
+                        tipFormatter={value => `${value} mi`}
+                        tipProps={{ overlayClassName: 'foo' }}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
             </div>
             <Button style={{"marginLeft": "60px", "marginTop": "500px"}} variant="outline-light">Reset Filters</Button>
           </Col>
@@ -107,7 +108,7 @@ class App extends Component {
 function mapDispatchToProps(dispatch) {
   return {
     fetch: (type) => dispatch(fetchAC(type)),
-    filterAreasByNumOfHospitals: (num) => dispatch(filterAreasByNumOfHospitalsAC(num)),
+    updateHospitalFilter: (num) => dispatch(updateHospitalFilterAC(num)),
   };
 }
 

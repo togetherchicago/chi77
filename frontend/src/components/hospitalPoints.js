@@ -4,14 +4,14 @@ import { LayerGroup, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 
 import { METERS_PER_MILE } from '../constants';
-import { getHospitals, getFilterAreasByNumOfHospitals } from '../selectors';
+import { getHospitals, getHospitalFilter } from '../selectors';
 
 const hospitalIcon = new L.Icon({
   iconUrl: require('../resources/hospital_icon.png'),
   iconSize: new L.Point(35, 35),
 });
 
-function hasSubtype(hospital) {
+function checkSubtype(hospital) {
   if (hospital == null) {
     hospital = "Hospital";
   }
@@ -38,7 +38,7 @@ class HospitalPoints extends Component {
           <Popup>
             <div className="tooltip-large">{hospitals[slug]['name']}</div>
             <hr/>
-            <div className="tooltip-small">{ hasSubtype(hospitals[slug]['sub_type']) }</div>
+            <div className="tooltip-small">{checkSubtype(hospitals[slug]['sub_type'])}</div>
             <div className="tooltip-secondary"> {hospitals[slug]["addr_street"]}, {hospitals[slug]["addr_city"]}, IL {hospitals[slug]["addr_zip"]}</div>
           </Popup>
           <Circle
@@ -61,7 +61,7 @@ class HospitalPoints extends Component {
 function mapStateToProps(state) {
   return {
     hospitals: getHospitals(state),
-    filterRadius: getFilterAreasByNumOfHospitals(state),
+    filterRadius: getHospitalFilter(state),
   };
 }
 

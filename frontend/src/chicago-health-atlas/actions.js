@@ -1,7 +1,7 @@
 export const FetchBase = 'chicago-health-atlas/FETCH/';
 export const ADD_PLACES = 'chicago-health-atlas/ADD_PLACES';
 export const ADD_HOSPITALS = 'chicago-health-atlas/ADD_HOSPITALS';
-export const FILTER_AREAS_BY_NUM_OF_HOSPITALS = 'chicago-health-atlas/FILTER_AREAS_BY_NUM_OF_HOSPITALS';
+export const UPDATE_HOSPITAL_FILTER = 'chicago-health-atlas/UPDATE_HOSPITAL_FILTER';
 export const ADD_TRAIN_STATIONS = 'chicago-health-atlas/ADD_TRAIN_STATIONS';
 
 export const fetchAC = (type) => ({
@@ -18,8 +18,8 @@ export const addHospitalsAC = ({ hospitals, area = '' }) => ({
   payload: { hospitals, area },
 });
 
-export const filterAreasByNumOfHospitalsAC = (num) => ({
-  type: FILTER_AREAS_BY_NUM_OF_HOSPITALS,
+export const updateHospitalFilterAC = (num) => ({
+  type: UPDATE_HOSPITAL_FILTER,
   payload: num,
 });
 
