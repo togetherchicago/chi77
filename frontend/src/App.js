@@ -33,6 +33,7 @@ class App extends Component {
 
   render() {
     const SliderWithTooltip = createSliderWithTooltip(Slider);
+    const { updateHospitalFilter } = this.props;
 
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
@@ -80,13 +81,12 @@ class App extends Component {
                   <Accordion.Collapse eventKey="1">
                     <Card.Body className="referencePointHeader">
                       <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
-                      <p className="referencePoint">
-                        <input type="checkbox" name="reference-point" value="disable-ref"></input>
-                        Show reference points
-                      </p>
                       <SliderWithTooltip
                         tipFormatter={value => `${value} mi`}
-                        tipProps={{ overlayClassName: 'foo' }}
+                        tipProps={{}}
+                        onChange={updateHospitalFilter}
+                        max={4}
+                        step={0.05}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

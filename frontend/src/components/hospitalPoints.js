@@ -8,7 +8,7 @@ import { getHospitals, getHospitalFilter } from '../selectors';
 
 const hospitalIcon = new L.Icon({
   iconUrl: require('../resources/hospital_icon.png'),
-  iconSize: new L.Point(35, 35),
+  iconSize: new L.Point(25, 25),
 });
 
 function checkSubtype(hospital) {
