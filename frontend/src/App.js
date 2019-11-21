@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container, Row, Col, Navbar, DropdownButton, Dropdown, Button } from 'react-bootstrap';
-import { Range } from 'rc-slider';
+import { Container, Row, Col, Navbar, Accordion, Card, Button } from 'react-bootstrap';
+import Tooltip from 'rc-tooltip';
+import Slider, { createSliderWithTooltip } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import logo from './resources/logo.png';
-
-
 import MapConn from './components/map';
 import {
   fetchAC,
   filterAreasByNumOfHospitalsAC,
 } from './chicago-health-atlas/actions';
+import './index.css';
+
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
   static defaultProps = {
     fetch: () => {},
     filterAreasByNumOfHospitals: () => {},
@@ -25,6 +33,10 @@ class App extends Component {
   }
 
   render() {
+    const SliderWithTooltip = createSliderWithTooltip(Slider);
+    const Range = createSliderWithTooltip(Slider.Range);
+    const Handle = Slider.Handle;
+
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
         <Row style={{"height": "10%"}} noGutters>
@@ -44,25 +56,42 @@ class App extends Component {
         <Row style={{ "height": "90%" }} noGutters>
         
           <Col id="sidebar" md={{ span: 2 }}>
-            <DropdownButton className="dropdownFilter" variant="secondary" title="Transportation">
-              <Dropdown.Item href="#/action-1">
-                <span><b>Proximity to CTA train station</b></span><br/>
-                <h6>Show reference points</h6>
-                <Range />
-              </Dropdown.Item>
-            </DropdownButton>
-
-            <DropdownButton
-              className="dropdownFilter"
-              variant="secondary"
-              title="# of Hospitals"
-              onSelect={this.props.filterAreasByNumOfHospitals}
-            >
-              <Dropdown.Item eventKey={0}>0</Dropdown.Item>
-              <Dropdown.Item eventKey={1}>1</Dropdown.Item>
-              <Dropdown.Item eventKey={2}>2</Dropdown.Item>
-              <Dropdown.Item eventKey={3}>3</Dropdown.Item>
-            </DropdownButton>
+            <div className="filter">
+            <Accordion defaultActiveKey="0">
+              <Card className="transportation-filter">
+                <Accordion.Toggle as={Card.Header} eventKey="1">
+                  Transportation
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body className="referencePointHeader">
+                  <span className="referencePointHeader"><b>Proximity to CTA train station</b></span><br/>
+                  <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
+                    <SliderWithTooltip
+                      tipFormatter={value => `${value} mi`}
+                      tipProps={{ overlayClassName: 'foo' }}
+                    />
+                    {/* <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} /> */}
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+              <Card>
+                <Accordion.Toggle as={Card.Header} eventKey="1">
+                  Healthcare
+                </Accordion.Toggle>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body className="referencePointHeader">
+                  <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
+                    <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
+                    <SliderWithTooltip
+                      tipFormatter={value => `${value} mi`}
+                      tipProps={{ overlayClassName: 'foo' }}
+                    />
+                    {/* <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} /> */}
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+            </div>
             <Button style={{"marginLeft": "60px", "marginTop": "500px"}} variant="outline-light">Reset Filters</Button>
           </Col>
 

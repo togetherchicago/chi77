@@ -13,10 +13,52 @@ code {
 }
 
 #sidebar {
-  background: #73cee9;
+  background: white;
+}
+
+#sidebar Col {
+  opacity: 0%;
 }
 
 #mainContainer {
   margin: 0;
   padding: 0;
 }
+
+.filter {
+  margin: 20px;
+}
+
+.referencePoint {
+  font-size: 9px;
+}
+
+.referencePointHeader {
+  font-size: 11px;
+}
+
+/* Detailed tooltip styling */
+
+.tooltip-small {
+  font-weight: bold;
+  font-size: 9px;
+}
+
+.tooltip-large {
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 1.1px;
+}
+
+.tooltip-secondary {
+  font-style: italic;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+/* Slider styling */
+
+.slider {
+  width: 600px;
+}
+
