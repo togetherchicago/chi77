@@ -4,7 +4,7 @@ import { LayerGroup, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 
 import { METERS_PER_MILE } from '../constants';
-import { getHospitals, getHospitalFilter } from '../selectors';
+import { getHospitals, getFilter } from '../selectors';
 
 const hospitalIcon = new L.Icon({
   iconUrl: require('../resources/hospital_icon.png'),
@@ -61,7 +61,7 @@ class HospitalPoints extends Component {
 function mapStateToProps(state) {
   return {
     hospitals: getHospitals(state),
-    filterRadius: getHospitalFilter(state),
+    filterRadius: getFilter(state, 'hospital'),
   };
 }
 
