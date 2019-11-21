@@ -10,6 +10,13 @@ const hospitalIcon = new L.Icon({
   iconSize: new L.Point(35, 35),
 });
 
+function hasSubtype(hospital) {
+  if (hospital == null) {
+    hospital = "Hospital";
+  }
+  return hospital;
+}
+
 class HospitalPoints extends Component {
   static defaultProps = {
     hospitals: {},
@@ -26,7 +33,12 @@ class HospitalPoints extends Component {
           key={slug}
           icon={hospitalIcon}
         >
-          <Popup>{hospitals[slug]['name']}</Popup>
+          <Popup>
+            <div className="tooltip-large">{hospitals[slug]['name']}</div>
+            <hr/>
+            <div className="tooltip-small">{ hasSubtype(hospitals[slug]['sub_type']) }</div>
+            <div className="tooltip-secondary"> {hospitals[slug]["addr_street"]}, {hospitals[slug]["addr_city"]}, IL {hospitals[slug]["addr_zip"]}</div>
+          </Popup>
         </Marker>
       );
     }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Container, Row, Col, Navbar, Accordion, Card, Button } from 'react-bootstrap';
 import Tooltip from 'rc-tooltip';
-import  Slider  from 'rc-slider';
+import Slider, { createSliderWithTooltip } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import logo from './resources/logo.png';
 import MapConn from './components/map';
@@ -10,8 +10,17 @@ import {
   fetchAC,
   filterAreasByNumOfHospitalsAC,
 } from './chicago-health-atlas/actions';
+import './index.css';
+
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
+
   static defaultProps = {
     fetch: () => {},
     filterAreasByNumOfHospitals: () => {},
@@ -24,8 +33,7 @@ class App extends Component {
   }
 
   render() {
-
-    const createSliderWithTooltip = Slider.createSliderWithTooltip;
+    const SliderWithTooltip = createSliderWithTooltip(Slider);
     const Range = createSliderWithTooltip(Slider.Range);
     const Handle = Slider.Handle;
 
@@ -48,7 +56,6 @@ class App extends Component {
         <Row style={{ "height": "90%" }} noGutters>
         
           <Col id="sidebar" md={{ span: 2 }}>
-
             <div className="filter">
             <Accordion defaultActiveKey="0">
               <Card className="transportation-filter">
@@ -59,42 +66,32 @@ class App extends Component {
                   <Card.Body className="referencePointHeader">
                   <span className="referencePointHeader"><b>Proximity to CTA train station</b></span><br/>
                   <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
-                  <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} />
+                    <SliderWithTooltip
+                      tipFormatter={value => `${value} mi`}
+                      tipProps={{ overlayClassName: 'foo' }}
+                    />
+                    {/* <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} /> */}
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
-              <Card className="healthcare-filter">
+              <Card>
                 <Accordion.Toggle as={Card.Header} eventKey="1">
                   Healthcare
                 </Accordion.Toggle>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body className="referencePointHeader">
                   <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
-                  <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
-                  <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} />
+                    <p className="referencePoint"><input type="checkbox" name="reference-point" value="disable-ref"></input>  Show reference points</p>
+                    <SliderWithTooltip
+                      tipFormatter={value => `${value} mi`}
+                      tipProps={{ overlayClassName: 'foo' }}
+                    />
+                    {/* <Range min={0} max={30} defaultValue={[5, 23]} tipFormatter={value => `${value} mi`} /> */}
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
             </Accordion>
             </div>
-            
-
-            
-
-            {/* <DropdownButton
-              className="dropdownFilter"
-              variant="secondary"
-              title="Healthcare"
-              onSelect={this.props.filterAreasByNumOfHospitals}
-            >
-              <Dropdown.Item eventKey={0}>0</Dropdown.Item>
-              <Dropdown.Item eventKey={1}>1</Dropdown.Item>
-              <Dropdown.Item eventKey={2}>2</Dropdown.Item>
-              <Dropdown.Item eventKey={3}>3</Dropdown.Item>
-            </DropdownButton>  */}
-
-
-
             <Button style={{"marginLeft": "60px", "marginTop": "500px"}} variant="outline-light">Reset Filters</Button>
           </Col>
 
