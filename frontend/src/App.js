@@ -88,6 +88,9 @@ class App extends Component {
           </Col>
 
           <Col md={{ span: 10 }}>
+            <Card id="mapOverlay">
+              <div>Test</div>
+            </Card>
             <MapConn />
           </Col>
         </Row>

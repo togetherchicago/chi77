@@ -21,6 +21,16 @@ code {
   padding: 0;
 }
 
+#mapOverlay {
+  position: absolute;
+  top: 20px;
+  right: 140px;
+  z-index: 10000;
+  width: 140px;
+  height: 150px;
+  text-align: center;
+}
+
 .filter {
   margin: 20px;
 }
