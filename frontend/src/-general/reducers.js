@@ -1,16 +1,21 @@
 import {
   UPDATE_FILTER,
 } from './actions';
-import chicagoHealthAtlasActions from '../-chicago-health-atlas/actions';
-import sodaChicagocityActions from '../-soda-chicagocity/actions';
+import {
+  ADD_PLACES as CHA_ADD_PLACES,
+  ADD_HOSPITALS as CHA_ADD_HOSPITALS,
+} from '../-chicago-health-atlas/actions';
+import {
+  ADD_TRAIN_STATIONS as SC_ADD_TRAIN_STATIONS,
+} from '../-soda-chicagocity/actions';
 
 export function communityAreas(state = {}, action = {}) {
   switch (action.type) {
-  case chicagoHealthAtlasActions.ADD_PLACES:
+  case CHA_ADD_PLACES:
     return {
       ...action.payload,
     };
-  case chicagoHealthAtlasActions.ADD_HOSPITALS: {
+  case CHA_ADD_HOSPITALS: {
     const { hospitals, area } = action.payload;
     if (area) {
       return {
@@ -30,7 +35,7 @@ export function communityAreas(state = {}, action = {}) {
 
 export function hospitals(state = {}, action = {}) {
   switch (action.type) {
-  case chicagoHealthAtlasActions.ADD_HOSPITALS: {
+  case CHA_ADD_HOSPITALS: {
     const { hospitals } = action.payload;
     return {
       ...state,
@@ -44,7 +49,7 @@ export function hospitals(state = {}, action = {}) {
 
 export function trainStations(state = {}, action = {}) {
   switch (action.type) {
-  case sodaChicagocityActions.ADD_TRAIN_STATIONS:
+  case SC_ADD_TRAIN_STATIONS:
     return {
       ...action.payload,
     };
