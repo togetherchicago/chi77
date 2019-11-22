@@ -10,11 +10,13 @@ import {
   fetchAC,
   updateFilterAC,
 } from './-general/actions';
+import { getOverlay } from './selectors';
 import './index.css';
 
 class App extends Component {
 
   static defaultProps = {
+    overlay: '',
     fetch: () => {},
     updateHospitalFilter: () => {},
     updateTrainStationFilter: () => {},
@@ -28,7 +30,11 @@ class App extends Component {
 
   render() {
     const SliderWithTooltip = createSliderWithTooltip(Slider);
-    const { updateHospitalFilter, updateTrainStationFilter } = this.props;
+    const {
+      overlay,
+      updateHospitalFilter,
+      updateTrainStationFilter,
+    } = this.props;
 
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
@@ -89,7 +95,7 @@ class App extends Component {
 
           <Col md={{ span: 10 }}>
             <Card id="mapOverlay">
-              <div>Test</div>
+              <div>{overlay}</div>
             </Card>
             <MapConn />
           </Col>
@@ -97,6 +103,12 @@ class App extends Component {
       </Container>
     );
   }
+}
+
+function mapStateToProps(state) {
+  return {
+    overlay: getOverlay(state),
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -107,4 +119,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

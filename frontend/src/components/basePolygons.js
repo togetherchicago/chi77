@@ -3,15 +3,17 @@ import { connect } from 'react-redux';
 import { LayerGroup, Popup, Polygon } from 'react-leaflet';
 import { Button } from 'react-bootstrap';
 
+import { updateOverlayAC } from '../-general/actions';
 import { getCommunityAreas } from '../selectors';
 
 class BasePolygons extends Component {
   static defaultProps = {
     communityAreas: {},
+    updateOverlay: () => {},
   };
 
   render() {
-    const { communityAreas } = this.props;
+    const { communityAreas, updateOverlay } = this.props;
     const polygons = [];
 
     for (const area in communityAreas) {
@@ -27,7 +29,7 @@ class BasePolygons extends Component {
           <Button
             variant="link"
             size="sm"
-            onClick={() => {console.log(area);}}
+            onClick={() => {updateOverlay(area);}}
           >+ more info</Button>
         </Popup>
       </ Polygon>;
@@ -49,4 +51,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(BasePolygons);
+function mapDispatchToProps(dispatch) {
+  return {
+    updateOverlay: (slug) => dispatch(updateOverlayAC(slug)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BasePolygons);

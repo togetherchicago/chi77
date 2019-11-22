@@ -1,5 +1,6 @@
 import {
   UPDATE_FILTER,
+  UPDATE_OVERLAY,
 } from './actions';
 import {
   ADD_PLACES as CHA_ADD_PLACES,
@@ -72,9 +73,19 @@ export function filters(state = {}, action = {}) {
   }
 }
 
+export function overlay(state = '', action = {}) {
+  switch (action.type) {
+  case UPDATE_OVERLAY:
+    return action.payload;
+  default:
+    return state;
+  }
+}
+
 export const generalReducers = {
   communityAreas,
   hospitals,
   trainStations,
   filters,
+  overlay,
 };
