@@ -28,7 +28,11 @@ class TrainStationPoints extends Component {
           key={stationName}
           icon={trainStationIcon}
         >
-          <Popup>{trainStations[stationName]['station_descriptive_name']}</Popup>
+          <Popup>
+            <div className="tooltip-large">
+              {trainStations[stationName]['station_descriptive_name']}
+            </div>
+          </Popup>
           <Circle
             center={trainStations[stationName]['lat_long']}
             radius={METERS_PER_MILE * filterRadius}
