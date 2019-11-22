@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LayerGroup, Marker, Popup } from 'react-leaflet';
+import { LayerGroup, Marker, Popup, Circle } from 'react-leaflet';
 import L from 'leaflet';
 
-import { getTrainStations } from '../selectors';
+import { METERS_PER_MILE } from '../constants';
+import { getTrainStations, getFilter } from '../selectors';
 
 const trainStationIcon = new L.Icon({
   iconUrl: require('../resources/train_station_icon.png'),
@@ -13,10 +14,11 @@ const trainStationIcon = new L.Icon({
 class TrainStationPoints extends Component {
   static defaultProps = {
     trainStations: {},
+    filterRadius: 0,
   };
 
   render() {
-    const { trainStations } = this.props;
+    const { trainStations, filterRadius } = this.props;
 
     const markers = [];
     for (const stationName in trainStations) {
@@ -27,6 +29,12 @@ class TrainStationPoints extends Component {
           icon={trainStationIcon}
         >
           <Popup>{trainStations[stationName]['station_descriptive_name']}</Popup>
+          <Circle
+            center={trainStations[stationName]['lat_long']}
+            radius={METERS_PER_MILE * filterRadius}
+            stroke={false}
+            fillColor={'#007f00'}
+          />
         </Marker>
       );
     }
@@ -42,6 +50,7 @@ class TrainStationPoints extends Component {
 function mapStateToProps(state) {
   return {
     trainStations: getTrainStations(state),
+    filterRadius: getFilter(state, 'trainStation')
   };
 }
 

@@ -17,6 +17,7 @@ class App extends Component {
   static defaultProps = {
     fetch: () => {},
     updateHospitalFilter: () => {},
+    updateTrainStationFilter: () => {},
   };
 
   componentDidMount() {
@@ -27,7 +28,7 @@ class App extends Component {
 
   render() {
     const SliderWithTooltip = createSliderWithTooltip(Slider);
-    const { updateHospitalFilter } = this.props;
+    const { updateHospitalFilter, updateTrainStationFilter } = this.props;
 
     return (
       <Container id="mainContainer" style={{"height": "100vh"}} fluid>
@@ -70,10 +71,14 @@ class App extends Component {
                     Transportation
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
-                    <Card.Body>
-                      <span className="referencePointHeader"><b>Proximity to CTA train station</b></span>
-                      <SliderWithTooltip className="slider"
+                    <Card.Body className="referencePointHeader">
+                      <span className="referencePointHeader"><b>Proximity to CTA Train Station</b></span>
+                      <SliderWithTooltip
                         tipFormatter={value => `${value} mi`}
+                        tipProps={{}}
+                        onChange={updateTrainStationFilter}
+                        max={4}
+                        step={0.05}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
@@ -96,6 +101,7 @@ function mapDispatchToProps(dispatch) {
   return {
     fetch: (type) => dispatch(fetchAC(type)),
     updateHospitalFilter: (num) => dispatch(updateFilterAC({ type: 'hospital', num })),
+    updateTrainStationFilter: (num) => dispatch(updateFilterAC({ type: 'trainStation', num })),
   };
 }
 
