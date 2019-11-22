@@ -12,8 +12,6 @@ class BasePolygons extends Component {
   render() {
     const { communityAreas } = this.props;
     const polygons = [];
-    const names = [];
-    const name = "communityAreas[area]['name'] + more info"
 
     for (const area in communityAreas) {
       const p = <Polygon
@@ -21,26 +19,20 @@ class BasePolygons extends Component {
         weight={2}
         key={area}
         fillOpacity={0}
-        bindPopup = { name }
-      />;
+      >
+        <Popup>
+          {communityAreas[area]['name']}
+          <p>+ more info</p>
+        </Popup>
+      </ Polygon>;
 
-      const q = <Popup>
-        {communityAreas[area]['name']}
-        <p>+ more info</p>
-      </Popup>;
-      
-      names.push(q)
       polygons.push(p);
     }
 
     return (
-      <div>
-        {/* {names} */}
-        <LayerGroup>
+      <LayerGroup>
         {polygons}
       </LayerGroup>
-      </div>
-      
     );
   }
 }

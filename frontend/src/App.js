@@ -75,7 +75,6 @@ class App extends Component {
                       <span className="referencePointHeader"><b>Proximity to CTA Train Station</b></span>
                       <SliderWithTooltip
                         tipFormatter={value => `${value} mi`}
-                        tipProps={{}}
                         onChange={updateTrainStationFilter}
                         max={4}
                         step={0.05}
