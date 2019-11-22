@@ -1,6 +1,6 @@
 import { takeEvery } from 'redux-saga/effects';
 
-import { FetchBase } from './actions';
+import { FetchBase } from '../-general/actions';
 import {
   fetchPlaces,
   fetchHospitals,

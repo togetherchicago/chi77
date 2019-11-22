@@ -9,7 +9,7 @@ import MapConn from './components/map';
 import {
   fetchAC,
   updateFilterAC,
-} from './chicago-health-atlas/actions';
+} from './-general/actions';
 import './index.css';
 
 class App extends Component {

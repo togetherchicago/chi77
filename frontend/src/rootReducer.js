@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
 import { exampleReducers } from './reduxExample';
-import { chicagoHealthAtlasReducers } from './chicago-health-atlas/reducers';
+import { generalReducers } from './-general/reducers';
 
 export default combineReducers({
   ...exampleReducers,
-  ...chicagoHealthAtlasReducers,
+  ...generalReducers,
 });
