@@ -13,12 +13,6 @@ import {
 import './index.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
 
   static defaultProps = {
     fetch: () => {},
@@ -60,11 +54,10 @@ class App extends Component {
                     Healthcare
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
-                    <Card.Body className="referencePointHeader">
+                    <Card.Body>
                       <span className="referencePointHeader"><b>Proximity to Hospital</b></span><br/>
-                      <SliderWithTooltip
+                      <SliderWithTooltip className="slider"
                         tipFormatter={value => `${value} mi`}
-                        tipProps={{}}
                         onChange={updateHospitalFilter}
                         max={4}
                         step={0.05}
@@ -77,16 +70,10 @@ class App extends Component {
                     Transportation
                   </Accordion.Toggle>
                   <Accordion.Collapse eventKey="1">
-                    <Card.Body className="referencePointHeader">
+                    <Card.Body>
                       <span className="referencePointHeader"><b>Proximity to CTA train station</b></span>
-                      <br/>
-                      <p className="referencePoint">
-                        <input type="checkbox" name="reference-point" value="disable-ref"></input>
-                        Show reference points
-                      </p>
-                      <SliderWithTooltip
+                      <SliderWithTooltip className="slider"
                         tipFormatter={value => `${value} mi`}
-                        tipProps={{ overlayClassName: 'foo' }}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

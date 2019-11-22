@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { LayerGroup, FeatureGroup, Polygon } from 'react-leaflet';
+import { LayerGroup, Popup, Polygon } from 'react-leaflet';
 
 import { getCommunityAreas } from '../selectors';
 
@@ -12,6 +12,8 @@ class BasePolygons extends Component {
   render() {
     const { communityAreas } = this.props;
     const polygons = [];
+    const names = [];
+    const name = "communityAreas[area]['name'] + more info"
 
     for (const area in communityAreas) {
       const p = <Polygon
@@ -19,15 +21,26 @@ class BasePolygons extends Component {
         weight={2}
         key={area}
         fillOpacity={0}
+        bindPopup = { name }
       />;
 
+      const q = <Popup>
+        {communityAreas[area]['name']}
+        <p>+ more info</p>
+      </Popup>;
+      
+      names.push(q)
       polygons.push(p);
     }
 
     return (
-      <LayerGroup>
+      <div>
+        {/* {names} */}
+        <LayerGroup>
         {polygons}
       </LayerGroup>
+      </div>
+      
     );
   }
 }

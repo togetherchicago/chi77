@@ -25,12 +25,14 @@ code {
   margin: 20px;
 }
 
-.referencePoint {
-  font-size: 9px;
-}
+/* Sidebar styling */
 
 .referencePointHeader {
   font-size: 11px;
+}
+
+.slider {
+  margin-top: 10px;
 }
 
 /* Detailed tooltip styling */
