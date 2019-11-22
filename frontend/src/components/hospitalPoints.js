@@ -40,6 +40,7 @@ class HospitalPoints extends Component {
             <hr/>
             <div className="tooltip-small">{checkSubtype(hospitals[slug]['sub_type'])}</div>
             <div className="tooltip-secondary"> {hospitals[slug]["addr_street"]}, {hospitals[slug]["addr_city"]}, IL {hospitals[slug]["addr_zip"]}</div>
+            <div className="tooltip-secondary"> Phone: {hospitals[slug]["contact_phone"]}</div>
           </Popup>
           <Circle
             center={hospitals[slug]['lat_long']}

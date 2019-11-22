@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { LayerGroup, Popup, Polygon } from 'react-leaflet';
+import { Button } from 'react-bootstrap';
 
 import { getCommunityAreas } from '../selectors';
 
@@ -22,7 +23,12 @@ class BasePolygons extends Component {
       >
         <Popup>
           {communityAreas[area]['name']}
-          <p>+ more info</p>
+          <br />
+          <Button
+            variant="link"
+            size="sm"
+            onClick={() => {console.log(area);}}
+          >+ more info</Button>
         </Popup>
       </ Polygon>;
 
