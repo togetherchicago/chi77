@@ -4,7 +4,6 @@ import { FetchBase } from '../-general/actions';
 import {
   fetchPlaces,
   fetchHospitals,
-  fetchTrainStations,
 } from './effects';
 
 export function* fetchPlacesSaga() {
@@ -15,12 +14,7 @@ export function* fetchHospitalsSaga() {
   yield takeEvery(FetchBase + "HOSPITALS", fetchHospitals);
 }
 
-export function* fetchTrainStationsSaga() {
-  yield takeEvery(FetchBase + "TRAIN_STATIONS", fetchTrainStations);
-}
-
 export const chicagoHealthAtlasSagas = [
   fetchPlacesSaga(),
   fetchHospitalsSaga(),
-  fetchTrainStationsSaga(),
 ];

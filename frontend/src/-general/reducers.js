@@ -2,6 +2,7 @@ import {
   UPDATE_FILTER,
 } from './actions';
 import chicagoHealthAtlasActions from '../-chicago-health-atlas/actions';
+import sodaChicagocityActions from '../-soda-chicagocity/actions';
 
 export function communityAreas(state = {}, action = {}) {
   switch (action.type) {
@@ -43,7 +44,7 @@ export function hospitals(state = {}, action = {}) {
 
 export function trainStations(state = {}, action = {}) {
   switch (action.type) {
-  case chicagoHealthAtlasActions.ADD_TRAIN_STATIONS:
+  case sodaChicagocityActions.ADD_TRAIN_STATIONS:
     return {
       ...action.payload,
     };
