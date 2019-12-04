@@ -94,7 +94,7 @@ class App extends Component {
           </Col>
 
           <Col md={{ span: 10 }}>
-            <Card id="mapOverlay">
+            <Card id="mapOverlay" style={{"visibility": overlay ? "visible" : "hidden"}}>
               <div>{overlay}</div>
             </Card>
             <MapConn />
