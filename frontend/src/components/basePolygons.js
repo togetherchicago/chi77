@@ -22,6 +22,7 @@ class BasePolygons extends Component {
         weight={2}
         key={area}
         fillOpacity={0}
+        color="#646464"
       >
         <Popup>
           {communityAreas[area]['name']}

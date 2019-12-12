@@ -46,6 +46,7 @@ class HospitalPoints extends Component {
             center={hospitals[slug]['lat_long']}
             radius={METERS_PER_MILE * filterRadius}
             stroke={false}
+            fillColor={'#FF6666'}
           />
         </Marker>
       );
