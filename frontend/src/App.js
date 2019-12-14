@@ -13,6 +13,8 @@ import {
 import { getOverlay } from './selectors';
 import './index.css';
 
+const SliderWithTooltip = createSliderWithTooltip(Slider);
+
 class App extends Component {
 
   static defaultProps = {
@@ -29,7 +31,6 @@ class App extends Component {
   }
 
   render() {
-    const SliderWithTooltip = createSliderWithTooltip(Slider);
     const {
       overlay,
       updateHospitalFilter,
