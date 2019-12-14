@@ -5,16 +5,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - axios: API Retrieval
 - leaflet and react-leaflet: Map Visualization
 - lodash: Useful JS Methods
-- prop-types: Runtime type checking for React props and similar objects
 - rc-slider: Range Slider
 - react and react-dom: React
 - react-redux, redux, and redux-saga: Redux and Redux-Saga
 - react-scripts: Bundled scripts that help run the application
-- reselect: Selectors creator for Redux
+- reselect: Selector creator for Redux
 - react-bootstrap and bootstrap: React Bootstrap UI Framework
-- styled-components: Helpful easy-to-style HTML React Components
-
-- eslint: Ensures unified code formatting
+- eslint: Unified code style checker
 
 ## Available Scripts
 
