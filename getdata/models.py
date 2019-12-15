@@ -1,20 +1,19 @@
+from django.contrib.gis.db import models as geomodels
 from django.db import models
-from chicagomap.models import Domain
-
-# Create your models here.
 
 
-# class Population(models.Model):
-#     census_tract = models.ForeignKey(Tract, on_delete=models.CASCADE)
-#     pop_100 = models.IntegerField(default=0)
-#     start_date = models.DateTimeField(null=True)
-#     end_date = models.DateTimeField(null=True)
-#
-#     def __str__(self):
-#         return self.census_tract.name10
+class Domain(models.Model):
+    geom = geomodels.MultiPolygonField()
+    domain_name = models.CharField(max_length=64, default='')
+    name = models.CharField(max_length=64)
 
 
-# Revised models.py for new schema below
+class Equivalency(models.Model):
+    geom_a = models.ForeignKey(Domain, related_name='geom_a', on_delete=models.SET_NULL, null=True)
+    geom_b = models.ForeignKey(Domain, related_name='geom_b', on_delete=models.SET_NULL, null=True)
+    intersection = geomodels.MultiPolygonField()
+    pct_a = models.FloatField(null=True)
+    pct_b = models.FloatField(null=True)
 
 
 class Indicator(models.Model):

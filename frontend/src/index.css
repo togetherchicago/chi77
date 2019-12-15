@@ -1,5 +1,70 @@
-body {
+npmbody {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.dropdownFilter {
+  margin: 15px;
+}
+
+#sidebar {
+  background: white;
+}
+
+#mainContainer {
+  margin: 0;
+  padding: 0;
+}
+
+#mapOverlay {
+  position: absolute;
+  top: 20px;
+  right: 140px;
+  z-index: 10000;
+  width: 140px;
+  height: 150px;
+  text-align: center;
+}
+
+.filter {
+  margin: 20px;
+}
+
+/* Sidebar styling */
+
+.referencePointHeader {
+  font-size: 11px;
+}
+
+.slider {
+  margin-top: 10px;
+}
+
+/* Detailed tooltip styling */
+
+.tooltip-small {
+  font-weight: bold;
+  font-size: 9px;
+}
+
+.tooltip-large {
+  font-weight: bold;
+  font-size: 12px;
+
+}
+
+.tooltip-secondary {
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+/* Slider styling */
+
+.slider {
+  width: 600px;
 }
