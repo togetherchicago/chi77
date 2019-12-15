@@ -22,6 +22,7 @@ $ npm install
 $ python3 manage.py runserver 5000
 ```
 This will run the Django server pointing to `http://localhost:5000`.
+
 4. In another terminal window in the frontend folder, run the React application:
 ```
 $ npm start
