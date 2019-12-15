@@ -1,6 +1,34 @@
 # Chi77
 Together Chicago's data analytics platform.
 
+### Running the application
+
+0. (Optional) Create and activate a python virtual environment:
+```
+$ python3 -m venv env
+$ source env/bin/activate
+```
+1. Use `pip` to install the application's dependencies:
+```
+$ pip3 install -r requirements.txt
+```
+2. Use `npm` to install the React application's dependencies in the frontend folder:
+```
+$ cd frontend
+$ npm install
+```
+3. In one terminal window in the base application folder, run the Django application:
+```
+$ python3 manage.py runserver 5000
+```
+This will run the Django server pointing to `http://localhost:5000`.
+4. In another terminal window in the frontend folder, run the React application:
+```
+$ npm start
+```
+
+# BELOW IS THE OLD README. It is kept in case some of the information is still helpful.
+
 ## Deployment
 
 Chi77 is a Python Django application communicating with a GIS-enabled Postgres database. It can be run locally on a developer's workstation or on the Heroku cloud.
@@ -94,18 +122,18 @@ by the end of the project.
 
 * When I `docker-compose up`, why doesn't my changes in code show up?
 
-    - If you added new frontend dependencies, you need to `docker-compose build`. I recommend also pruning docker 
+    - If you added new frontend dependencies, you need to `docker-compose build`. I recommend also pruning docker
         every now and then, by doing `docker volume prune` and `docker system prune`. This will get rid of a TON
         of memory that Docker is eating up from past containers. After pruning, run `docker-compose build --no-cache`
         for a clean build.
 
 * When I spin up the application and try to apply a filter, nothing happens. Why?
-    
-    - We are currently running into a problem with CORS (Cross-Origin Resource Sharing), because we are calling our 
-        API from localhost:5000, and running the application on localhost:3000. Eventually, you will need to 
+
+    - We are currently running into a problem with CORS (Cross-Origin Resource Sharing), because we are calling our
+        API from localhost:5000, and running the application on localhost:3000. Eventually, you will need to
         look up how to actually fix this problem, but for the time being we used the `Allow-Control-Allow-Origin:`
         Chrome extension plugin to avoid this problem.
-* After developing, and using the application on `localhost:3000`, my computer is getting alot of errors when I 
+* After developing, and using the application on `localhost:3000`, my computer is getting alot of errors when I
     visit other websites, why?
-    
+
     - You probably didn't turn off your CORS plugin. Make sure that is off, because it messing with most websites.
