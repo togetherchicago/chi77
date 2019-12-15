@@ -15,6 +15,10 @@ To run this software on a development machine, ensure that you have the followin
 ```
 $ brew install python3
 ```
+Using Ubuntu/WSL:
+```
+$ apt-get update && apt-get install python3
+```
 4. Clone this repository to your local filesystem, then navigate into the repo's directory:
 ```
 $ git clone https://github.com/togetherchicago/chi77.git
@@ -27,13 +31,30 @@ Once these tools are installed you have two options for linking the application 
 
 Runs the application server and database in a linked pair of Docker containers. **Pros**: Easy to setup. **Cons**: Takes longer to startup as all analysis data must be downloaded and processed locally before you can use the app.
 
-1. Start the Django application server, React webapp, and Postgres database using Docker Compose:
+1. Install the Geospatial Data Abstraction Library, GDAL.
+Using Homebrew on the Mac:
+```
+$ brew install gdal
+```
+Using dpkg on Ubuntu/WSL:
+```
+$ apt-get update && apt-get install gdal-bin
+```
+Verify installation on Ubuntu with:
+```
+$ ogrinfo --version
+```
+2. [Create a new python virtual environment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+3. Use `pip` to install the application's dependencies:
+```
+$ pip3 install -r requirements.txt
+```
+4. Start the Django application server, React webapp, and Postgres database using Docker Compose:
 ```
 $ docker-compose -f docker-compose.dev.yaml up
 ```
-2. In a web browser, navigate to the app at `http://localhost:3000`
-
-Note that when running Django inside of Docker, a default Django admin user is automatically created. Log into the Django admin console at `http://localhost:3000/admin` as user `admin` with password `test1234`.
+If you would like to mock the production site locally use `docker-compose.yaml` instead of `docker-compose.dev.yaml`
+5. In a web browser, navigate to the app at `http://localhost:3000`
 
 #### Option 2: Run Django natively and connect to the production database (Deprecated)
 
@@ -44,6 +65,14 @@ Ensure you have installed the [Heroku CLI](https://devcenter.heroku.com/articles
 1. Install the Geospatial Data Abstraction Library, GDAL. Using Homebrew on the Mac:
 ```
 $ brew install gdal
+```
+Using dpkg on Ubuntu/WSL:
+```
+$ apt-get update && apt-get install gdal-bin
+```
+Verify installation on Ubuntu with:
+```
+$ ogrinfo --version
 ```
 2. Use `pip` to install the application's dependencies:
 ```
