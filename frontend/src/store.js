@@ -4,6 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 import rootReducer from './rootReducer';
 import rootSaga from './rootSaga';
 
+// For Chrome Extension Redux Development Tool
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default function configureStore() {
@@ -15,7 +16,7 @@ export default function configureStore() {
   );
   sagaMiddleware.run(rootSaga);
 
-  // for debugging
+  // For debugging: in the web browser's console, reduxStore is now a global variable.
   window.reduxStore = store;
 
   return store;

@@ -1,3 +1,4 @@
+// Example of how actions, effects, sagas, and reducers work together
 import { takeEvery } from 'redux-saga/effects';
 
 // This would go in /actions
