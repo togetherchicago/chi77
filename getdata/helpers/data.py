@@ -1,6 +1,7 @@
 """
 Miscellaenous helpers for data retrieval
 """
+from fastkml.kml import Placemark
 
 def get_nested(dic, key):
     """
@@ -24,5 +25,36 @@ def get_nested(dic, key):
             return data[curr_key]
         return get_value(data[curr_key], key[1:])
 
-    return get_value(dic, key_list)
-        
+    return get_value(dic, key_list)        
+
+def extract_kml_placemarks(k, transform = True):
+    """
+    Extract all placemarks from kml and return in a flattened list
+    
+    Arguments:
+        k {fastkml.KML} -- kml reader doc
+    """
+    def toGeoJson(feature):
+        if not transform:
+            return feature
+        return {
+            "type": "Feature",
+            "geomety": feature.geometry.__geo_interface__,
+            "properties": {
+                "name": feature.name,
+                "address": feature.address,
+                "description": feature.description,
+                "isopen": feature.isopen
+            }
+        }
+
+    def extract(node, placemarks):
+        for feature in node.features():
+            if type(feature) == Placemark:
+                placemarks.append(toGeoJson(feature))
+            else:
+                extract(feature, placemarks)
+    
+    placemarks = []
+    extract(k, placemarks)
+    return placemarks
