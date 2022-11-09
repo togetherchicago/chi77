@@ -13,7 +13,7 @@
     "react-dom": "^16.11.0",
     "react-leaflet": "^2.5.0",
     "react-redux": "^6.0.1",
-    "react-scripts": "2.1.8",
+    "react-scripts": "5.0.1",
     "redux": "^4.0.4",
     "redux-saga": "^1.1.3"
   },
